@@ -7,7 +7,6 @@ import { post } from '@/utils/request'
 export function createPaper(data) {
   return post('/exam/api/paper/paper/create-paper', data)
 }
-
 /**
  * 试卷详情
  * @param data
