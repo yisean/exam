@@ -11,7 +11,7 @@
 
 云帆在线学习考试系统是一款基于JAVA开发的，使用SpringBoot+Vue开发的一款多角色在线培训考试系统平台，系统集成了用户管理、角色管理、部门管理、题库管理、试题管理、试题导入导出、考试管理、在线考试、错题训练、积分商城、报名考试、课程管理、在线学习、题库训练、刷题训练等功能，考试流程完善，操作简单，易用。    
 商业版演示地址：https://exam.yfhl.net   
-商业版官网地址：https://www.yfhl.net/?plan=osyf
+商业版官网地址：https://www.jeedocm.com/?plan=osyf
 
 QQ交流群二：757328773
 
@@ -28,7 +28,7 @@ QQ交流群一：865330294（已满）
 微信号：youyouwx_0613
 
 邮  箱：gaoquanyang@yfhl.net
-
+![输入图片说明](touxiang.png)
   
 
 # 开源版介绍
@@ -87,7 +87,7 @@ https://www.ixigua.com/7041491265027834381?utm_source=xiguastudio
 7、管理员账号密码：admin/admin 学员账号：person/person  
  
 # 其它支持
-网站：https://www.yfhl.net/?plan=osyf
+网站：https://www.jeedocm.com/?plan=osyf
 
 QQ交流群二：757328773
 
