@@ -25,7 +25,7 @@ QQ交流群一：865330294（已满）
 
 手  机：18710213152
 
-微信号：youyouwx_0613
+微信号：youyouwx0613
 
 邮  箱：gaoquanyang@yfhl.net
 
