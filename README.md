@@ -1,35 +1,38 @@
-1. # 云帆培训考试系统 开源版
-    
-    一款多角色在线培训考试系统，系统集成了用户管理、角色管理、部门管理、题库管理、试题管理、试题导入导出、考试管理、在线考试、错题训练等功能，考试流程完善。
+# 云帆培训考试系统 开源版
+
+# 项目演示
+开源版本：https://lite.yfhl.net  
+管理账号：admin/admin    
+学员账号：person/person   
+注意事项：演示环境数据每天晚上会重新初始化，不要往上面导入重要数据；如果账号密码被改无法登录，请联系我们；或等到第二天再访问 :joy: 
 
 # 商业版本
 如果开源版本无法满足您的需求，或者有需求需要定制，可以考虑我们的商业版本。
 
-云帆在线学习考试系统是一款基于JAVA开发的，使用SpringBoot+Vue开发的一款多角色在线培训考试系统平台，系统集成了用户管理、角色管理、部门管理、题库管理、试题管理、试题导入导出、考试管理、在线考试、错题训练、积分商城、报名考试、课程管理、在线学习、题库训练、刷题训练等功能，考试流程完善，操作简单，易用。
-    
+云帆在线学习考试系统是一款基于JAVA开发的，使用SpringBoot+Vue开发的一款多角色在线培训考试系统平台，系统集成了用户管理、角色管理、部门管理、题库管理、试题管理、试题导入导出、考试管理、在线考试、错题训练、积分商城、报名考试、课程管理、在线学习、题库训练、刷题训练等功能，考试流程完善，操作简单，易用。    
 商业版演示地址：https://exam.yfhl.net   
-商业版官网地址：https://www.jeedocm.com/?plan=osyf
+商业版官网地址：https://www.jeedocm.com/?plan=osyang
 
-QQ交流群2群：757328773 
-
-QQ交流群3群：537163131
+QQ交流群二：757328773
 
 
 
 # 商业版咨询
-
 杨高权：
 
 手  机：18710213152
 
 微信号：youyouwx0613
 
-邮  箱：626264481@qq.com
+邮  箱：gaoquanyang@yfhl.net
 
 ![输入图片说明](touxiang.png)
   
 
-# 开源版技术栈
+# 开源版介绍
+一款多角色在线培训考试系统，系统集成了用户管理、角色管理、部门管理、题库管理、试题管理、试题导入导出、考试管理、在线考试、错题训练等功能，考试流程完善。
+
+# 技术栈
 SpringBoot / Shiro / Vue / MySQL
 
 # 产品功能
@@ -82,12 +85,12 @@ https://www.ixigua.com/7041491265027834381?utm_source=xiguastudio
 7、管理员账号密码：admin/admin 学员账号：person/person  
  
 # 其它支持
-网站：https://www.jeedocm.com/?plan=osyf
+网站：https://www.jeedocm.com/?plan=?plan=osyang
 
-QQ交流群：757328773
+QQ交流群二：757328773
 
 
-![输入图片说明](https://images.gitee.com/uploads/images/2020/1207/173238_e6c22c67_2189748.jpeg "17-32-10.jpg")
+![输入图片说明](pic/1.png)
 ![主界面](https://images.gitee.com/uploads/images/2020/1019/182239_4a87af30_2189748.jpeg "222.jpg")
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/1019/182532_04c42741_2189748.jpeg "444.jpg")
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/1019/182543_44dcc2d7_2189748.jpeg "555.jpg")
