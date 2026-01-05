@@ -42,7 +42,6 @@ export function parseTime(time, cFormat) {
   })
   return time_str
 }
-
 /**
  * @param {number} time
  * @param {string} option
