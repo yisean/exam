@@ -29,6 +29,13 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
+    },
+    // 前后端独立启动：把后端相关前缀代理到本地后端，前端同源调用，无需 CORS
+    // /exam 业务接口、/common 文件上传、/upload 文件访问
+    proxy: {
+      '/exam': { target: 'http://localhost:8101', changeOrigin: true },
+      '/common': { target: 'http://localhost:8101', changeOrigin: true },
+      '/upload': { target: 'http://localhost:8101', changeOrigin: true }
     }
   },
   configureWebpack: {
