@@ -17,6 +17,11 @@
           <el-input v-model="postForm.copyRight" placeholder="登录页底部版权信息" />
         </el-form-item>
 
+        <el-form-item label="提前可见时长">
+          <el-input-number v-model="postForm.advanceVisibleMinutes" :min="0" :step="5" controls-position="right" />
+          <span style="color:#909399; margin-left: 10px;">分钟，考试时间段开始前该时长内学员/助理可见</span>
+        </el-form-item>
+
         <el-row>
           <el-button type="primary" @click="submitForm">保存</el-button>
         </el-row>

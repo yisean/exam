@@ -304,6 +304,26 @@ export const asyncRoutes = [
     ]
   },
 
+  {
+    path: '/booking',
+    component: Layout,
+    redirect: '/booking/index',
+    name: 'Booking',
+    meta: {
+      title: '考试预约',
+      icon: 'guide',
+      roles: ['assistant']
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/booking/index'),
+        name: 'BookingIndex',
+        meta: { title: '考试预约', noCache: true, icon: 'guide' }
+      }
+    ]
+  },
+
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/dashboard', hidden: true }
 ]

@@ -193,9 +193,100 @@
 
     </el-card>
 
+    <h3>时间段配置</h3>
+    <el-card style="margin-top: 20px;">
+
+      <el-alert
+        title="可为考试配置一个或多个时间段，每段独立设置开放类型与起止时间。配置了时间段后，学员的可见与可考以时间段为准（不再使用上方的权限配置）。"
+        type="info"
+        :closable="false"
+        style="margin-bottom: 15px;"
+      />
+
+      <el-button size="small" type="primary" icon="el-icon-plus" @click="addSlot">添加时间段</el-button>
+
+      <el-table :data="postForm.timeSlots" border style="width: 100%; margin-top: 15px;" empty-text="未配置时间段">
+        <el-table-column label="开放类型" width="110" align="center">
+          <template v-slot="scope">{{ slotTypeText(scope.row.openType) }}</template>
+        </el-table-column>
+        <el-table-column label="时间窗口" min-width="260" align="center">
+          <template v-slot="scope">{{ scope.row.startTime }} ~ {{ scope.row.endTime }}</template>
+        </el-table-column>
+        <el-table-column label="可预约部门数" width="120" align="center">
+          <template v-slot="scope">{{ scope.row.openType === 3 ? scope.row.maxDepart : '-' }}</template>
+        </el-table-column>
+        <el-table-column label="部门" min-width="150" align="center">
+          <template v-slot="scope">
+            <span v-if="scope.row.openType === 2">指定 {{ (scope.row.departIds || []).length }} 个部门</span>
+            <span v-else-if="scope.row.openType === 3">免约 {{ (scope.row.freeDepartIds || []).length }} 个部门</span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="130" align="center">
+          <template v-slot="scope">
+            <el-button type="text" @click="editSlot(scope.$index)">编辑</el-button>
+            <el-button type="text" style="color:#f56c6c;" @click="removeSlot(scope.$index)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+    </el-card>
+
     <div style="margin-top: 20px">
       <el-button type="primary" @click="handleSave">保存</el-button>
     </div>
+
+    <el-dialog :visible.sync="slotDialog" title="时间段配置" width="600px" append-to-body>
+      <el-form label-width="110px">
+        <el-form-item label="开放类型">
+          <el-radio-group v-model="slotForm.openType">
+            <el-radio :label="1">不限人员</el-radio>
+            <el-radio :label="2">指定部门</el-radio>
+            <el-radio :label="3">预约考试</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="起止时间">
+          <el-date-picker
+            v-model="slotForm._range"
+            type="datetimerange"
+            format="yyyy-MM-dd HH:mm"
+            value-format="yyyy-MM-dd HH:mm"
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+          />
+        </el-form-item>
+        <el-form-item v-if="slotForm.openType === 3" label="可预约部门数">
+          <el-input-number v-model="slotForm.maxDepart" :min="1" />
+        </el-form-item>
+        <el-form-item v-if="slotForm.openType === 2" label="可考部门">
+          <el-tree
+            ref="slotTree"
+            :data="treeData"
+            :props="defaultProps"
+            node-key="id"
+            show-checkbox
+            default-expand-all
+            empty-text=" "
+          />
+        </el-form-item>
+        <el-form-item v-if="slotForm.openType === 3" label="免约部门">
+          <el-tree
+            ref="slotTree"
+            :data="treeData"
+            :props="defaultProps"
+            node-key="id"
+            show-checkbox
+            default-expand-all
+            empty-text=" "
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer">
+        <el-button @click="slotDialog = false">取消</el-button>
+        <el-button type="primary" @click="saveSlot">确定</el-button>
+      </div>
+    </el-dialog>
 
   </div>
 </template>
@@ -230,7 +321,19 @@ export default {
         // 开放类型
         openType: 1,
         // 考试班级列表
-        departIds: []
+        departIds: [],
+        // 时间段列表
+        timeSlots: []
+      },
+      // 时间段编辑对话框
+      slotDialog: false,
+      editingSlotIndex: -1,
+      slotForm: {
+        openType: 1,
+        _range: [],
+        maxDepart: 1,
+        departIds: [],
+        freeDepartIds: []
       },
       rules: {
         title: [
@@ -461,6 +564,90 @@ export default {
         row.totalMulti = 0
         row.totalJudge = 0
       }
+    },
+
+    // ----------------- 时间段配置 -----------------
+
+    slotTypeText(type) {
+      switch (type) {
+        case 2: return '指定部门'
+        case 3: return '预约考试'
+        default: return '不限人员'
+      }
+    },
+
+    addSlot() {
+      this.editingSlotIndex = -1
+      this.slotForm = { openType: 1, _range: [], maxDepart: 1, departIds: [], freeDepartIds: [] }
+      this.slotDialog = true
+      this.$nextTick(() => {
+        if (this.$refs.slotTree) {
+          this.$refs.slotTree.setCheckedKeys([])
+        }
+      })
+    },
+
+    editSlot(index) {
+      const slot = this.postForm.timeSlots[index]
+      this.editingSlotIndex = index
+      this.slotForm = {
+        openType: slot.openType,
+        _range: slot.startTime && slot.endTime ? [slot.startTime, slot.endTime] : [],
+        maxDepart: slot.maxDepart || 1,
+        departIds: (slot.departIds || []).slice(),
+        freeDepartIds: (slot.freeDepartIds || []).slice()
+      }
+      this.slotDialog = true
+      this.$nextTick(() => {
+        if (this.$refs.slotTree) {
+          const checked = this.slotForm.openType === 2 ? this.slotForm.departIds : this.slotForm.freeDepartIds
+          this.$refs.slotTree.setCheckedKeys(checked)
+        }
+      })
+    },
+
+    saveSlot() {
+      const f = this.slotForm
+      if (!f._range || f._range.length !== 2) {
+        this.$message.warning('请选择起止时间！')
+        return
+      }
+      if (f.openType === 3 && (!f.maxDepart || f.maxDepart <= 0)) {
+        this.$message.warning('预约型时间段必须设置可预约部门数上限！')
+        return
+      }
+
+      let departIds = []
+      let freeDepartIds = []
+      if (f.openType === 2) {
+        departIds = this.$refs.slotTree ? this.$refs.slotTree.getCheckedKeys() : []
+        if (departIds.length === 0) {
+          this.$message.warning('指定部门型时间段必须至少选择一个部门！')
+          return
+        }
+      } else if (f.openType === 3) {
+        freeDepartIds = this.$refs.slotTree ? this.$refs.slotTree.getCheckedKeys() : []
+      }
+
+      const slot = {
+        openType: f.openType,
+        startTime: f._range[0],
+        endTime: f._range[1],
+        maxDepart: f.openType === 3 ? f.maxDepart : 0,
+        departIds: departIds,
+        freeDepartIds: freeDepartIds
+      }
+
+      if (this.editingSlotIndex >= 0) {
+        this.postForm.timeSlots.splice(this.editingSlotIndex, 1, slot)
+      } else {
+        this.postForm.timeSlots.push(slot)
+      }
+      this.slotDialog = false
+    },
+
+    removeSlot(index) {
+      this.postForm.timeSlots.splice(index, 1)
     }
 
   }
