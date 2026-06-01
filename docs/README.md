@@ -32,7 +32,8 @@ docs/
 | 路径 | 说明 |
 | --- | --- |
 | [`ops/部署手册.pdf`](ops/部署手册.pdf) | 部署手册 |
-| [`ops/install/`](ops/install/) | 安装资源（含 `数据库脚本.sql`） |
+| [`ops/deployment-frontend-nginx.md`](ops/deployment-frontend-nginx.md) | 前后端解耦部署：Nginx 托管前端 + 反代后端 |
+| [`ops/install/`](ops/install/) | 安装资源（含 `数据库脚本.sql`、迁移脚本） |
 | [`ops/windows-service/`](ops/windows-service/) | 注册 Windows 服务相关文件 |
 | [`ops/run-package/`](ops/run-package/) | 运行包（启动脚本、本地配置示例） |
 
