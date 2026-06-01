@@ -1,6 +1,7 @@
 package com.yf.exam.modules.exam.dto.request;
 
 import com.yf.exam.modules.exam.dto.ExamDTO;
+import com.yf.exam.modules.exam.dto.ExamTimeSlotDTO;
 import com.yf.exam.modules.exam.dto.ext.ExamRepoExtDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -28,5 +29,8 @@ public class ExamSaveReqDTO extends ExamDTO {
 
     @ApiModelProperty(value = "考试部门列表", required=true)
     private List<String> departIds;
+
+    @ApiModelProperty(value = "考试时间段列表")
+    private List<ExamTimeSlotDTO> timeSlots;
 
 }

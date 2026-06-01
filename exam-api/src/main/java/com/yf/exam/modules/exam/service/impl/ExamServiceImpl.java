@@ -19,6 +19,7 @@ import com.yf.exam.modules.exam.mapper.ExamMapper;
 import com.yf.exam.modules.exam.service.ExamDepartService;
 import com.yf.exam.modules.exam.service.ExamRepoService;
 import com.yf.exam.modules.exam.service.ExamService;
+import com.yf.exam.modules.exam.service.ExamTimeSlotService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -43,6 +44,9 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
 
     @Autowired
     private ExamDepartService examDepartService;
+
+    @Autowired
+    private ExamTimeSlotService examTimeSlotService;
 
     @Override
     public void save(ExamSaveReqDTO reqDTO) {
@@ -88,6 +92,9 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
             examDepartService.saveAll(id, reqDTO.getDepartIds());
         }
 
+        // 时间段（含段-部门），全量重写；无时间段时清空
+        examTimeSlotService.saveAll(id, reqDTO.getTimeSlots());
+
         this.saveOrUpdate(entity);
 
     }
@@ -105,6 +112,9 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
         // 题库
         List<ExamRepoExtDTO> repos = examRepoService.listByExam(id);
         respDTO.setRepoList(repos);
+
+        // 时间段（含段-部门）
+        respDTO.setTimeSlots(examTimeSlotService.listByExam(id));
 
         return respDTO;
     }

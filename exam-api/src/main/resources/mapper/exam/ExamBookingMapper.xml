@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yf.exam.modules.exam.mapper.ExamBookingMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.yf.exam.modules.exam.entity.ExamBooking">
+        <id column="id" property="id" />
+        <result column="exam_id" property="examId" />
+        <result column="slot_id" property="slotId" />
+        <result column="depart_id" property="departId" />
+        <result column="user_id" property="userId" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <resultMap id="ExtResultMap" type="com.yf.exam.modules.exam.dto.ext.ExamBookingExtDTO">
+        <id column="id" property="id" />
+        <result column="exam_id" property="examId" />
+        <result column="slot_id" property="slotId" />
+        <result column="depart_id" property="departId" />
+        <result column="user_id" property="userId" />
+        <result column="create_time" property="createTime" />
+        <result column="dept_name" property="departName" />
+        <result column="real_name" property="userName" />
+    </resultMap>
+
+    <select id="listSlotBookings" resultMap="ExtResultMap">
+        SELECT b.*, d.dept_name, u.real_name
+        FROM el_exam_booking b
+        LEFT JOIN sys_depart d ON d.id = b.depart_id
+        LEFT JOIN sys_user u ON u.id = b.user_id
+        WHERE b.slot_id = #{slotId}
+        ORDER BY b.create_time ASC
+    </select>
+
+</mapper>
