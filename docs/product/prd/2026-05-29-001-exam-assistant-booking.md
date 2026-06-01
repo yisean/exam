@@ -3,9 +3,11 @@ title: "PRD：考试助理与预约考试"
 type: prd
 status: active
 date: 2026-05-29
+updated: 2026-06-01
 feature_id: "001"
 sources:
   - docs/product/brainstorms/2026-05-29-exam-assistant-booking-requirements.md
+  - docs/product/brainstorms/2026-06-01-admin-booking-management-requirements.md
   - docs/product/STRATEGY.md
   - docs/product/functional-spec.md
 plan: docs/engineering/plans/2026-05-29-001-feat-exam-assistant-booking-plan.md
@@ -87,6 +89,17 @@ prototype:
 - **R14** 「不限人员」时段：不限定参考人员，窗口内开放参加。
 - **R15** 参考资格在开考/答题时点动态判定，跟随员工部门归属与时段窗口实时变化。
 
+### 5.4 管理端预约管理（增量，2026-06-01）
+
+> 来源 [admin-booking-management brainstorm](../brainstorms/2026-06-01-admin-booking-management-requirements.md)。在 R11b「查看」基础上补齐管理端的可见性 UI 与取消干预。
+
+- **R16** 管理端在「修改考试」页的时段表中，对每个「预约考试」时段提供「查看预约」入口，弹窗列出该时段已预约的部门、预约人、预约时间（R11b 的 UI 落地）。
+- **R17** `sa`/`teacher` 可取消任意部门的预约并释放名额；管理员**不受 R10「时段开始前」限制**——已开始 / 已结束时段的预约也可取消。
+- **R18** 取消前，若被取消部门（含下级）在本场考试已有学员试卷（进行中或已交卷），须二次确认；取消仅释放名额、阻止该部门**之后**开考，**不删除**已有试卷与成绩（资格动态判定，天然成立）。
+- **R19** 查看与取消对 `sa` 与 `teacher` 均开放（既有 R11b 的 `slot-bookings` 由 `sa` 放宽为 `sa`/`teacher`；考试 `save` 仍限 `sa`，为既有不一致，不在此改）。
+
+> 非目标（承接 brainstorm）：取消通知/提醒、取消原因与审计记录、管理员代部门预约/指派 —— 均不做。
+
 ## 6. 关键用户流程
 
 **管理员开出预约时段**
@@ -100,6 +113,10 @@ prototype:
 **员工应考**
 1. 进入时段窗口（含提前可见时长）→ 系统按部门树动态判定资格 → 符合者可作答。
 
+**管理员查看/取消预约（增量）**
+1. 修改考试 → 时段表某「预约考试」时段点「查看预约」→ 弹窗见已约部门/预约人/时间。
+2. 对某行点「取消」→ 若该部门已有学员试卷则二次确认 → 释放名额；已交卷成绩不受影响。
+
 ## 7. 验收标准
 
 > 沿用需求文档 Acceptance Examples。
@@ -110,6 +127,8 @@ prototype:
 - **AE4（R7）** 某部门已约时段甲后再约同考试时段乙，系统拒绝。
 - **AE5（R9）** 时段甲到开始时刻后，助理再打开时甲的预约入口已禁用。
 - **AE6（R12/R15）** 部门预约后新入职员工被分到该部门，开考时自动具备资格，无需助理重新维护名单。
+- **AE7（R16/R19）** `sa` 或 `teacher` 在某预约型时段点「查看预约」，弹窗显示已约部门、预约人姓名、预约时间。
+- **AE8（R17/R18）** 管理员取消一个已有学员交卷部门的预约：弹二次确认；确认后名额释放、该部门未开考学员失去入口，已交卷成绩与记录仍在。即使时段已开始也可取消。
 
 ## 8. 成功指标
 
@@ -131,6 +150,7 @@ prototype:
 
 ## 关联文档
 - 需求原稿：[brainstorm](../brainstorms/2026-05-29-exam-assistant-booking-requirements.md)
+- 增量需求（§5.4 管理端预约管理）：[admin-booking-management brainstorm](../brainstorms/2026-06-01-admin-booking-management-requirements.md)
 - 实现计划：[plan 001](../../engineering/plans/2026-05-29-001-feat-exam-assistant-booking-plan.md)
 - 原型：[`exam-form.html`](../../engineering/prototype/exam-form.html)、[`assistant-booking.html`](../../engineering/prototype/assistant-booking.html)、[`sys-config.html`](../../engineering/prototype/sys-config.html)
 - 策略：[`STRATEGY.md`](../STRATEGY.md)
