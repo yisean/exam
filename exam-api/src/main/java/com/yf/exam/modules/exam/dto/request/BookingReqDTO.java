@@ -25,4 +25,7 @@ public class BookingReqDTO implements Serializable {
 
     @ApiModelProperty(value = "时间段ID")
     private String slotId;
+
+    @ApiModelProperty(value = "预约记录ID（管理端取消用）")
+    private String bookingId;
 }

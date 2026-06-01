@@ -8,6 +8,7 @@ import com.yf.exam.modules.exam.dto.response.BookingExamRespDTO;
 import com.yf.exam.modules.exam.service.ExamBookingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -79,10 +80,21 @@ public class ExamBookingController extends BaseController {
     /**
      * 管理端：查看某时间段的预约情况（R11b）
      */
-    @RequiresRoles("sa")
+    @RequiresRoles(value = {"sa", "teacher"}, logical = Logical.OR)
     @ApiOperation(value = "时间段预约情况")
     @RequestMapping(value = "/slot-bookings", method = { RequestMethod.POST})
     public ApiRest<List<ExamBookingExtDTO>> slotBookings(@RequestBody BookingReqDTO reqDTO) {
         return super.success(baseService.listSlotBookings(reqDTO.getSlotId()));
+    }
+
+    /**
+     * 管理端：取消某条预约（不受时段开始前限制）
+     */
+    @RequiresRoles(value = {"sa", "teacher"}, logical = Logical.OR)
+    @ApiOperation(value = "管理端取消预约")
+    @RequestMapping(value = "/admin-cancel", method = { RequestMethod.POST})
+    public ApiRest adminCancel(@RequestBody BookingReqDTO reqDTO) {
+        baseService.adminCancel(reqDTO.getBookingId());
+        return super.success();
     }
 }

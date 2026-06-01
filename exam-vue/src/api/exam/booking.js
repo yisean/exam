@@ -38,3 +38,11 @@ export function changeBooking(slotId) {
 export function fetchSlotBookings(slotId) {
   return post('/exam/api/exam/booking/slot-bookings', { slotId: slotId })
 }
+
+/**
+ * 管理端：取消某条预约
+ * @param bookingId
+ */
+export function adminCancelBooking(bookingId) {
+  return post('/exam/api/exam/booking/admin-cancel', { bookingId: bookingId })
+}

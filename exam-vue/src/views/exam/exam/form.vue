@@ -222,9 +222,14 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="130" align="center">
+        <el-table-column label="操作" width="200" align="center">
           <template v-slot="scope">
             <el-button type="text" @click="editSlot(scope.$index)">编辑</el-button>
+            <el-button
+              v-if="scope.row.openType === 3 && scope.row.id"
+              type="text"
+              @click="viewBookings(scope.row)"
+            >查看预约</el-button>
             <el-button type="text" style="color:#f56c6c;" @click="removeSlot(scope.$index)">删除</el-button>
           </template>
         </el-table-column>
@@ -288,11 +293,25 @@
       </div>
     </el-dialog>
 
+    <el-dialog :visible.sync="bookingDialog" :title="`时间段预约情况（已约 ${bookingList.length} 个部门）`" width="600px" append-to-body>
+      <el-table :data="bookingList" border size="small" empty-text="暂无部门预约">
+        <el-table-column label="部门" prop="departName" min-width="140" />
+        <el-table-column label="预约人" prop="userName" width="120" align="center" />
+        <el-table-column label="预约时间" prop="createTime" width="150" align="center" />
+        <el-table-column label="操作" width="90" align="center">
+          <template v-slot="scope">
+            <el-button type="text" style="color:#f56c6c;" @click="cancelBooking(scope.row)">取消</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import { fetchDetail, saveData } from '@/api/exam/exam'
+import { fetchSlotBookings, adminCancelBooking } from '@/api/exam/booking'
 import { fetchTree } from '@/api/sys/depart/depart'
 import RepoSelect from '@/components/RepoSelect'
 
@@ -328,6 +347,10 @@ export default {
       // 时间段编辑对话框
       slotDialog: false,
       editingSlotIndex: -1,
+      // 预约查看对话框
+      bookingDialog: false,
+      bookingSlotId: '',
+      bookingList: [],
       slotForm: {
         openType: 1,
         _range: [],
@@ -648,6 +671,32 @@ export default {
 
     removeSlot(index) {
       this.postForm.timeSlots.splice(index, 1)
+    },
+
+    // 查看某预约型时段的预约情况
+    viewBookings(slot) {
+      this.bookingSlotId = slot.id
+      this.bookingDialog = true
+      this.loadBookings()
+    },
+
+    loadBookings() {
+      fetchSlotBookings(this.bookingSlotId).then(res => {
+        this.bookingList = res.data || []
+      })
+    },
+
+    // 管理员取消某部门预约（已有学员试卷时二次确认）
+    cancelBooking(row) {
+      const tip = row.hasPaper
+        ? `【${row.departName}】已有学员开考或交卷，取消预约不会删除已有成绩，但该部门尚未开考的学员将无法再考。确认取消？`
+        : `确认取消【${row.departName}】的预约吗？`
+      this.$confirm(tip, '提示', { type: 'warning' }).then(() => {
+        adminCancelBooking(row.id).then(() => {
+          this.$message.success('已取消该部门预约！')
+          this.loadBookings()
+        })
+      }).catch(() => {})
     }
 
   }

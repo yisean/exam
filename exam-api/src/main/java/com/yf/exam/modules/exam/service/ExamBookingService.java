@@ -44,7 +44,13 @@ public interface ExamBookingService extends IService<ExamBooking> {
     /**
      * 查看某时间段的预约情况（管理端 R11b）
      * @param slotId 时间段ID
-     * @return 预约记录（含部门名、预约人姓名）
+     * @return 预约记录（含部门名、预约人姓名、是否已有试卷）
      */
     List<ExamBookingExtDTO> listSlotBookings(String slotId);
+
+    /**
+     * 管理端取消某条预约（sa/teacher，不受时段开始前限制）
+     * @param bookingId 预约记录ID
+     */
+    void adminCancel(String bookingId);
 }

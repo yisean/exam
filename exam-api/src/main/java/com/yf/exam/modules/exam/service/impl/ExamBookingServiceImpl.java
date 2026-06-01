@@ -17,6 +17,11 @@ import com.yf.exam.modules.exam.mapper.ExamBookingMapper;
 import com.yf.exam.modules.exam.service.ExamBookingService;
 import com.yf.exam.modules.exam.service.ExamService;
 import com.yf.exam.modules.exam.service.ExamTimeSlotService;
+import com.yf.exam.modules.paper.entity.Paper;
+import com.yf.exam.modules.paper.service.PaperService;
+import com.yf.exam.modules.sys.depart.service.SysDepartService;
+import com.yf.exam.modules.sys.user.entity.SysUser;
+import com.yf.exam.modules.sys.user.service.SysUserService;
 import com.yf.exam.modules.user.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -47,6 +52,15 @@ public class ExamBookingServiceImpl extends ServiceImpl<ExamBookingMapper, ExamB
 
     @Autowired
     private ExamService examService;
+
+    @Autowired
+    private SysDepartService sysDepartService;
+
+    @Autowired
+    private SysUserService sysUserService;
+
+    @Autowired
+    private PaperService paperService;
 
     @Override
     public List<BookingExamRespDTO> listBookableExams() {
@@ -185,7 +199,40 @@ public class ExamBookingServiceImpl extends ServiceImpl<ExamBookingMapper, ExamB
 
     @Override
     public List<ExamBookingExtDTO> listSlotBookings(String slotId) {
-        return baseMapper.listSlotBookings(slotId);
+        List<ExamBookingExtDTO> list = baseMapper.listSlotBookings(slotId);
+        for (ExamBookingExtDTO b : list) {
+            b.setHasPaper(this.departHasPaper(b.getExamId(), b.getDepartId()));
+        }
+        return list;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void adminCancel(String bookingId) {
+        ExamBooking booking = this.getById(bookingId);
+        if (booking == null) {
+            throw new ServiceException(1, "预约记录不存在！");
+        }
+        // 管理端不受"时段开始前"限制，直接移除；释放名额，不影响已生成试卷
+        this.removeById(bookingId);
+    }
+
+    /**
+     * 某部门（含所有下级）在某场考试是否已有试卷
+     */
+    private boolean departHasPaper(String examId, String departId) {
+        List<String> subtree = sysDepartService.listAllSubIds(departId);
+        if (CollectionUtils.isEmpty(subtree)) {
+            return false;
+        }
+        List<SysUser> users = sysUserService.list(new QueryWrapper<SysUser>().in("depart_id", subtree));
+        if (CollectionUtils.isEmpty(users)) {
+            return false;
+        }
+        List<String> userIds = users.stream().map(SysUser::getId).collect(Collectors.toList());
+        return paperService.count(new QueryWrapper<Paper>()
+                .eq("exam_id", examId)
+                .in("user_id", userIds)) > 0;
     }
 
     // ----------------- 私有辅助 -----------------

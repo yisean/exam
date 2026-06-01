@@ -24,4 +24,7 @@ public class ExamBookingExtDTO extends ExamBookingDTO {
 
     @ApiModelProperty(value = "预约人姓名")
     private String userName;
+
+    @ApiModelProperty(value = "该部门(含下级)在本场考试是否已有试卷(用于取消前二次确认)")
+    private Boolean hasPaper;
 }
