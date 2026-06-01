@@ -16,7 +16,7 @@ docs/
 | [`product/STRATEGY.md`](product/STRATEGY.md) | 产品策略：目标问题、用户、关键指标、工作主线 |
 | [`product/functional-spec.md`](product/functional-spec.md) | 功能方案总纲（原 `功能方案.md`） |
 | [`product/brainstorms/`](product/brainstorms/) | 需求探讨原始稿（脑暴 → 定稿前） |
-| [`product/prd/`](product/prd/) | 正式需求定稿（PRD） |
+| [`product/prd/`](product/prd/) | 正式需求定稿（PRD）：[001 考试助理与预约考试](product/prd/2026-05-29-001-exam-assistant-booking.md)、[002 开放状态·模拟/正式·补考](product/prd/2026-05-29-002-exam-open-status-mock-retake.md) |
 
 ## engineering/ —— 研发过程
 
