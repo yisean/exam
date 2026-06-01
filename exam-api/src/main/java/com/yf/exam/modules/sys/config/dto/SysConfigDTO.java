@@ -35,5 +35,8 @@ public class SysConfigDTO implements Serializable {
 
     @ApiModelProperty(value = "版权信息")
     private String copyRight;
-    
+
+    @ApiModelProperty(value = "考试提前可见时长(分钟)")
+    private Integer advanceVisibleMinutes;
+
 }

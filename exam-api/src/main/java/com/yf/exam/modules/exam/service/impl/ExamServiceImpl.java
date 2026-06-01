@@ -1,5 +1,6 @@
 package com.yf.exam.modules.exam.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -10,6 +11,7 @@ import com.yf.exam.core.exception.ServiceException;
 import com.yf.exam.core.utils.BeanMapper;
 import com.yf.exam.modules.exam.dto.ExamDTO;
 import com.yf.exam.modules.exam.dto.ExamRepoDTO;
+import com.yf.exam.modules.exam.dto.ExamTimeSlotDTO;
 import com.yf.exam.modules.exam.dto.ext.ExamRepoExtDTO;
 import com.yf.exam.modules.exam.dto.request.ExamSaveReqDTO;
 import com.yf.exam.modules.exam.dto.response.ExamOnlineRespDTO;
@@ -17,14 +19,19 @@ import com.yf.exam.modules.exam.dto.response.ExamReviewRespDTO;
 import com.yf.exam.modules.exam.entity.Exam;
 import com.yf.exam.modules.exam.mapper.ExamMapper;
 import com.yf.exam.modules.exam.service.ExamDepartService;
+import com.yf.exam.modules.exam.service.ExamEligibilityService;
 import com.yf.exam.modules.exam.service.ExamRepoService;
 import com.yf.exam.modules.exam.service.ExamService;
 import com.yf.exam.modules.exam.service.ExamTimeSlotService;
+import com.yf.exam.modules.paper.enums.ExamState;
+import com.yf.exam.modules.user.UserUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,6 +54,9 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
 
     @Autowired
     private ExamTimeSlotService examTimeSlotService;
+
+    @Autowired
+    private ExamEligibilityService examEligibilityService;
 
     @Override
     public void save(ExamSaveReqDTO reqDTO) {
@@ -141,14 +151,44 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
     @Override
     public IPage<ExamOnlineRespDTO> onlinePaging(PagingReqDTO<ExamDTO> reqDTO) {
 
+        String departId = UserUtils.getDepartId(false);
+        Date now = new Date();
 
-        // 创建分页对象
-        Page page = new Page(reqDTO.getCurrent(), reqDTO.getSize());
+        // 查询启用的考试（state=0），可选标题过滤
+        QueryWrapper<Exam> wrapper = new QueryWrapper<>();
+        wrapper.eq("state", ExamState.ENABLE);
+        ExamDTO params = reqDTO.getParams();
+        if (params != null && StringUtils.isNotBlank(params.getTitle())) {
+            wrapper.like("title", params.getTitle());
+        }
+        wrapper.orderByDesc("create_time");
+        List<Exam> exams = this.list(wrapper);
 
-        // 查找分页
-        IPage<ExamOnlineRespDTO> pageData = baseMapper.online(page, reqDTO.getParams());
+        // 按时间段资格过滤并组装（无时间段的考试沿用历史开放规则）
+        List<ExamOnlineRespDTO> all = new ArrayList<>();
+        for (Exam exam : exams) {
+            if (!examEligibilityService.isVisible(exam, departId, now)) {
+                continue;
+            }
+            ExamOnlineRespDTO dto = new ExamOnlineRespDTO();
+            BeanMapper.copy(exam, dto);
+            List<ExamTimeSlotDTO> slots = examEligibilityService.listVisibleSlots(exam.getId(), departId, now);
+            dto.setTimeSlots(slots);
+            dto.setCanAnswer(examEligibilityService.canAnswer(exam, departId, now));
+            all.add(dto);
+        }
 
-        return pageData;
+        // 手工分页（企业季度考核数据量小）
+        long current = reqDTO.getCurrent();
+        long size = reqDTO.getSize();
+        int from = (int) Math.max(0, (current - 1) * size);
+        int to = (int) Math.min(all.size(), from + size);
+        List<ExamOnlineRespDTO> records = from >= all.size() ? new ArrayList<>() : new ArrayList<>(all.subList(from, to));
+
+        Page<ExamOnlineRespDTO> page = new Page<>(current, size);
+        page.setTotal(all.size());
+        page.setRecords(records);
+        return page;
     }
 
     @Override

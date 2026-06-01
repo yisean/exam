@@ -14,9 +14,14 @@ import com.yf.exam.core.utils.BeanMapper;
 import com.yf.exam.core.utils.CronUtils;
 import com.yf.exam.modules.exam.dto.ExamDTO;
 import com.yf.exam.modules.exam.dto.ExamRepoDTO;
+import com.yf.exam.modules.exam.dto.ExamTimeSlotDTO;
 import com.yf.exam.modules.exam.dto.ext.ExamRepoExtDTO;
+import com.yf.exam.modules.exam.entity.Exam;
+import com.yf.exam.modules.exam.service.ExamEligibilityService;
 import com.yf.exam.modules.exam.service.ExamRepoService;
 import com.yf.exam.modules.exam.service.ExamService;
+import com.yf.exam.modules.exam.service.ExamTimeSlotService;
+import com.yf.exam.modules.user.UserUtils;
 import com.yf.exam.modules.paper.dto.PaperDTO;
 import com.yf.exam.modules.paper.dto.PaperQuDTO;
 import com.yf.exam.modules.paper.dto.ext.PaperQuAnswerExtDTO;
@@ -70,6 +75,12 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
 
     @Autowired
     private ExamService examService;
+
+    @Autowired
+    private ExamTimeSlotService examTimeSlotService;
+
+    @Autowired
+    private ExamEligibilityService examEligibilityService;
 
     @Autowired
     private QuService quService;
@@ -136,6 +147,16 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
 
         if(!ExamState.ENABLE.equals(exam.getState())){
             throw new ServiceException(1, "考试状态不正确！");
+        }
+
+        // 时间段门禁：仅对配置了时间段的考试生效（历史考试沿用上面的状态校验）
+        List<ExamTimeSlotDTO> slots = examTimeSlotService.listByExam(examId);
+        if (!CollectionUtils.isEmpty(slots)) {
+            Exam examEntity = examService.getById(examId);
+            String departId = UserUtils.getDepartId(false);
+            if (!examEligibilityService.canAnswer(examEntity, departId, new Date())) {
+                throw new ServiceException(1, "当前不在该考试的可考时间段，或无应考资格！");
+            }
         }
 
         // 考试题目列表
