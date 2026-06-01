@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>试题管理 · 云帆考试系统</title>
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+  <div class="proto-bar">
+    <span class="pill">原型</span>
+    <span>云帆考试系统 · 管理端</span>
+    <a href="index.html">← 返回原型导航</a>
+    <span class="muted" style="color:#8492a6">仅作演示，数据为示例</span>
+  </div>
+
+  <div class="app-wrapper">
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-badge">云</span><span>云帆考试系统</span></div>
+      <nav class="menu">
+        <a class="menu-item" href="dashboard.html"><span class="ico">📊</span> 控制台</a>
+
+        <div class="menu-group-title">在线考试</div>
+        <a class="menu-item" href="my-exam.html"><span class="ico">📝</span> 在线考试</a>
+        <a class="menu-item" href="my-records.html"><span class="ico">🏆</span> 我的成绩</a>
+
+        <div class="menu-group-title">考试管理</div>
+        <a class="menu-item" href="repo.html"><span class="ico">📚</span> 题库管理</a>
+        <a class="menu-item active" href="qu.html"><span class="ico">❓</span> 试题管理</a>
+        <a class="menu-item" href="exam.html"><span class="ico">🗂️</span> 考试管理</a>
+
+        <div class="menu-group-title">系统设置</div>
+        <a class="menu-item" href="sys-config.html"><span class="ico">⚙️</span> 系统配置</a>
+        <a class="menu-item" href="sys-depart.html"><span class="ico">🌳</span> 部门管理</a>
+        <a class="menu-item" href="sys-role.html"><span class="ico">🔑</span> 角色管理</a>
+        <a class="menu-item" href="sys-user.html"><span class="ico">👤</span> 用户管理</a>
+      </nav>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="crumbs"><span>首页</span><span class="sep">/</span><span>考试管理</span><span class="sep">/</span><span class="cur">试题管理</span></div>
+        <a class="user" href="profile.html"><span class="avatar">超</span><span>超管A</span></a>
+      </header>
+
+      <main class="content">
+        <div class="page-title">试题管理</div>
+        <div class="page-desc">按题库、题型、难度筛选并维护试题。共 1,286 道试题。</div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="toolbar">
+              <select class="select" style="width:180px">
+                <option>全部题库</option>
+                <option>【云帆】演示题库</option>
+                <option>安全生产题库</option>
+                <option>ISO9001 质量管理题库</option>
+                <option>新员工入职题库</option>
+                <option>消防安全题库</option>
+              </select>
+              <select class="select" style="width:120px">
+                <option>全部题型</option>
+                <option>单选题</option>
+                <option>多选题</option>
+                <option>判断题</option>
+                <option>简答题</option>
+              </select>
+              <select class="select" style="width:110px">
+                <option>全部难度</option>
+                <option>普通</option>
+                <option>较难</option>
+              </select>
+              <select class="select" style="width:120px">
+                <option>全部状态</option>
+                <option>开放</option>
+                <option>关闭</option>
+              </select>
+              <input class="input" style="width:200px" placeholder="搜索题目内容" />
+              <button class="btn">查询</button>
+              <span class="spacer"></span>
+              <button class="btn">批量导入</button>
+              <button class="btn">导出</button>
+              <a class="btn btn-primary" href="qu-form.html">➕ 添加试题</a>
+            </div>
+
+            <div class="alert alert-info">💡 关闭状态的试题不会被考试组卷抽取。</div>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width:90px">题型</th>
+                  <th style="width:80px">难度</th>
+                  <th>题目内容</th>
+                  <th style="width:160px">所属题库</th>
+                  <th style="width:100px">开放类型</th>
+                  <th style="width:160px">更新时间</th>
+                  <th style="width:220px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="tag tag-primary">单选题</span></td>
+                  <td><span class="tag tag-info">普通</span></td>
+                  <td>我国最北面的城市是哪个？</td>
+                  <td>【云帆】演示题库</td>
+                  <td><span class="tag tag-success">开放</span></td>
+                  <td>2026-05-20 10:12</td>
+                  <td class="actions">
+                    <a class="btn-text" href="qu-view.html">查看</a>
+                    <a class="btn-text" href="qu-form.html">编辑</a>
+                    <a class="btn-text danger" href="javascript:;">关闭</a>
+                    <a class="btn-text danger" href="javascript:;">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-success">多选题</span></td>
+                  <td><span class="tag tag-info">普通</span></td>
+                  <td>以下哪些是中国的特别行政区？</td>
+                  <td>【云帆】演示题库</td>
+                  <td><span class="tag tag-success">开放</span></td>
+                  <td>2026-05-19 16:40</td>
+                  <td class="actions">
+                    <a class="btn-text" href="qu-view.html">查看</a>
+                    <a class="btn-text" href="qu-form.html">编辑</a>
+                    <a class="btn-text danger" href="javascript:;">关闭</a>
+                    <a class="btn-text danger" href="javascript:;">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-warning">判断题</span></td>
+                  <td><span class="tag tag-info">普通</span></td>
+                  <td>咖啡的故乡是非洲吗？</td>
+                  <td>【云帆】演示题库</td>
+                  <td><span class="tag tag-success">开放</span></td>
+                  <td>2026-05-19 15:02</td>
+                  <td class="actions">
+                    <a class="btn-text" href="qu-view.html">查看</a>
+                    <a class="btn-text" href="qu-form.html">编辑</a>
+                    <a class="btn-text danger" href="javascript:;">关闭</a>
+                    <a class="btn-text danger" href="javascript:;">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-primary">单选题</span></td>
+                  <td><span class="tag tag-danger">较难</span></td>
+                  <td>发生火灾时，正确的初期处置顺序是哪一项？</td>
+                  <td>消防安全题库</td>
+                  <td><span class="tag tag-info">关闭</span></td>
+                  <td>2026-05-18 09:33</td>
+                  <td class="actions">
+                    <a class="btn-text" href="qu-view.html">查看</a>
+                    <a class="btn-text" href="qu-form.html">编辑</a>
+                    <a class="btn-text" href="javascript:;">开放</a>
+                    <a class="btn-text danger" href="javascript:;">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-warning">判断题</span></td>
+                  <td><span class="tag tag-info">普通</span></td>
+                  <td>使用灭火器时应站在上风方向。</td>
+                  <td>消防安全题库</td>
+                  <td><span class="tag tag-info">关闭</span></td>
+                  <td>2026-05-17 14:20</td>
+                  <td class="actions">
+                    <a class="btn-text" href="qu-view.html">查看</a>
+                    <a class="btn-text" href="qu-form.html">编辑</a>
+                    <a class="btn-text" href="javascript:;">开放</a>
+                    <a class="btn-text danger" href="javascript:;">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-success">多选题</span></td>
+                  <td><span class="tag tag-danger">较难</span></td>
+                  <td>ISO9001 质量管理体系的核心原则包括以下哪些？</td>
+                  <td>ISO9001 质量管理题库</td>
+                  <td><span class="tag tag-success">开放</span></td>
+                  <td>2026-05-16 11:08</td>
+                  <td class="actions">
+                    <a class="btn-text" href="qu-view.html">查看</a>
+                    <a class="btn-text" href="qu-form.html">编辑</a>
+                    <a class="btn-text danger" href="javascript:;">关闭</a>
+                    <a class="btn-text danger" href="javascript:;">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-primary">单选题</span></td>
+                  <td><span class="tag tag-info">普通</span></td>
+                  <td>下列哪条河流是世界上最长的河流？</td>
+                  <td>【云帆】演示题库</td>
+                  <td><span class="tag tag-success">开放</span></td>
+                  <td>2026-05-15 17:51</td>
+                  <td class="actions">
+                    <a class="btn-text" href="qu-view.html">查看</a>
+                    <a class="btn-text" href="qu-form.html">编辑</a>
+                    <a class="btn-text danger" href="javascript:;">关闭</a>
+                    <a class="btn-text danger" href="javascript:;">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-info">简答题</span></td>
+                  <td><span class="tag tag-danger">较难</span></td>
+                  <td>请简述新员工试用期内的考核流程及转正条件。</td>
+                  <td>新员工入职题库</td>
+                  <td><span class="tag tag-success">开放</span></td>
+                  <td>2026-05-14 08:46</td>
+                  <td class="actions">
+                    <a class="btn-text" href="qu-view.html">查看</a>
+                    <a class="btn-text" href="qu-form.html">编辑</a>
+                    <a class="btn-text danger" href="javascript:;">关闭</a>
+                    <a class="btn-text danger" href="javascript:;">删除</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="pagination">
+              <span class="muted" style="margin-right:8px">共 1,286 条</span>
+              <span class="pg">‹</span>
+              <span class="pg active">1</span>
+              <span class="pg">2</span>
+              <span class="pg">3</span>
+              <span class="pg">4</span>
+              <span class="pg">…</span>
+              <span class="pg">161</span>
+              <span class="pg">›</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

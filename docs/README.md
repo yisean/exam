@@ -1,0 +1,42 @@
+# 项目文档索引
+
+本目录按 **产品 / 研发 / 运维** 三层组织文档。新建文档时请放入对应目录，目录名统一用英文小写连字符，正文用中文。
+
+```
+docs/
+├── product/        做什么、为什么 —— 产品与需求
+├── engineering/    怎么做 —— 研发过程与技术资料
+└── ops/            怎么交付 —— 部署与运维交付物
+```
+
+## product/ —— 产品与需求
+
+| 路径 | 说明 |
+| --- | --- |
+| [`product/STRATEGY.md`](product/STRATEGY.md) | 产品策略：目标问题、用户、关键指标、工作主线 |
+| [`product/functional-spec.md`](product/functional-spec.md) | 功能方案总纲（原 `功能方案.md`） |
+| [`product/brainstorms/`](product/brainstorms/) | 需求探讨原始稿（脑暴 → 定稿前） |
+| [`product/prd/`](product/prd/) | 正式需求定稿（PRD） |
+
+## engineering/ —— 研发过程
+
+| 路径 | 说明 |
+| --- | --- |
+| [`engineering/plans/`](engineering/plans/) | 实现计划，命名 `日期-序号-类型-描述.md`，带 frontmatter |
+| [`engineering/prototype/`](engineering/prototype/) | 纯静态 HTML 原型 + 构建规范 `_spec.md` |
+| [`engineering/architecture/`](engineering/architecture/) | 架构、数据库结构、源码说明等技术资料 |
+
+## ops/ —— 部署与运维
+
+| 路径 | 说明 |
+| --- | --- |
+| [`ops/部署手册.pdf`](ops/部署手册.pdf) | 部署手册 |
+| [`ops/install/`](ops/install/) | 安装资源（含 `数据库脚本.sql`） |
+| [`ops/windows-service/`](ops/windows-service/) | 注册 Windows 服务相关文件 |
+| [`ops/run-package/`](ops/run-package/) | 运行包（启动脚本、本地配置示例） |
+
+## 约定
+
+- **新需求流转**：`product/brainstorms/` → `product/prd/` → `engineering/plans/` → 编码。
+- **架构决策**：技术选型、数据库变更等沉淀到 `engineering/architecture/`，PDF 建议逐步转为 Markdown 以便评审与检索。
+- **文件命名**：计划/记录类文档用 `YYYY-MM-DD-NNN-<type>-<slug>.md`；其余用英文小写连字符。

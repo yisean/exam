@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>控制台 · 云帆考试系统</title>
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+  <div class="proto-bar">
+    <span class="pill">原型</span>
+    <span>云帆考试系统 · 管理端</span>
+    <a href="index.html">← 返回原型导航</a>
+    <span class="muted" style="color:#8492a6">仅作演示，数据为示例</span>
+  </div>
+
+  <div class="app-wrapper">
+    <!-- ============ 侧边栏（管理端通用，复制到其它管理页面） ============ -->
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-badge">云</span><span>云帆考试系统</span></div>
+      <nav class="menu">
+        <a class="menu-item active" href="dashboard.html"><span class="ico">📊</span> 控制台</a>
+
+        <div class="menu-group-title">在线考试</div>
+        <a class="menu-item" href="my-exam.html"><span class="ico">📝</span> 在线考试</a>
+        <a class="menu-item" href="my-records.html"><span class="ico">🏆</span> 我的成绩</a>
+
+        <div class="menu-group-title">考试管理</div>
+        <a class="menu-item" href="repo.html"><span class="ico">📚</span> 题库管理</a>
+        <a class="menu-item" href="qu.html"><span class="ico">❓</span> 试题管理</a>
+        <a class="menu-item" href="exam.html"><span class="ico">🗂️</span> 考试管理</a>
+
+        <div class="menu-group-title">系统设置</div>
+        <a class="menu-item" href="sys-config.html"><span class="ico">⚙️</span> 系统配置</a>
+        <a class="menu-item" href="sys-depart.html"><span class="ico">🌳</span> 部门管理</a>
+        <a class="menu-item" href="sys-role.html"><span class="ico">🔑</span> 角色管理</a>
+        <a class="menu-item" href="sys-user.html"><span class="ico">👤</span> 用户管理</a>
+      </nav>
+    </aside>
+
+    <!-- ============ 主区域 ============ -->
+    <div class="main">
+      <header class="topbar">
+        <div class="crumbs"><span>首页</span><span class="sep">/</span><span class="cur">控制台</span></div>
+        <a class="user" href="profile.html"><span class="avatar">超</span><span>超管A</span></a>
+      </header>
+
+      <main class="content">
+        <div class="stat-grid">
+          <div class="stat-card"><div class="ico-box" style="background:#409eff">📚</div><div><div class="num">12</div><div class="lbl">题库总数</div></div></div>
+          <div class="stat-card"><div class="ico-box" style="background:#67c23a">❓</div><div><div class="num">1,286</div><div class="lbl">试题总数</div></div></div>
+          <div class="stat-card"><div class="ico-box" style="background:#e6a23c">🗂️</div><div><div class="num">8</div><div class="lbl">进行中考试</div></div></div>
+          <div class="stat-card"><div class="ico-box" style="background:#f56c6c">👥</div><div><div class="num">156</div><div class="lbl">考试人员</div></div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">近期考试
+            <a class="btn btn-sm btn-primary" href="exam.html">查看全部</a>
+          </div>
+          <div class="card-body" style="padding:0">
+            <table class="table">
+              <thead><tr><th>考试名称</th><th>开放范围</th><th>状态</th><th>及格分</th><th>参考/完成</th><th>操作</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>2026 Q2 全员安全生产考核</td><td><span class="tag tag-warning">指定部门</span></td>
+                  <td><span class="tag tag-success">进行中</span></td><td>60</td><td>120 / 86</td>
+                  <td class="actions"><a class="btn-text" href="exam-papers.html">考试记录</a><a class="btn-text" href="exam-users.html">考试人员</a></td>
+                </tr>
+                <tr>
+                  <td>新员工入职考试</td><td><span class="tag tag-primary">预约考试</span></td>
+                  <td><span class="tag tag-success">进行中</span></td><td>70</td><td>42 / 30</td>
+                  <td class="actions"><a class="btn-text" href="exam-papers.html">考试记录</a><a class="btn-text" href="exam-users.html">考试人员</a></td>
+                </tr>
+                <tr>
+                  <td>【云帆演示】考试</td><td><span class="tag tag-info">完全公开</span></td>
+                  <td><span class="tag tag-info">未开始</span></td><td>60</td><td>0 / 0</td>
+                  <td class="actions"><a class="btn-text" href="exam-form.html">编辑</a><a class="btn-text" href="exam-papers.html">考试记录</a></td>
+                </tr>
+                <tr>
+                  <td>质量管理体系 ISO9001 测评</td><td><span class="tag tag-warning">指定部门</span></td>
+                  <td><span class="tag tag-danger">已结束</span></td><td>80</td><td>35 / 35</td>
+                  <td class="actions"><a class="btn-text" href="exam-papers.html">考试记录</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">快捷入口</div>
+          <div class="card-body flex gap" style="flex-wrap:wrap">
+            <a class="btn btn-plain" href="qu-form.html">➕ 录入试题</a>
+            <a class="btn btn-plain" href="repo.html">📚 新建题库</a>
+            <a class="btn btn-plain" href="exam-form.html">🗂️ 创建考试</a>
+            <a class="btn btn-plain" href="sys-user.html">👤 添加用户</a>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

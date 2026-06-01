@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>添加试题 · 云帆考试系统</title>
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+  <div class="proto-bar">
+    <span class="pill">原型</span>
+    <span>云帆考试系统 · 管理端</span>
+    <a href="index.html">← 返回原型导航</a>
+    <span class="muted" style="color:#8492a6">仅作演示，数据为示例</span>
+  </div>
+
+  <div class="app-wrapper">
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-badge">云</span><span>云帆考试系统</span></div>
+      <nav class="menu">
+        <a class="menu-item" href="dashboard.html"><span class="ico">📊</span> 控制台</a>
+
+        <div class="menu-group-title">在线考试</div>
+        <a class="menu-item" href="my-exam.html"><span class="ico">📝</span> 在线考试</a>
+        <a class="menu-item" href="my-records.html"><span class="ico">🏆</span> 我的成绩</a>
+
+        <div class="menu-group-title">考试管理</div>
+        <a class="menu-item" href="repo.html"><span class="ico">📚</span> 题库管理</a>
+        <a class="menu-item active" href="qu.html"><span class="ico">❓</span> 试题管理</a>
+        <a class="menu-item" href="exam.html"><span class="ico">🗂️</span> 考试管理</a>
+
+        <div class="menu-group-title">系统设置</div>
+        <a class="menu-item" href="sys-config.html"><span class="ico">⚙️</span> 系统配置</a>
+        <a class="menu-item" href="sys-depart.html"><span class="ico">🌳</span> 部门管理</a>
+        <a class="menu-item" href="sys-role.html"><span class="ico">🔑</span> 角色管理</a>
+        <a class="menu-item" href="sys-user.html"><span class="ico">👤</span> 用户管理</a>
+      </nav>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="crumbs"><span>首页</span><span class="sep">/</span><a href="qu.html">试题管理</a><span class="sep">/</span><span class="cur">添加试题</span></div>
+        <a class="user" href="profile.html"><span class="avatar">超</span><span>超管A</span></a>
+      </header>
+
+      <main class="content">
+        <div class="page-title">添加试题</div>
+        <div class="page-desc">填写题干、选项与解析，标注正确答案后保存。</div>
+
+        <div class="card">
+          <div class="card-header">基本信息</div>
+          <div class="card-body">
+            <div class="form-item">
+              <label><span class="req">*</span>题型</label>
+              <div class="control">
+                <div class="radio-group">
+                  <label class="radio"><input type="radio" name="qtype" checked /> 单选</label>
+                  <label class="radio"><input type="radio" name="qtype" /> 多选</label>
+                  <label class="radio"><input type="radio" name="qtype" /> 判断</label>
+                  <label class="radio"><input type="radio" name="qtype" /> 简答</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-item">
+              <label><span class="req">*</span>难度</label>
+              <div class="control">
+                <div class="radio-group">
+                  <label class="radio"><input type="radio" name="qlevel" checked /> 普通</label>
+                  <label class="radio"><input type="radio" name="qlevel" /> 较难</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-item">
+              <label><span class="req">*</span>所属题库</label>
+              <div class="control">
+                <select class="select">
+                  <option>【云帆】演示题库</option>
+                  <option>安全生产题库</option>
+                  <option>ISO9001 质量管理题库</option>
+                  <option>新员工入职题库</option>
+                  <option>消防安全题库</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-item">
+              <label><span class="req">*</span>题目内容</label>
+              <div class="control">
+                <textarea class="textarea" placeholder="请输入题干">我国最北面的城市是哪个？</textarea>
+              </div>
+            </div>
+
+            <div class="form-item">
+              <label>题目图片</label>
+              <div class="control">
+                <div style="width:140px;height:100px;border:1px dashed var(--border-base);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:var(--text-secondary);cursor:pointer">
+                  <span style="font-size:24px">＋</span>
+                  <span style="font-size:12px">点击上传</span>
+                </div>
+                <div class="form-tip">支持 JPG / PNG，单张不超过 2MB（选填）</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">选项设置
+            <button class="btn btn-sm" onclick="addOption()">➕ 添加选项</button>
+          </div>
+          <div class="card-body">
+            <div class="form-tip" style="margin-bottom:14px">勾选「正确答案」以标注正确项；单选题仅可标注一个正确项。</div>
+            <div id="optList">
+              <div class="form-item">
+                <label>选项 A</label>
+                <div class="control flex items-center gap" style="max-width:none">
+                  <input class="input" style="flex:1" value="铁岭" />
+                  <label class="checkbox" style="white-space:nowrap"><input type="checkbox" /> 正确答案</label>
+                </div>
+              </div>
+              <div class="form-item">
+                <label>选项 B</label>
+                <div class="control flex items-center gap" style="max-width:none">
+                  <input class="input" style="flex:1" value="齐齐哈尔" />
+                  <label class="checkbox" style="white-space:nowrap"><input type="checkbox" /> 正确答案</label>
+                </div>
+              </div>
+              <div class="form-item">
+                <label>选项 C</label>
+                <div class="control flex items-center gap" style="max-width:none">
+                  <input class="input" style="flex:1" value="沈阳" />
+                  <label class="checkbox" style="white-space:nowrap"><input type="checkbox" /> 正确答案</label>
+                </div>
+              </div>
+              <div class="form-item">
+                <label>选项 D</label>
+                <div class="control flex items-center gap" style="max-width:none">
+                  <input class="input" style="flex:1" value="漠河" />
+                  <label class="checkbox" style="white-space:nowrap"><input type="checkbox" checked /> 正确答案</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">解析与备注</div>
+          <div class="card-body">
+            <div class="form-item">
+              <label>整题解析</label>
+              <div class="control">
+                <textarea class="textarea" placeholder="请输入答案解析">漠河市位于黑龙江省最北端，是我国纬度最高的城市，被称为「中国最北城市」。</textarea>
+              </div>
+            </div>
+            <div class="form-item">
+              <label>备注</label>
+              <div class="control"><input class="input" placeholder="选填，内部备注" /></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap" style="margin-top:16px">
+          <button class="btn btn-primary" onclick="location.href='qu.html'">保存</button>
+          <a class="btn" href="qu.html">取消</a>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    var optCount = 4;
+    function addOption() {
+      optCount++;
+      var key = String.fromCharCode(64 + optCount); // E, F, ...
+      var item = document.createElement('div');
+      item.className = 'form-item';
+      item.innerHTML =
+        '<label>选项 ' + key + '</label>' +
+        '<div class="control flex items-center gap" style="max-width:none">' +
+        '<input class="input" style="flex:1" placeholder="请输入选项内容" />' +
+        '<label class="checkbox" style="white-space:nowrap"><input type="checkbox" /> 正确答案</label>' +
+        '</div>';
+      document.getElementById('optList').appendChild(item);
+    }
+  </script>
+</body>
+</html>

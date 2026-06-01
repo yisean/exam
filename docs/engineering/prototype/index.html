@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>原型导航 · 云帆在线培训考试系统</title>
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+  <div class="proto-bar">
+    <span class="pill">原型</span>
+    <span>云帆在线培训考试系统 · 交互原型</span>
+    <span class="muted" style="color:#8492a6">仅作演示，数据为示例</span>
+  </div>
+
+  <div style="max-width:1080px;margin:0 auto;padding:40px 24px 60px;">
+
+    <!-- ===== 落地头部 ===== -->
+    <div style="text-align:center;margin-bottom:36px;">
+      <div class="logo-badge"
+        style="width:56px;height:56px;border-radius:14px;background:var(--color-primary);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:14px;">云</div>
+      <h1 style="font-size:28px;margin-bottom:10px;">云帆在线培训考试系统 · 交互原型</h1>
+      <p class="muted" style="font-size:15px;line-height:1.7;max-width:680px;margin:0 auto;">
+        这是一套用于客户演示的<b>点击原型</b>，纯静态页面、无后端、无外部依赖，数据均为示例。
+        覆盖管理端、学员端及新功能<b>考试助理端</b>，可在页面间自由跳转体验完整流程。
+      </p>
+      <a class="btn btn-primary" href="login.html"
+        style="margin-top:20px;height:42px;padding:0 28px;">▶ 从「登录」开始体验</a>
+    </div>
+
+    <!-- ===== 管理端 ===== -->
+    <div class="card">
+      <div class="card-header"><span>🛠️ 管理端</span>
+        <span class="muted" style="font-size:13px;font-weight:400">超级管理员 / 老师</span>
+      </div>
+      <div class="card-body flex gap" style="flex-wrap:wrap">
+        <a class="btn btn-plain" href="login.html">登录</a>
+        <a class="btn btn-plain" href="dashboard.html">控制台</a>
+        <a class="btn btn-plain" href="repo.html">题库管理</a>
+        <a class="btn btn-plain" href="qu.html">试题管理</a>
+        <a class="btn btn-plain" href="qu-form.html">添加试题</a>
+        <a class="btn btn-plain" href="qu-view.html">题目详情</a>
+        <a class="btn btn-plain" href="exam.html">考试管理</a>
+        <a class="btn btn-plain" href="exam-form.html">
+          创建考试 · 含时间段预约 <span class="tag tag-warning" style="margin-left:6px;height:20px">新功能</span>
+        </a>
+        <a class="btn btn-plain" href="exam-users.html">考试人员</a>
+        <a class="btn btn-plain" href="exam-papers.html">考试记录</a>
+        <a class="btn btn-plain" href="paper-detail.html">试卷详情 · 阅卷</a>
+        <a class="btn btn-plain" href="sys-config.html">系统配置</a>
+        <a class="btn btn-plain" href="sys-depart.html">部门管理</a>
+        <a class="btn btn-plain" href="sys-role.html">角色管理</a>
+        <a class="btn btn-plain" href="sys-user.html">用户管理</a>
+        <a class="btn btn-plain" href="profile.html">个人资料</a>
+      </div>
+    </div>
+
+    <!-- ===== 学员端 ===== -->
+    <div class="card">
+      <div class="card-header"><span>🎓 学员端</span>
+        <span class="muted" style="font-size:13px;font-weight:400">参加考试 · 查看成绩</span>
+      </div>
+      <div class="card-body flex gap" style="flex-wrap:wrap">
+        <a class="btn btn-plain" href="my-exam.html">在线考试</a>
+        <a class="btn btn-plain" href="exam-prepare.html">准备考试</a>
+        <a class="btn btn-plain" href="exam-taking.html">在线答题</a>
+        <a class="btn btn-plain" href="exam-result.html">考试结果</a>
+        <a class="btn btn-plain" href="my-records.html">我的成绩</a>
+        <a class="btn btn-plain" href="my-book.html">错题本 / 训练</a>
+      </div>
+    </div>
+
+    <!-- ===== 考试助理端 ===== -->
+    <div class="card">
+      <div class="card-header">
+        <span>📅 考试助理端 <span class="tag tag-warning" style="margin-left:6px;height:20px">新功能</span></span>
+        <span class="muted" style="font-size:13px;font-weight:400">代表本部门预约考试时间段</span>
+      </div>
+      <div class="card-body">
+        <p class="muted" style="margin-bottom:14px;line-height:1.6">
+          助理可代表本部门（含下级部门）为含「预约考试」时间段的考试预约时段，支持预约 / 改约 / 取消，每场考试限约一个时间段。
+        </p>
+        <div class="flex gap" style="flex-wrap:wrap">
+          <a class="btn btn-plain" href="assistant-booking.html">
+            考试预约 <span class="tag tag-warning" style="margin-left:6px;height:20px">新功能</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <p class="muted" style="text-align:center;margin-top:28px;font-size:13px;">
+      建议从「登录」开始体验：管理员 <b>admin</b> · 学员 <b>person</b> · 助理 <b>assistant</b>，登录后将进入对应角色首页。
+    </p>
+
+  </div>
+</body>
+</html>

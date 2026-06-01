@@ -1,3 +1,13 @@
+# IDE
+.idea/
+*.iml
+
+# Build output
+target/
+
+# Logs
+logs/
+
 # Compiled class file
 *.class
 

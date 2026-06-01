@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>角色管理 · 云帆考试系统</title>
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+  <div class="proto-bar">
+    <span class="pill">原型</span>
+    <span>云帆考试系统 · 管理端</span>
+    <a href="index.html">← 返回原型导航</a>
+    <span class="muted" style="color:#8492a6">仅作演示，数据为示例</span>
+  </div>
+
+  <div class="app-wrapper">
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-badge">云</span><span>云帆考试系统</span></div>
+      <nav class="menu">
+        <a class="menu-item" href="dashboard.html"><span class="ico">📊</span> 控制台</a>
+
+        <div class="menu-group-title">在线考试</div>
+        <a class="menu-item" href="my-exam.html"><span class="ico">📝</span> 在线考试</a>
+        <a class="menu-item" href="my-records.html"><span class="ico">🏆</span> 我的成绩</a>
+
+        <div class="menu-group-title">考试管理</div>
+        <a class="menu-item" href="repo.html"><span class="ico">📚</span> 题库管理</a>
+        <a class="menu-item" href="qu.html"><span class="ico">❓</span> 试题管理</a>
+        <a class="menu-item" href="exam.html"><span class="ico">🗂️</span> 考试管理</a>
+
+        <div class="menu-group-title">系统设置</div>
+        <a class="menu-item" href="sys-config.html"><span class="ico">⚙️</span> 系统配置</a>
+        <a class="menu-item" href="sys-depart.html"><span class="ico">🌳</span> 部门管理</a>
+        <a class="menu-item active" href="sys-role.html"><span class="ico">🔑</span> 角色管理</a>
+        <a class="menu-item" href="sys-user.html"><span class="ico">👤</span> 用户管理</a>
+      </nav>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="crumbs"><span>首页</span><span class="sep">/</span><span>系统设置</span><span class="sep">/</span><span class="cur">角色管理</span></div>
+        <a class="user" href="profile.html"><span class="avatar">超</span><span>超管A</span></a>
+      </header>
+
+      <main class="content">
+        <div class="page-title">角色管理</div>
+        <div class="page-desc">系统内置 4 类角色，决定用户可访问的功能模块与数据范围。</div>
+
+        <div class="toolbar">
+          <a class="btn btn-primary" href="#" onclick="openDlg('添加角色')">➕ 添加角色</a>
+          <span class="spacer"></span>
+        </div>
+
+        <div class="card">
+          <div class="card-body" style="padding:0">
+            <table class="table">
+              <thead>
+                <tr><th>角色名称</th><th>角色标识</th><th>说明</th><th style="width:140px">操作</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="tag tag-danger">超级管理员</span></td>
+                  <td><code>sa</code></td>
+                  <td>拥有全部权限，可管理系统配置、组织、用户、题库及考试。</td>
+                  <td class="actions"><a class="btn-text" href="#" onclick="openDlg('编辑角色')">编辑</a><a class="btn-text danger" href="#">删除</a></td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-primary">老师</span></td>
+                  <td><code>teacher</code></td>
+                  <td>管理题库、试题与考试，查看考试记录与成绩。</td>
+                  <td class="actions"><a class="btn-text" href="#" onclick="openDlg('编辑角色')">编辑</a><a class="btn-text danger" href="#">删除</a></td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-success">学员</span></td>
+                  <td><code>student</code></td>
+                  <td>参加考试，查看个人成绩与历史记录。</td>
+                  <td class="actions"><a class="btn-text" href="#" onclick="openDlg('编辑角色')">编辑</a><a class="btn-text danger" href="#">删除</a></td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag-warning">考试助理</span></td>
+                  <td><code>assistant</code></td>
+                  <td>代表本部门（含下级）为预约考试预约时间段。</td>
+                  <td class="actions"><a class="btn-text" href="#" onclick="openDlg('编辑角色')">编辑</a><a class="btn-text danger" href="#">删除</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- 添加/编辑角色对话框 -->
+  <div class="dialog-mask" id="roleDlg">
+    <div class="dialog">
+      <div class="dialog-header" id="roleDlgTitle">添加角色</div>
+      <div class="dialog-body">
+        <div class="form-item">
+          <label><span class="req">*</span>角色名称</label>
+          <div class="control"><input class="input" placeholder="如：老师" /></div>
+        </div>
+        <div class="form-item">
+          <label><span class="req">*</span>角色标识</label>
+          <div class="control">
+            <input class="input" placeholder="如：teacher（英文唯一标识）" />
+            <div class="form-tip">仅限英文/数字，创建后不可修改。</div>
+          </div>
+        </div>
+        <div class="form-item">
+          <label>说明</label>
+          <div class="control"><textarea class="textarea" placeholder="描述该角色的职责与权限范围"></textarea></div>
+        </div>
+      </div>
+      <div class="dialog-footer">
+        <a class="btn" href="#" onclick="closeDlg()">取 消</a>
+        <a class="btn btn-primary" href="#" onclick="closeDlg()">确 定</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openDlg(title) {
+      document.getElementById('roleDlgTitle').textContent = title;
+      document.getElementById('roleDlg').classList.add('open');
+    }
+    function closeDlg() {
+      document.getElementById('roleDlg').classList.remove('open');
+    }
+  </script>
+</body>
+</html>

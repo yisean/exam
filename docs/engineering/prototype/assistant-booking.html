@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>考试预约 · 云帆考试系统（助理端）</title>
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+  <div class="proto-bar">
+    <span class="pill">原型</span>
+    <span>云帆考试系统 · 考试助理端</span>
+    <a href="index.html">← 返回原型导航</a>
+    <span class="muted" style="color:#8492a6">仅作演示，数据为示例</span>
+  </div>
+
+  <div class="app-wrapper">
+    <!-- ============ 侧边栏（助理端） ============ -->
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-badge">云</span><span>云帆考试系统</span></div>
+      <nav class="menu">
+        <div class="menu-group-title">考试预约</div>
+        <a class="menu-item active" href="assistant-booking.html"><span class="ico">📅</span> 考试预约</a>
+      </nav>
+    </aside>
+
+    <!-- ============ 主区域 ============ -->
+    <div class="main">
+      <header class="topbar">
+        <div class="crumbs"><span>首页</span><span class="sep">/</span><span class="cur">考试预约</span></div>
+        <a class="user" href="#"><span class="avatar">李</span><span>李助理（技术部）</span></a>
+      </header>
+
+      <main class="content">
+        <div class="page-title">考试预约</div>
+        <div class="page-desc">为本部门预约含「预约考试」时间段的考试</div>
+
+        <div class="alert alert-info">
+          <span>ℹ️</span>
+          <span>您是【技术部】考试助理，可代表本部门（含后端组 / 前端组 / 产品组 / 测试组）预约下列考试的时间段。<b>每场考试只能预约一个时间段。</b></span>
+        </div>
+
+        <!-- ===== 考试 A：新员工入职考试 ===== -->
+        <div class="card">
+          <div class="card-header">
+            <span>新员工入职考试</span>
+            <span class="muted" style="font-size:13px;font-weight:400">总分 100 · 时长 60 分钟 · 及格 70</span>
+          </div>
+          <div class="card-body" style="padding:0">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>时间段</th><th>开放类型</th><th>已约部门 / 上限</th><th>状态</th><th style="width:160px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>06-12 09:00 ~ 11:00</td>
+                  <td><span class="tag tag-primary">预约考试</span></td>
+                  <td>2 / 5</td>
+                  <td><span class="tag tag-info">可预约</span></td>
+                  <td class="actions">
+                    <button class="btn btn-sm btn-primary"
+                      onclick="openBook('新员工入职考试 · 06-12 09:00 ~ 11:00')">预约</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>06-13 14:00 ~ 16:00</td>
+                  <td><span class="tag tag-primary">预约考试</span></td>
+                  <td>5 / 5</td>
+                  <td><span class="tag tag-danger">已满</span></td>
+                  <td class="actions">
+                    <button class="btn btn-sm" disabled
+                      style="opacity:.6;cursor:not-allowed">预约</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>06-14 09:00 ~ 11:00</td>
+                  <td><span class="tag tag-primary">预约考试</span></td>
+                  <td>1 / 5</td>
+                  <td><span class="tag tag-info">可预约</span></td>
+                  <td class="actions">
+                    <button class="btn btn-sm btn-primary"
+                      onclick="openBook('新员工入职考试 · 06-14 09:00 ~ 11:00')">预约</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ===== 考试 B：消防安全月度考核 ===== -->
+        <div class="card">
+          <div class="card-header">
+            <span>消防安全月度考核</span>
+            <span class="muted" style="font-size:13px;font-weight:400">总分 100 · 时长 30 分钟 · 及格 80</span>
+          </div>
+          <div class="card-body" style="padding:0">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>时间段</th><th>开放类型</th><th>已约部门 / 上限</th><th>状态</th><th style="width:160px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:#f0f9eb">
+                  <td>06-20 10:00 ~ 11:00</td>
+                  <td>
+                    <span class="tag tag-primary">预约考试</span>
+                    <span class="tag tag-success" style="margin-left:6px">本部门已预约</span>
+                  </td>
+                  <td>1 / 3</td>
+                  <td><span class="tag tag-success">已预约</span></td>
+                  <td class="actions">
+                    <button class="btn-text"
+                      onclick="openBook('消防安全月度考核 · 改约其他时间段')">改约</button>
+                    <button class="btn-text danger" onclick="openCancel()">取消预约</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>06-21 10:00 ~ 11:00</td>
+                  <td><span class="tag tag-primary">预约考试</span></td>
+                  <td>3 / 3</td>
+                  <td><span class="tag tag-danger">已满</span></td>
+                  <td class="actions">
+                    <button class="btn btn-sm" disabled
+                      style="opacity:.6;cursor:not-allowed">预约</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ===== 考试 C：2026 Q2 全员安全生产考核 ===== -->
+        <div class="card">
+          <div class="card-header">
+            <span>2026 Q2 全员安全生产考核</span>
+            <span class="muted" style="font-size:13px;font-weight:400">总分 100 · 时长 45 分钟 · 及格 60</span>
+          </div>
+          <div class="card-body" style="padding:0">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>时间段</th><th>开放类型</th><th>已约部门 / 上限</th><th>状态</th><th style="width:160px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="color:var(--text-secondary)">
+                  <td>05-28 09:00 ~ 10:00</td>
+                  <td><span class="tag tag-primary">预约考试</span></td>
+                  <td>4 / 6</td>
+                  <td><span class="tag tag-info">已截止</span></td>
+                  <td class="actions">
+                    <button class="btn btn-sm" disabled
+                      style="opacity:.6;cursor:not-allowed">已开始</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>06-30 09:00 ~ 10:00</td>
+                  <td><span class="tag tag-primary">预约考试</span></td>
+                  <td>2 / 6</td>
+                  <td><span class="tag tag-info">可预约</span></td>
+                  <td class="actions">
+                    <button class="btn btn-sm btn-primary"
+                      onclick="openBook('2026 Q2 全员安全生产考核 · 06-30 09:00 ~ 10:00')">预约</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="alert alert-warning" style="margin-top:16px;margin-bottom:0">
+          <span>⚠️</span>
+          <span>规则提示：约满的时间段不可再约；已开始的时间段显示「已截止」；每个部门每场考试只能预约一个时间段；已预约的时间段可「取消」或「改约」。</span>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ============ 预约确认对话框 ============ -->
+  <div class="dialog-mask" id="bookDialog">
+    <div class="dialog">
+      <div class="dialog-header">确认预约</div>
+      <div class="dialog-body" style="line-height:1.7;color:var(--text-regular)">
+        将代表【技术部】（含所有下级部门）预约：<br />
+        <b id="bookTarget" class="text-primary">新员工入职考试 · 06-12 09:00 ~ 11:00</b><br /><br />
+        预约后本部门全体员工将在该时段参加考试。
+      </div>
+      <div class="dialog-footer">
+        <button class="btn" onclick="closeBook()">取消</button>
+        <button class="btn btn-primary" onclick="closeBook()">确认预约</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 取消预约对话框 ============ -->
+  <div class="dialog-mask" id="cancelDialog">
+    <div class="dialog">
+      <div class="dialog-header">取消预约</div>
+      <div class="dialog-body" style="line-height:1.7;color:var(--text-regular)">
+        确定取消【技术部】对 <b class="text-danger">消防安全月度考核 · 06-20 10:00 ~ 11:00</b> 的预约？<br /><br />
+        取消后本部门可重新选择其他时间段。
+      </div>
+      <div class="dialog-footer">
+        <button class="btn" onclick="closeCancel()">再想想</button>
+        <button class="btn btn-danger" onclick="closeCancel()">确认取消</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openBook(target) {
+      document.getElementById('bookTarget').textContent = target;
+      document.getElementById('bookDialog').classList.add('open');
+    }
+    function closeBook() { document.getElementById('bookDialog').classList.remove('open'); }
+    function openCancel() { document.getElementById('cancelDialog').classList.add('open'); }
+    function closeCancel() { document.getElementById('cancelDialog').classList.remove('open'); }
+  </script>
+</body>
+</html>

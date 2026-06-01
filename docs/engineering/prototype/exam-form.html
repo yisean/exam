@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>创建考试 · 云帆考试系统</title>
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+  <div class="proto-bar">
+    <span class="pill">原型</span>
+    <span>云帆考试系统 · 管理端</span>
+    <a href="index.html">← 返回原型导航</a>
+    <span class="muted" style="color:#8492a6">仅作演示，数据为示例</span>
+  </div>
+
+  <div class="app-wrapper">
+    <!-- ============ 侧边栏 ============ -->
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-badge">云</span><span>云帆考试系统</span></div>
+      <nav class="menu">
+        <a class="menu-item" href="dashboard.html"><span class="ico">📊</span> 控制台</a>
+
+        <div class="menu-group-title">在线考试</div>
+        <a class="menu-item" href="my-exam.html"><span class="ico">📝</span> 在线考试</a>
+        <a class="menu-item" href="my-records.html"><span class="ico">🏆</span> 我的成绩</a>
+
+        <div class="menu-group-title">考试管理</div>
+        <a class="menu-item" href="repo.html"><span class="ico">📚</span> 题库管理</a>
+        <a class="menu-item" href="qu.html"><span class="ico">❓</span> 试题管理</a>
+        <a class="menu-item active" href="exam.html"><span class="ico">🗂️</span> 考试管理</a>
+
+        <div class="menu-group-title">系统设置</div>
+        <a class="menu-item" href="sys-config.html"><span class="ico">⚙️</span> 系统配置</a>
+        <a class="menu-item" href="sys-depart.html"><span class="ico">🌳</span> 部门管理</a>
+        <a class="menu-item" href="sys-role.html"><span class="ico">🔑</span> 角色管理</a>
+        <a class="menu-item" href="sys-user.html"><span class="ico">👤</span> 用户管理</a>
+      </nav>
+    </aside>
+
+    <!-- ============ 主区域 ============ -->
+    <div class="main">
+      <header class="topbar">
+        <div class="crumbs">
+          <span>首页</span><span class="sep">/</span>
+          <a href="exam.html">考试管理</a><span class="sep">/</span>
+          <span class="cur">创建考试</span>
+        </div>
+        <a class="user" href="profile.html"><span class="avatar">超</span><span>超管A</span></a>
+      </header>
+
+      <main class="content">
+        <div class="page-title">创建考试</div>
+        <div class="page-desc">设置考试基本信息、配置一个或多个开放时间段，并按题库设定组卷抽题规则。</div>
+
+        <!-- 步骤条 -->
+        <div class="steps">
+          <div class="step active">
+            <span class="dot">1</span><span class="label">基本信息</span><span class="bar"></span>
+          </div>
+          <div class="step active">
+            <span class="dot">2</span><span class="label">时间段设置</span><span class="bar"></span>
+          </div>
+          <div class="step active">
+            <span class="dot">3</span><span class="label">组卷规则</span>
+          </div>
+        </div>
+
+        <!-- ============ card ① 基本信息 ============ -->
+        <div class="card">
+          <div class="card-header">① 基本信息</div>
+          <div class="card-body">
+            <div class="form-item">
+              <label><span class="req">*</span>考试名称</label>
+              <div class="control"><input class="input" value="2026 Q2 全员安全生产考核" /></div>
+            </div>
+            <div class="form-item">
+              <label>考试描述</label>
+              <div class="control">
+                <textarea class="textarea" placeholder="请输入考试说明">面向全员的季度安全生产合规考核，覆盖消防、用电、作业规范等内容。</textarea>
+              </div>
+            </div>
+            <div class="form-item">
+              <label><span class="req">*</span>总分</label>
+              <div class="control" style="max-width:200px"><input class="input" value="100" /></div>
+            </div>
+            <div class="form-item">
+              <label><span class="req">*</span>考试时长</label>
+              <div class="control" style="max-width:260px">
+                <div class="flex items-center gap"><input class="input" value="60" style="width:120px" /><span class="muted">分钟</span></div>
+              </div>
+            </div>
+            <div class="form-item">
+              <label><span class="req">*</span>及格分</label>
+              <div class="control" style="max-width:200px"><input class="input" value="60" /></div>
+            </div>
+            <div class="form-item">
+              <label><span class="req">*</span>开放类型</label>
+              <div class="control">
+                <div class="radio-group">
+                  <label class="radio"><input type="radio" name="openstatus" value="open" checked /> 开放</label>
+                  <label class="radio"><input type="radio" name="openstatus" value="close" /> 关闭</label>
+                </div>
+                <div class="form-tip">关闭的考试学员端看不到。</div>
+              </div>
+            </div>
+            <div class="form-item">
+              <label><span class="req">*</span>考试类型</label>
+              <div class="control">
+                <div class="radio-group">
+                  <label class="radio"><input type="radio" name="examtype" value="mock" onclick="setExamType('mock')" /> 模拟考试</label>
+                  <label class="radio"><input type="radio" name="examtype" value="formal" checked onclick="setExamType('formal')" /> 正式考试</label>
+                </div>
+                <div class="form-tip">模拟考试不限考试次数；正式考试有补考次数限制。</div>
+              </div>
+            </div>
+            <div id="retake-row" class="form-item">
+              <label>补考次数</label>
+              <div class="control" style="max-width:360px">
+                <div class="flex items-center gap"><input class="input" value="2" style="width:120px" /><span class="muted">次（仅正式考试可设；模拟考试不限次数）</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ card ② 时间段设置（新功能核心） ============ -->
+        <div class="card">
+          <div class="card-header">
+            ② 时间段设置
+            <button class="btn btn-primary btn-sm" onclick="openDlg()">➕ 添加时间段</button>
+          </div>
+          <div class="card-body">
+            <div class="alert alert-info">
+              💡 一场考试可设置<b>多个时间段</b>，每段可独立设定<b>开放类型</b>（不限人员 / 指定部门 / 预约考试）与起止时间。
+              全局「提前可见」时长可在 <a class="text-primary" href="sys-config.html">系统配置</a> 中统一设置。
+            </div>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>开始时间</th><th>结束时间</th><th>开放类型</th><th>容量 / 部门</th><th style="width:130px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2026-06-10 09:00</td><td>2026-06-10 11:00</td>
+                  <td><span class="tag tag-info">不限人员</span></td>
+                  <td class="muted">—</td>
+                  <td class="actions">
+                    <a class="btn-text" href="#" onclick="openDlg();return false;">编辑</a>
+                    <a class="btn-text danger" href="#">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2026-06-11 14:00</td><td>2026-06-11 16:00</td>
+                  <td><span class="tag tag-warning">指定部门</span></td>
+                  <td>已选 3 个部门</td>
+                  <td class="actions">
+                    <a class="btn-text" href="#" onclick="openDlg();return false;">编辑</a>
+                    <a class="btn-text danger" href="#">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2026-06-12 09:00</td><td>2026-06-12 11:00</td>
+                  <td><span class="tag tag-primary">预约考试</span></td>
+                  <td>可预约 5 · 已约 <b>2</b> · 指定免约 1 部门</td>
+                  <td class="actions">
+                    <a class="btn-text" href="#" onclick="openDlg();return false;">编辑</a>
+                    <a class="btn-text danger" href="#">删除</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ============ card ③ 组卷规则 ============ -->
+        <div class="card">
+          <div class="card-header">
+            ③ 组卷规则
+            <button class="btn btn-primary btn-sm">➕ 添加题库</button>
+          </div>
+          <div class="card-body">
+            <div class="alert alert-info">📦 按题库设定各题型抽题数量与分值，系统将在考生开考时随机组卷。</div>
+            <div class="alert alert-info">💡 组卷仅可选择「开放」状态的题库与试题，关闭的不会出现在此处，也不会被抽取。</div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>题库</th>
+                  <th>单选题（数量/分值）</th>
+                  <th>多选题（数量/分值）</th>
+                  <th>判断题（数量/分值）</th>
+                  <th>简答题（数量/分值）</th>
+                  <th style="width:90px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>【云帆】演示题库</td>
+                  <td>10 / 2 分</td>
+                  <td>5 / 4 分</td>
+                  <td>10 / 1 分</td>
+                  <td>0 / 0 分</td>
+                  <td class="actions">
+                    <a class="btn-text" href="#">编辑</a>
+                    <a class="btn-text danger" href="#">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>安全生产题库</td>
+                  <td>5 / 2 分</td>
+                  <td>2 / 4 分</td>
+                  <td>0 / 0 分</td>
+                  <td>1 / 2 分</td>
+                  <td class="actions">
+                    <a class="btn-text" href="#">编辑</a>
+                    <a class="btn-text danger" href="#">删除</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="flex between items-center mt">
+              <span class="muted">共抽取 33 道题</span>
+              <span style="font-size:16px;font-weight:600">合计分值：<span class="text-primary">100</span> 分</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 底部操作 -->
+        <div class="flex gap mt" style="justify-content:flex-end">
+          <a class="btn" href="exam.html">取消</a>
+          <a class="btn btn-primary" href="exam.html">保存</a>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ============ 添加时间段 对话框 ============ -->
+  <div class="dialog-mask" id="dlg">
+    <div class="dialog" style="width:560px">
+      <div class="dialog-header">添加时间段</div>
+      <div class="dialog-body">
+        <div class="form-item">
+          <label><span class="req">*</span>开始时间</label>
+          <div class="control"><input class="input" type="datetime-local" value="2026-06-12T09:00" /></div>
+        </div>
+        <div class="form-item">
+          <label><span class="req">*</span>结束时间</label>
+          <div class="control"><input class="input" type="datetime-local" value="2026-06-12T11:00" /></div>
+        </div>
+        <div class="form-item">
+          <label><span class="req">*</span>开放类型</label>
+          <div class="control">
+            <div class="radio-group">
+              <label class="radio"><input type="radio" name="opentype" value="open" onclick="setType('open')" /> 不限人员</label>
+              <label class="radio"><input type="radio" name="opentype" value="depart" onclick="setType('depart')" /> 指定部门</label>
+              <label class="radio"><input type="radio" name="opentype" value="book" checked onclick="setType('book')" /> 预约考试</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- 附加区 A：部门树（选「指定部门」或「预约考试」时显示） -->
+        <div id="sec-tree" style="border:1px dashed var(--border-base);border-radius:4px;padding:12px;margin-bottom:14px">
+          <div class="muted" style="margin-bottom:10px">
+            <span id="tree-tip-depart" class="tag tag-warning">指定部门</span>
+            <span id="tree-tip-book" class="tag tag-primary" style="display:none">预约考试</span>
+            <span id="tree-label-depart">勾选可参加本时段的部门（含其下级部门）：</span>
+            <span id="tree-label-book" style="display:none">可选：指定<b>免预约</b>即可参加的部门（含下级）；其余部门由助理预约。</span>
+          </div>
+          <!-- 树状部门选择 -->
+          <div style="max-height:220px;overflow:auto">
+            <label class="tree-node"><input type="checkbox" /> <span class="arrow">▾</span> 北京云帆互联科技有限公司</label>
+            <label class="tree-node tree-indent-1"><input type="checkbox" checked /> <span class="arrow">▾</span> 技术部</label>
+            <label class="tree-node tree-indent-2"><input type="checkbox" checked /> 后端组</label>
+            <label class="tree-node tree-indent-2"><input type="checkbox" checked /> 前端组</label>
+            <label class="tree-node tree-indent-2"><input type="checkbox" checked /> 产品组</label>
+            <label class="tree-node tree-indent-2"><input type="checkbox" checked /> 测试组</label>
+            <label class="tree-node tree-indent-1"><input type="checkbox" /> 人事部</label>
+            <label class="tree-node tree-indent-1"><input type="checkbox" checked /> 财务部</label>
+            <label class="tree-node tree-indent-1"><input type="checkbox" /> <span class="arrow">▾</span> 客服部</label>
+            <label class="tree-node tree-indent-2"><input type="checkbox" /> 客户一组</label>
+            <label class="tree-node tree-indent-2"><input type="checkbox" /> 客服二组</label>
+          </div>
+          <div class="form-tip">勾选某部门即包含其所有下级部门。</div>
+        </div>
+
+        <!-- 附加区 B：预约名额 + 已预约部门（仅「预约考试」时显示） -->
+        <div id="sec-book" style="border:1px dashed var(--border-base);border-radius:4px;padding:12px">
+          <div class="muted" style="margin-bottom:8px">
+            <span class="tag tag-primary">预约设置</span> 可预约部门数上限：
+          </div>
+          <div class="flex items-center gap" style="margin-bottom:12px">
+            <input class="input" type="number" value="5" style="width:120px" />
+            <span class="muted">个部门（由考试助理代本部门预约，每部门每场考试只能约一个时段）</span>
+          </div>
+          <div class="muted" style="margin-bottom:6px">已预约部门 <span class="tag tag-success">2 / 5</span>：</div>
+          <table class="table">
+            <thead><tr><th>部门</th><th>预约人</th><th>预约时间</th><th style="width:70px">操作</th></tr></thead>
+            <tbody>
+              <tr><td>技术部</td><td>李助理</td><td>2026-06-01 10:23</td><td><a class="btn-text danger" href="#">移除</a></td></tr>
+              <tr><td>财务部</td><td>赵助理</td><td>2026-06-02 09:10</td><td><a class="btn-text danger" href="#">移除</a></td></tr>
+            </tbody>
+          </table>
+          <div class="form-tip">已预约的部门由助理操作产生，此处可查看预约人与预约时间。</div>
+        </div>
+      </div>
+      <div class="dialog-footer">
+        <button class="btn" onclick="closeDlg()">取消</button>
+        <button class="btn btn-primary" onclick="closeDlg()">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openDlg() {
+      document.getElementById('dlg').classList.add('open');
+      var checked = document.querySelector('input[name="opentype"]:checked');
+      setType(checked ? checked.value : 'book');
+    }
+    function closeDlg() { document.getElementById('dlg').classList.remove('open'); }
+
+    function show(id, on) { document.getElementById(id).style.display = on ? '' : 'none'; }
+    function setType(t) {
+      // 不限人员：部门树和预约区都隐藏
+      // 指定部门：只显示部门树
+      // 预约考试：显示部门树（指定免预约部门）+ 预约名额/已预约列表
+      show('sec-tree', t !== 'open');
+      show('sec-book', t === 'book');
+      // 部门树提示文案随类型切换
+      show('tree-tip-depart', t === 'depart');
+      show('tree-tip-book', t === 'book');
+      show('tree-label-depart', t === 'depart');
+      show('tree-label-book', t === 'book');
+    }
+
+    // 考试类型：模拟考试不限次数（隐藏补考次数行）；正式考试可设补考次数（显示）
+    function setExamType(t) {
+      show('retake-row', t !== 'mock');
+    }
+    // 页面加载时按默认（正式考试 = 显示补考次数）初始化
+    (function () {
+      var checked = document.querySelector('input[name="examtype"]:checked');
+      setExamType(checked ? checked.value : 'formal');
+    })();
+  </script>
+</body>
+</html>

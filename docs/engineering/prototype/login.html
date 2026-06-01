@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>登录 · 云帆在线培训考试系统</title>
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+  <div class="login-page">
+    <div class="login-box">
+      <div class="brand">
+        <div class="logo-badge">云</div>
+        <h1>云帆在线培训考试系统</h1>
+        <div class="muted" style="font-size:13px;margin-top:4px;">企业内训 · 私有部署 · 自有题库</div>
+      </div>
+
+      <div class="login-tabs">
+        <div class="lt active">账号登录</div>
+        <div class="lt">注册</div>
+      </div>
+
+      <div class="field">
+        <label>用户名</label>
+        <input class="input" value="admin" placeholder="请输入用户名" />
+      </div>
+      <div class="field">
+        <label>密码</label>
+        <input class="input" type="password" value="123456" placeholder="请输入密码" />
+      </div>
+      <div class="field flex between items-center">
+        <label class="checkbox"><input type="checkbox" checked /> 记住我</label>
+        <a class="text-primary" href="#">忘记密码？</a>
+      </div>
+      <a class="btn btn-primary" href="dashboard.html">登 录</a>
+
+      <div class="divider"></div>
+      <div class="muted" style="font-size:12px;line-height:1.8;">
+        演示账号：<br />
+        管理员 <b>admin / admin</b> ·
+        学员 <b>person / person</b> ·
+        助理 <b>assistant / assistant</b>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 原型：根据“用户名”跳转到不同角色首页
+    document.querySelector('.btn-primary').addEventListener('click', function (e) {
+      var u = document.querySelector('.input').value.trim();
+      if (u === 'person') { e.preventDefault(); location.href = 'my-exam.html'; }
+      else if (u === 'assistant') { e.preventDefault(); location.href = 'assistant-booking.html'; }
+    });
+  </script>
+</body>
+</html>
