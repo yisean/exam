@@ -89,7 +89,7 @@
                   <td>2025-01-08 09:12</td>
                   <td class="actions">
                     <a class="btn-text" href="#" onclick="openDlg('编辑用户')">编辑</a>
-                    <a class="btn-text" href="#">重置密码</a>
+                    <a class="btn-text" href="#" onclick="openReset('admin','超管A')">重置密码</a>
                     <a class="btn-text danger" href="#">禁用</a>
                   </td>
                 </tr>
@@ -100,7 +100,7 @@
                   <td>2025-03-15 14:30</td>
                   <td class="actions">
                     <a class="btn-text" href="#" onclick="openDlg('编辑用户')">编辑</a>
-                    <a class="btn-text" href="#">重置密码</a>
+                    <a class="btn-text" href="#" onclick="openReset('person','张三')">重置密码</a>
                     <a class="btn-text danger" href="#">禁用</a>
                   </td>
                 </tr>
@@ -111,7 +111,7 @@
                   <td>2025-03-20 10:05</td>
                   <td class="actions">
                     <a class="btn-text" href="#" onclick="openDlg('编辑用户')">编辑</a>
-                    <a class="btn-text" href="#">重置密码</a>
+                    <a class="btn-text" href="#" onclick="openReset('assistant','李助理')">重置密码</a>
                     <a class="btn-text danger" href="#">禁用</a>
                   </td>
                 </tr>
@@ -122,7 +122,7 @@
                   <td>2025-04-02 11:48</td>
                   <td class="actions">
                     <a class="btn-text" href="#" onclick="openDlg('编辑用户')">编辑</a>
-                    <a class="btn-text" href="#">重置密码</a>
+                    <a class="btn-text" href="#" onclick="openReset('teacher_wang','王老师')">重置密码</a>
                     <a class="btn-text danger" href="#">禁用</a>
                   </td>
                 </tr>
@@ -133,7 +133,7 @@
                   <td>2025-05-11 16:22</td>
                   <td class="actions">
                     <a class="btn-text" href="#" onclick="openDlg('编辑用户')">编辑</a>
-                    <a class="btn-text" href="#">重置密码</a>
+                    <a class="btn-text" href="#" onclick="openReset('lisi','李四')">重置密码</a>
                     <a class="btn-text danger" href="#">禁用</a>
                   </td>
                 </tr>
@@ -144,7 +144,7 @@
                   <td>2025-05-18 08:40</td>
                   <td class="actions">
                     <a class="btn-text" href="#" onclick="openDlg('编辑用户')">编辑</a>
-                    <a class="btn-text" href="#">重置密码</a>
+                    <a class="btn-text" href="#" onclick="openReset('wangwu','王五')">重置密码</a>
                     <a class="btn-text" href="#">启用</a>
                   </td>
                 </tr>
@@ -223,6 +223,21 @@
     </div>
   </div>
 
+  <!-- 重置密码确认对话框（R3：二次确认并显示目标账号） -->
+  <div class="dialog-mask" id="resetDlg">
+    <div class="dialog" style="width:440px">
+      <div class="dialog-header">重置密码</div>
+      <div class="dialog-body">
+        <p style="margin:0 0 10px">确定将用户 <strong id="resetUser">—</strong> 的密码重置为系统默认初始密码 <strong>123456</strong> 吗？</p>
+        <div class="form-tip">仅超级管理员可执行；重置后请通知用户用新密码登录并尽快修改。本操作不影响该用户的角色、部门与状态。</div>
+      </div>
+      <div class="dialog-footer">
+        <a class="btn" href="#" onclick="closeReset()">取 消</a>
+        <a class="btn btn-primary" href="#" onclick="closeReset()">确定重置</a>
+      </div>
+    </div>
+  </div>
+
   <script>
     function openDlg(title) {
       document.getElementById('userDlgTitle').textContent = title;
@@ -230,6 +245,13 @@
     }
     function closeDlg() {
       document.getElementById('userDlg').classList.remove('open');
+    }
+    function openReset(account, name) {
+      document.getElementById('resetUser').textContent = name + '（' + account + '）';
+      document.getElementById('resetDlg').classList.add('open');
+    }
+    function closeReset() {
+      document.getElementById('resetDlg').classList.remove('open');
     }
   </script>
 </body>
