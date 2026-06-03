@@ -58,7 +58,7 @@ STRATEGY.md → brainstorm/PRD → prototype/ → plans/ → 编码 → code rev
 | --- | --- |
 | **目的** | 把一个模糊想法澄清成「问题 + 关键决策 + 可验收的需求清单」，再固化为正式 PRD |
 | **谁来做** | 产品/需求负责人，与开发协作 |
-| **怎么做** | ① 探讨期用 `/ce-brainstorm` 产出需求原稿；② 定稿用 PRD 模板（见下）沉淀为正式需求 |
+| **怎么做** | 用 `/spec-prd`（原始需求 → 规范化 PRD，自动带 R/F 与 AE/AC 编号）；探讨期可先 `/ce-brainstorm` 产出需求原稿，再定稿。已有特性的增量改动改用 `/spec-change` |
 | **产出物** | 原稿 → [`docs/product/brainstorms/`](../product/brainstorms/)；定稿 → [`docs/product/prd/`](../product/prd/) |
 | **进入标准** | 有一个明确的特性意图（一句话能说清要解决谁的什么问题） |
 | **完成标准** | PRD 含：背景与问题、目标/非目标、用户与角色、关键决策、**带编号的功能需求**、**可验收的验收标准**、成功指标、依赖与假设、待解决问题 |
@@ -75,7 +75,7 @@ STRATEGY.md → brainstorm/PRD → prototype/ → plans/ → 编码 → code rev
 | --- | --- |
 | **目的** | 在写代码前把交互、信息架构、字段显隐用可点击页面表达出来，供内部对齐或向客户演示 |
 | **何时做** | 涉及新界面/复杂交互的特性；纯后端或微调可跳过 |
-| **怎么做** | 遵循 [`prototype/_spec.md`](prototype/_spec.md)：纯静态 HTML + `assets/app.css`，仿 Element-UI，无外部依赖，双击即可打开 |
+| **怎么做** | 用 `/spec-prototype`，遵循 [`prototype/_spec.md`](prototype/_spec.md)：纯静态 HTML + `assets/app.css`，仿 Element-UI，无外部依赖，双击即可打开。发客户确认后若改需求，走 `/spec-change` |
 | **产出物** | [`docs/engineering/prototype/`](prototype/)（页面 + `index.html` 导航 + `_spec.md` 规范） |
 | **进入标准** | 对应 PRD 的关键交互已明确 |
 | **完成标准** | 关键页面可点击跑通主流程；PRD 中的 UI 相关需求都能在原型找到对应 |
@@ -88,12 +88,12 @@ STRATEGY.md → brainstorm/PRD → prototype/ → plans/ → 编码 → code rev
 
 | | |
 | --- | --- |
-| **目的** | 把 PRD 拆成可执行的工程任务：涉及哪些表/接口/页面、依赖顺序、迁移脚本、风险 |
+| **目的** | 先做技术设计（概要设计 + 数据 ER 模型 + 详细设计），再把 PRD 拆成可执行的工程任务：涉及哪些表/接口/页面、依赖顺序、迁移脚本、风险。**设计随计划一并产出，不另起独立设计文档** |
 | **谁来做** | 开发负责人 |
-| **怎么做** | 运行 `/ce-plan`，以 PRD + 原型为输入 |
+| **怎么做** | 用 `/spec-plan`（或 `/ce-plan`），以 PRD + 原型为输入 |
 | **产出物** | [`docs/engineering/plans/`](plans/)，命名 `YYYY-MM-DD-NNN-<type>-<slug>-plan.md`，带 frontmatter（`title/type/status/date/origin`） |
 | **进入标准** | PRD 完成标准达成；如有界面，原型已定稿 |
-| **完成标准** | 任务可独立认领，每个任务标注 Files / Dependencies / Patterns to follow；DB 变更落到 `docs/ops/install/` 的 migration sql；与其他 plan 的并行/冲突关系已说明 |
+| **完成标准** | 概要设计（架构/模块/技术选型/关键决策）与数据 ER 模型（Mermaid `erDiagram`）已写入 plan，ER 与 migration sql 一致；任务可独立认领，每个任务标注 Files / Dependencies / Patterns to follow / 详细设计（接口签名/核心逻辑）；DB 变更落到 `docs/ops/install/` 的 migration sql；与其他 plan 的并行/冲突关系已说明 |
 
 **frontmatter `status` 流转**：`active`（进行中）→ `done`（已交付）→ 可选 `archived`。
 
@@ -108,12 +108,14 @@ STRATEGY.md → brainstorm/PRD → prototype/ → plans/ → 编码 → code rev
 | **怎么做** | 在特性分支上开发；可用 `/ce-work` 驱动；复杂/并行特性用 `/ce-worktree` 隔离工作区。后端 `exam-api`（SpringBoot + MyBatis-Plus + Shiro），前端 `exam-vue`（Vue2 + Element-UI） |
 | **产出物** | 代码变更；DB migration（`docs/ops/install/`）；必要的开发说明 |
 | **进入标准** | plan 完成标准达成 |
-| **完成标准** | 功能本地可跑；遵循既有命名/分层；自测主流程通过；plan 对应任务勾掉 |
+| **完成标准** | 功能本地可跑；遵循 [`conventions.md`](conventions.md) 的命名/分层/约定；自测主流程通过；plan 对应任务勾掉 |
 
 **约定**：
+- 开发规范见 [`conventions.md`](conventions.md)（命名/分层/API/数据库/异常/鉴权/前端）；AI agent 经仓库根 `CLAUDE.md` 自动加载。
+- **前端 UI 以原型为准**：对照 [`prototype/`](prototype/) 对应页面实现（用真 Element-UI 还原其布局/字段/状态/交互/文案），偏离要先走 `/spec-change` 改原型再改代码。详见 [`conventions.md` §二·0](conventions.md)。
 - 不在默认分支直接开发，先开特性分支。
 - 一次提交聚焦一件事；提交信息遵循仓库习惯（见阶段 7）。
-- 改动需求范围时，**先回流更新 PRD/plan**，再继续写。
+- 改动需求范围时，**先回流更新 PRD/plan**，再继续写——用 `/spec-change`（先文档后代码，复用原序号、续编不重排）。
 
 ---
 

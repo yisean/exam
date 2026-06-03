@@ -23,6 +23,7 @@ docs/
 | 路径 | 说明 |
 | --- | --- |
 | [`engineering/workflow.md`](engineering/workflow.md) | **研发流程总纲**：需求→原型→计划→开发→评审→测试→合并，各阶段做法与产出物 |
+| [`engineering/conventions.md`](engineering/conventions.md) | **开发规范**：命名/分层/API/数据库/异常/鉴权/前端约定的单一事实源（后端 + 前端）。AI agent 经根 `CLAUDE.md` 自动加载 |
 | [`engineering/plans/`](engineering/plans/) | 实现计划，命名 `日期-序号-类型-描述.md`，带 frontmatter |
 | [`engineering/prototype/`](engineering/prototype/) | 纯静态 HTML 原型 + 构建规范 `_spec.md` |
 | [`engineering/architecture/`](engineering/architecture/) | 架构、数据库结构、源码说明等技术资料 |
