@@ -4,7 +4,10 @@
     <h3>组卷信息</h3>
     <el-card style="margin-top: 20px">
 
-      <div style="float: right; font-weight: bold; color: #ff0000">试卷总分：{{ postForm.totalScore }}分</div>
+      <div style="float: right; font-weight: bold; color: #ff0000">
+        试卷总分：{{ postForm.totalScore }}分
+        <div style="font-weight: normal; color: #909399; font-size: 12px;">（不含综合题：综合题分值随题，最终以试卷为准）</div>
+      </div>
 
       <div>
 
@@ -88,6 +91,34 @@
           >
             <template v-slot="scope">
               <el-input-number v-model="scope.row.judgeScore" :min="0" :controls="false" style="width: 100%" />
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            label="不定项数量"
+            align="center"
+          >
+            <template v-slot="scope">
+              <el-input-number v-model="scope.row.uncertainCount" :min="0" :controls="false" style="width: 100px" />
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            label="不定项分数"
+            align="center"
+          >
+            <template v-slot="scope">
+              <el-input-number v-model="scope.row.uncertainScore" :min="0" :controls="false" style="width: 100%" />
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            label="综合题数量"
+            align="center"
+          >
+            <template v-slot="scope">
+              <el-input-number v-model="scope.row.compositeCount" :min="0" :controls="false" style="width: 100px" />
+              <div style="color:#909399;font-size:12px;">分值随题</div>
             </template>
           </el-table-column>
 
@@ -197,9 +228,9 @@
     <el-card style="margin-top: 20px;">
 
       <el-alert
+        :closable="false"
         title="可为考试配置一个或多个时间段，每段独立设置开放类型与起止时间。配置了时间段后，学员的可见与可考以时间段为准（不再使用上方的权限配置）。"
         type="info"
-        :closable="false"
         style="margin-bottom: 15px;"
       />
 
@@ -426,6 +457,11 @@ export default {
           if (item.judgeCount>0 && item.judgeScore>0) {
             totalScore += item.judgeCount * item.judgeScore
           }
+
+          if (item.uncertainCount>0 && item.uncertainScore>0) {
+            totalScore += item.uncertainCount * item.uncertainScore
+          }
+          // 综合题分值随题，配置期无法精确预估，不计入此处估算
           this.excludes.push(item.id)
         }
 
@@ -534,7 +570,7 @@ export default {
 
     // 添加子项
     handleAdd() {
-      this.repoList.push({ id: '', rowId: new Date().getTime(), radioCount: 0, radioScore: 0, multiCount: 0, multiScore: 0, judgeCount: 0, judgeScore: 0, saqCount: 0, saqScore: 0 })
+      this.repoList.push({ id: '', rowId: new Date().getTime(), radioCount: 0, radioScore: 0, multiCount: 0, multiScore: 0, judgeCount: 0, judgeScore: 0, uncertainCount: 0, uncertainScore: 0, compositeCount: 0, saqCount: 0, saqScore: 0 })
     },
 
     removeItem(index) {

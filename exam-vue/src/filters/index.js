@@ -26,7 +26,10 @@ export function quTypeFilter(value) {
   const map = {
     '1': '单选题',
     '2': '多选题',
-    '3': '判断题'
+    '3': '判断题',
+    '4': '简答题',
+    '5': '不定项',
+    '6': '综合题'
   }
   return map[value]
 }

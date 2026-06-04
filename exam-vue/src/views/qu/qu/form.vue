@@ -160,6 +160,10 @@ export default {
       {
         value: 3,
         label: '判断题'
+      },
+      {
+        value: 5,
+        label: '不定项'
       }
       ],
 
@@ -203,7 +207,7 @@ export default {
         this.postForm.answerList.push({ isRight: false, content: '错误', analysis: '' })
       }
 
-      if (v === 1 || v === 2) {
+      if (v === 1 || v === 2 || v === 5) {
         this.postForm.answerList.push({ isRight: false, content: '', analysis: '' })
         this.postForm.answerList.push({ isRight: false, content: '', analysis: '' })
         this.postForm.answerList.push({ isRight: false, content: '', analysis: '' })
@@ -262,6 +266,25 @@ export default {
         if (rightCount !== 1) {
           this.$message({
             message: '判断题只能有一个正确项！',
+            type: 'warning'
+          })
+
+          return
+        }
+      }
+
+      if (this.postForm.quType === 5) {
+        if (this.postForm.answerList.length < 2) {
+          this.$message({
+            message: '不定项至少要有两个选项！',
+            type: 'warning'
+          })
+
+          return
+        }
+        if (rightCount < 1) {
+          this.$message({
+            message: '不定项至少要有一个正确答案！',
             type: 'warning'
           })
 

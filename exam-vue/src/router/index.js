@@ -224,6 +224,22 @@ export const asyncRoutes = [
       },
 
       {
+        path: 'qu/composite/add',
+        component: () => import('@/views/qu/qu/form-composite'),
+        name: 'AddComposite',
+        meta: { title: '添加综合题', noCache: true, activeMenu: '/exam/qu' },
+        hidden: true
+      },
+
+      {
+        path: 'qu/composite/update/:id',
+        component: () => import('@/views/qu/qu/form-composite'),
+        name: 'UpdateComposite',
+        meta: { title: '修改综合题', noCache: true, activeMenu: '/exam/qu' },
+        hidden: true
+      },
+
+      {
         path: 'exam',
         component: () => import('@/views/exam/exam'),
         name: 'ListExam',
