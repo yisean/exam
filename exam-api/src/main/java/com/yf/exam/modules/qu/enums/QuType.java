@@ -22,5 +22,15 @@ public interface QuType {
      * 判断题
      */
     Integer JUDGE = 3;
-    
+
+    /**
+     * 不定项（1个或多个正确答案，固定半分制判分）
+     */
+    Integer UNCERTAIN = 5;
+
+    /**
+     * 综合题（父题，含恰好5个子题；子题题型∈{1,2,3,5}，不可嵌套综合题）
+     */
+    Integer COMPOSITE = 6;
+
 }

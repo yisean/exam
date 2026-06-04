@@ -29,5 +29,7 @@ public class QuDetailDTO extends QuDTO {
     @ApiModelProperty(value = "题库列表", required=true)
     private List<String> repoIds;
 
-    
+    @ApiModelProperty(value = "子题列表（仅综合题：恰好5个子题，各含自己的选项与分值）")
+    private List<QuDetailDTO> subQuList;
+
 }

@@ -50,5 +50,8 @@ public class PaperQuDTO implements Serializable {
 
     @ApiModelProperty(value = "是否答对", required=true)
     private Boolean isRight;
-    
+
+    @ApiModelProperty(value = "父题在本试卷中的ID（综合题子题用，普通题为空）")
+    private String parentId;
+
 }

@@ -47,5 +47,14 @@ public class ExamRepoDTO implements Serializable {
     
     @ApiModelProperty(value = "判断题分数", required=true)
     private Integer judgeScore;
-    
+
+    @ApiModelProperty(value = "不定项题数量")
+    private Integer uncertainCount;
+
+    @ApiModelProperty(value = "不定项题每题分值")
+    private Integer uncertainScore;
+
+    @ApiModelProperty(value = "综合题数量（整题抽取，分值随题）")
+    private Integer compositeCount;
+
 }

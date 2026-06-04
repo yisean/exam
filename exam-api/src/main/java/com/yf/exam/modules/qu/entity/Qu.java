@@ -71,5 +71,21 @@ public class Qu extends Model<Qu> {
      * 整题解析
      */
     private String analysis;
-    
+
+    /**
+     * 父题ID（综合题子题指向综合题父题；普通题/综合题父题为空）
+     */
+    @TableField("parent_id")
+    private String parentId;
+
+    /**
+     * 同一父题下子题排序
+     */
+    private Integer sort;
+
+    /**
+     * 子题分值（仅综合题子题使用；普通题分值由组卷配置决定）
+     */
+    private Integer score;
+
 }

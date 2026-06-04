@@ -28,5 +28,11 @@ public class ExamRepoExtDTO extends ExamRepoDTO {
     
     @ApiModelProperty(value = "判断题总量", required=true)
     private Integer totalJudge;
-    
+
+    @ApiModelProperty(value = "不定项题总量", required=true)
+    private Integer totalUncertain;
+
+    @ApiModelProperty(value = "综合题总量", required=true)
+    private Integer totalComposite;
+
 }

@@ -49,5 +49,14 @@ public class QuDTO implements Serializable {
 
     @ApiModelProperty(value = "整题解析", required=true)
     private String analysis;
-    
+
+    @ApiModelProperty(value = "父题ID（综合题子题指向父题，普通题为空）")
+    private String parentId;
+
+    @ApiModelProperty(value = "同一父题下子题排序")
+    private Integer sort;
+
+    @ApiModelProperty(value = "子题分值（仅综合题子题使用）")
+    private Integer score;
+
 }

@@ -77,4 +77,10 @@ public class PaperQu extends Model<PaperQu> {
     @TableField("is_right")
     private Boolean isRight;
 
+    /**
+     * 父题在本试卷中的 el_paper_qu.id（综合题子题用；普通题为空）
+     */
+    @TableField("parent_id")
+    private String parentId;
+
 }
