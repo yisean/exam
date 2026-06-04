@@ -234,6 +234,14 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
                     && item.getJudgeScore()>0){
                 objScore+=item.getJudgeCount()*item.getJudgeScore();
             }
+            if(item.getUncertainCount()!=null
+                    && item.getUncertainCount()>0
+                    && item.getUncertainScore()!=null
+                    && item.getUncertainScore()>0){
+                objScore+=item.getUncertainCount()*item.getUncertainScore();
+            }
+            // 综合题分值随题（=子题分值之和），抽取随机，配置期无法精确预估，
+            // 不计入此处估算；试卷实际总分在交卷判分时以抽中题目为准（见 PaperServiceImpl.savePaper）。
         }
 
 

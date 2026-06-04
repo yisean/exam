@@ -101,6 +101,13 @@ public class QuServiceImpl extends ServiceImpl<QuMapper, Qu> implements QuServic
     }
 
     @Override
+    public List<Qu> listByParent(String parentId) {
+        QueryWrapper<Qu> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(Qu::getParentId, parentId).orderByAsc(Qu::getSort);
+        return this.list(wrapper);
+    }
+
+    @Override
     public QuDetailDTO detail(String id) {
 
         QuDetailDTO respDTO = new QuDetailDTO();
