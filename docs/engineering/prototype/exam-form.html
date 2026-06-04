@@ -183,6 +183,8 @@
           <div class="card-body">
             <div class="alert alert-info">📦 按题库设定各题型抽题数量与分值，系统将在考生开考时随机组卷。</div>
             <div class="alert alert-info">💡 组卷仅可选择「开放」状态的题库与试题，关闭的不会出现在此处，也不会被抽取。</div>
+            <div class="alert alert-info">🧩 综合题作为<b>一个整体</b>抽取（每题含 5 个子题），此处只设抽取<b>数量</b>；其分值为 5 个子题分值之和、随题进卷，故不在此单独配分。</div>
+            <div style="overflow-x:auto">
             <table class="table">
               <thead>
                 <tr>
@@ -190,6 +192,8 @@
                   <th>单选题（数量/分值）</th>
                   <th>多选题（数量/分值）</th>
                   <th>判断题（数量/分值）</th>
+                  <th>不定项（数量/分值）</th>
+                  <th>综合题（数量）</th>
                   <th>简答题（数量/分值）</th>
                   <th style="width:90px">操作</th>
                 </tr>
@@ -200,6 +204,8 @@
                   <td>10 / 2 分</td>
                   <td>5 / 4 分</td>
                   <td>10 / 1 分</td>
+                  <td>2 / 4 分</td>
+                  <td>0 题</td>
                   <td>0 / 0 分</td>
                   <td class="actions">
                     <a class="btn-text" href="#">编辑</a>
@@ -211,6 +217,8 @@
                   <td>5 / 2 分</td>
                   <td>2 / 4 分</td>
                   <td>0 / 0 分</td>
+                  <td>3 / 4 分</td>
+                  <td>1 题</td>
                   <td>1 / 2 分</td>
                   <td class="actions">
                     <a class="btn-text" href="#">编辑</a>
@@ -219,8 +227,9 @@
                 </tr>
               </tbody>
             </table>
+            </div>
             <div class="flex between items-center mt">
-              <span class="muted">共抽取 33 道题</span>
+              <span class="muted">共抽取 39 道题（含 1 个综合题，其 5 个子题随题进卷）</span>
               <span style="font-size:16px;font-weight:600">合计分值：<span class="text-primary">100</span> 分</span>
             </div>
           </div>

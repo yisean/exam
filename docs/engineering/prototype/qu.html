@@ -58,11 +58,13 @@
                 <option>新员工入职题库</option>
                 <option>消防安全题库</option>
               </select>
-              <select class="select" style="width:120px">
+              <select class="select" style="width:130px">
                 <option>全部题型</option>
                 <option>单选题</option>
                 <option>多选题</option>
                 <option>判断题</option>
+                <option>不定项题</option>
+                <option>综合题</option>
                 <option>简答题</option>
               </select>
               <select class="select" style="width:110px">
@@ -81,9 +83,11 @@
               <button class="btn">批量导入</button>
               <button class="btn">导出</button>
               <a class="btn btn-primary" href="qu-form.html">➕ 添加试题</a>
+              <a class="btn btn-primary" href="qu-form-composite.html">🧩 添加综合题</a>
             </div>
 
             <div class="alert alert-info">💡 关闭状态的试题不会被考试组卷抽取。</div>
+            <div class="alert alert-info">🧩 综合题为「父题 + 5 个子题」结构，整体作为一个抽取单位进卷；删除综合题将一并删除其 5 个子题。</div>
 
             <table class="table">
               <thead>
@@ -98,6 +102,34 @@
                 </tr>
               </thead>
               <tbody>
+                <tr>
+                  <td><span class="tag" style="color:#11998e;background:#e8f6f4;border-color:#c5e8e3">综合题</span></td>
+                  <td><span class="tag tag-info">普通</span></td>
+                  <td>【案例分析】某车间「6·18」机械伤害事故 <span class="muted">· 含 5 个子题（单选/多选/不定项/判断/单选）</span></td>
+                  <td>安全生产题库</td>
+                  <td><span class="tag tag-success">开放</span></td>
+                  <td>2026-06-03 11:20</td>
+                  <td class="actions">
+                    <a class="btn-text" href="qu-form-composite.html">查看</a>
+                    <a class="btn-text" href="qu-form-composite.html">编辑</a>
+                    <a class="btn-text danger" href="javascript:;">关闭</a>
+                    <a class="btn-text danger" href="javascript:;">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="tag" style="color:#9c27b0;background:#f6ecf9;border-color:#e7c8ee">不定项</span></td>
+                  <td><span class="tag tag-danger">较难</span></td>
+                  <td>下列哪些情形属于生产安全事故的责任主体？（答案可能为一个或多个）</td>
+                  <td>安全生产题库</td>
+                  <td><span class="tag tag-success">开放</span></td>
+                  <td>2026-06-03 10:05</td>
+                  <td class="actions">
+                    <a class="btn-text" href="qu-view.html">查看</a>
+                    <a class="btn-text" href="qu-form.html">编辑</a>
+                    <a class="btn-text danger" href="javascript:;">关闭</a>
+                    <a class="btn-text danger" href="javascript:;">删除</a>
+                  </td>
+                </tr>
                 <tr>
                   <td><span class="tag tag-primary">单选题</span></td>
                   <td><span class="tag tag-info">普通</span></td>

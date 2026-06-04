@@ -54,11 +54,13 @@
               <label><span class="req">*</span>题型</label>
               <div class="control">
                 <div class="radio-group">
-                  <label class="radio"><input type="radio" name="qtype" checked /> 单选</label>
-                  <label class="radio"><input type="radio" name="qtype" /> 多选</label>
-                  <label class="radio"><input type="radio" name="qtype" /> 判断</label>
-                  <label class="radio"><input type="radio" name="qtype" /> 简答</label>
+                  <label class="radio"><input type="radio" name="qtype" value="radio" checked onclick="setQuType('radio')" /> 单选</label>
+                  <label class="radio"><input type="radio" name="qtype" value="multi" onclick="setQuType('multi')" /> 多选</label>
+                  <label class="radio"><input type="radio" name="qtype" value="judge" onclick="setQuType('judge')" /> 判断</label>
+                  <label class="radio"><input type="radio" name="qtype" value="uncertain" onclick="setQuType('uncertain')" /> 不定项</label>
+                  <label class="radio"><input type="radio" name="qtype" value="essay" onclick="setQuType('essay')" /> 简答</label>
                 </div>
+                <div class="form-tip">综合题（含 5 个子题）请使用试题管理页的「<a class="text-primary" href="qu-form-composite.html">添加综合题</a>」入口录入。</div>
               </div>
             </div>
 
@@ -105,12 +107,12 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card" id="cardOptions">
           <div class="card-header">选项设置
             <button class="btn btn-sm" onclick="addOption()">➕ 添加选项</button>
           </div>
           <div class="card-body">
-            <div class="form-tip" style="margin-bottom:14px">勾选「正确答案」以标注正确项；单选题仅可标注一个正确项。</div>
+            <div class="form-tip" id="optTip" style="margin-bottom:14px">勾选「正确答案」以标注正确项；单选题仅可标注一个正确项。</div>
             <div id="optList">
               <div class="form-item">
                 <label>选项 A</label>
@@ -170,6 +172,18 @@
 
   <script>
     var optCount = 4;
+    function setQuType(t) {
+      var tips = {
+        radio: '勾选「正确答案」以标注正确项；单选题仅可标注一个正确项。',
+        multi: '勾选「正确答案」以标注正确项；多选题需至少两个正确项，少选 / 多选 / 错选均不得分（全部选对才得分）。',
+        judge: '判断题固定为「正确 / 错误」两项，勾选其一为正确答案。',
+        uncertain: '勾选「正确答案」以标注正确项；不定项题正确答案为 <b>1 个或多个</b>，按「固定半分制」判分：全部选对得满分、漏选（无错选）得满分的一半、选中任一错误项得 0 分。',
+        essay: '简答题为主观题，无客观选项，由老师人工阅卷评分。'
+      };
+      document.getElementById('optTip').innerHTML = tips[t] || tips.radio;
+      // 简答题无客观选项，隐藏选项设置卡片
+      document.getElementById('cardOptions').style.display = (t === 'essay') ? 'none' : '';
+    }
     function addOption() {
       optCount++;
       var key = String.fromCharCode(64 + optCount); // E, F, ...
