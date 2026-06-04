@@ -6,8 +6,14 @@ date: 2026-06-04
 feature_id: "004"
 sources:
   - 客户口头需求（试题管理增加综合题；新增不定项题型）
-plan:
+plan: docs/engineering/plans/2026-06-04-004-feat-composite-question-indefinite-choice-plan.md
 prototype:
+  - docs/engineering/prototype/qu.html
+  - docs/engineering/prototype/qu-form.html
+  - docs/engineering/prototype/qu-form-composite.html
+  - docs/engineering/prototype/exam-form.html
+  - docs/engineering/prototype/exam-taking.html
+  - docs/engineering/prototype/paper-detail.html
 ---
 
 # 004 综合题与不定项题型 · PRD
