@@ -34,3 +34,6 @@ exam-api/src/test/java/com/yf/exam/LoginTest.java
 exam-api/upload/2021/10/21/1451084100164169729.png
 exam-api/upload/2021/10/21/1451084418016890882.png
 LoginTest.java
+
+# Claude Code 本机配置（含本地路径/权限，不共享）
+.claude/settings.local.json
