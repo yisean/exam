@@ -1,6 +1,7 @@
 # 研发流程总纲：从需求到上线
 
-> 本文定义本项目「需求 → 原型 → 计划 → 开发 → 代码评审 → 测试 → 合并」的标准流程：每个阶段**做什么、谁来做、产出什么、何时算完成**。配合 [`docs/README.md`](../README.md) 的目录结构使用。
+> 本文定义本项目「需求 → 原型 → 设计 → 计划 → 开发 → 代码评审 → 测试 → 合并」的标准流程：每个阶段**做什么、谁来做、产出什么、何时算完成**。配合 [`docs/README.md`](../README.md) 的目录结构使用。
+> 原则基线见 [`constitution.md`](constitution.md)（工程宪法）；开发细则见 [`conventions.md`](conventions.md)。冲突时优先级：**`constitution.md` > 本文 > skill 内置默认**。
 
 ## 项目文档目录结构
 
@@ -15,13 +16,16 @@ docs/
 │   ├── brainstorms/             需求探讨原始稿（阶段 1）
 │   └── prd/                     正式需求定稿 PRD（阶段 1）
 ├── engineering/                 怎么做 —— 研发过程
+│   ├── constitution.md          工程宪法（原则基线）
 │   ├── workflow.md              ← 本文：研发流程总纲
-│   ├── plans/                   实现计划（阶段 3）
+│   ├── conventions.md           开发规范（命名/分层/约定）
 │   ├── prototype/               可点击静态原型 + _spec.md（阶段 2）
+│   ├── design/                  技术设计：概要设计 + ER + 详细设计（阶段 3）
+│   ├── plans/                   实现计划：任务 + migration + 覆盖矩阵（阶段 4）
 │   └── architecture/            架构、数据库结构、源码说明
 └── ops/                         怎么交付 —— 部署与运维
     ├── 部署手册.pdf
-    ├── install/                 安装资源 + 数据库/迁移脚本（阶段 4）
+    ├── install/                 安装资源 + 数据库/迁移脚本（阶段 4 落 migration）
     ├── windows-service/         注册 Windows 服务
     └── run-package/             运行包（启动脚本、本地配置示例）
 ```
@@ -31,12 +35,12 @@ docs/
 ## 全景流水线
 
 ```
-策略(可选)        需求            原型             计划            开发           代码评审         测试          合并
-STRATEGY.md → brainstorm/PRD → prototype/ → plans/ → 编码 → code review → test/verify → commit + PR
-   └────────────── product/ ──────────────┘   └──────────────── engineering/ + 代码仓 ────────────────┘
+策略(可选)        需求            原型           设计          计划          开发          代码评审        测试         合并
+STRATEGY.md → brainstorm/PRD → prototype/ → design/ → plans/ → 编码 → code review → test/verify → commit + PR
+   └────────────── product/ ──────────────┘   └───────────────── engineering/ + 代码仓 ──────────────────┘
 ```
 
-每个阶段都有**进入标准（Definition of Ready）**和**完成标准（Definition of Done）**——上一阶段的产出物就是下一阶段的进入条件。允许小步快跑、阶段回流（如开发中发现需求漏洞回到 PRD 修订），但产出物要同步更新，保持单一事实源。
+每个阶段都有**进入标准（Definition of Ready）**和**完成标准（Definition of Done）**——上一阶段的产出物就是下一阶段的进入条件。允许小步快跑、阶段回流（如开发中发现需求漏洞回到 PRD 修订），但产出物要同步更新，保持单一事实源（走 `/spec-change`）。
 
 ---
 
@@ -64,7 +68,7 @@ STRATEGY.md → brainstorm/PRD → prototype/ → plans/ → 编码 → code rev
 | **完成标准** | PRD 含：背景与问题、目标/非目标、用户与角色、关键决策、**带编号的功能需求**、**可验收的验收标准**、成功指标、依赖与假设、待解决问题 |
 
 **PRD 必备要素**（参考 [PRD 001](../product/prd/2026-05-29-001-exam-assistant-booking.md)）：
-- 功能需求编号（`R1/R2…` 或 `F1/F2…`），验收标准编号（`AE/AC`）并标注覆盖的需求号——保证 **PRD → plan → 测试** 可双向追溯。
+- 功能需求编号（`R1/R2…` 或 `F1/F2…`），验收标准编号（`AE/AC`）并标注覆盖的需求号——保证 **PRD → 设计 → plan → 测试** 可双向追溯。
 - 显式写出**非目标**与**待解决问题**，避免范围蔓延和隐性假设。
 
 ---
@@ -80,26 +84,39 @@ STRATEGY.md → brainstorm/PRD → prototype/ → plans/ → 编码 → code rev
 | **进入标准** | 对应 PRD 的关键交互已明确 |
 | **完成标准** | 关键页面可点击跑通主流程；PRD 中的 UI 相关需求都能在原型找到对应 |
 
-> 原型是**沟通与验证载体，不是实现**。它定稿后，相关页面成为 plan 里前端任务的「UI 参考」。
+> 原型是**沟通与验证载体，不是实现**。它定稿后，相关页面成为设计/计划里前端任务的「UI 参考基线」。
 
 ---
 
-## 阶段 3 · 计划（Plan）
+## 阶段 3 · 设计
 
 | | |
 | --- | --- |
-| **目的** | 先做技术设计（概要设计 + 数据 ER 模型 + 详细设计），再把 PRD 拆成可执行的工程任务：涉及哪些表/接口/页面、依赖顺序、迁移脚本、风险。**设计随计划一并产出，不另起独立设计文档** |
-| **谁来做** | 开发负责人 |
-| **怎么做** | 用 `/spec-plan`（或 `/ce-plan`），以 PRD + 原型为输入 |
-| **产出物** | [`docs/engineering/plans/`](plans/)，命名 `YYYY-MM-DD-NNN-<type>-<slug>-plan.md`，带 frontmatter（`title/type/status/date/origin`） |
+| **目的** | 定整体架构、数据模型与关键流程的详细设计，作为拆任务的前提（**设计独立成阶段，不再揉在计划里**） |
+| **谁来做** | 开发负责人 / 架构 |
+| **怎么做** | 用 `/spec-design`，以 PRD + 原型为输入 |
+| **产出物** | [`docs/engineering/design/`](design/)，命名 `YYYY-MM-DD-NNN-<type>-<slug>-design.md`，带 frontmatter（`title/type/status/date/origin→PRD`） |
 | **进入标准** | PRD 完成标准达成；如有界面，原型已定稿 |
-| **完成标准** | 概要设计（架构/模块/技术选型/关键决策）与数据 ER 模型（Mermaid `erDiagram`）已写入 plan，ER 与 migration sql 一致；任务可独立认领，每个任务标注 Files / Dependencies / Patterns to follow / 详细设计（接口签名/核心逻辑）；DB 变更落到 `docs/ops/install/` 的 migration sql；与其他 plan 的并行/冲突关系已说明 |
+| **完成标准** | 含**概要设计**（架构/模块、技术选型与决策、接口清单与契约、前端设计、权限四级、可观测与审计、NFR、风险）、**数据 ER 模型**（Mermaid `erDiagram`，带时间戳与字段长度规约）、**详细设计**（接口签名、核心逻辑、并发与幂等、代码结构落点）；每段标注覆盖的 `R/F`。先把概要 + ER 确认再写详细设计 |
+
+---
+
+## 阶段 4 · 计划（Plan）
+
+| | |
+| --- | --- |
+| **目的** | 据设计把方案拆成可执行、可独立认领的工程任务：涉及哪些表/接口/页面、依赖顺序、迁移脚本、覆盖矩阵 |
+| **谁来做** | 开发负责人 |
+| **怎么做** | 用 `/spec-plan`（或 `/ce-plan`），以设计文档为主输入（PRD/原型作参照） |
+| **产出物** | [`docs/engineering/plans/`](plans/)，命名 `YYYY-MM-DD-NNN-<type>-<slug>-plan.md`，带 frontmatter（`origin→design`） |
+| **进入标准** | 设计完成标准达成 |
+| **完成标准** | 实现单元可独立认领（Files / Dependencies / Patterns to follow / **设计依据**（指回 design 小节）/ 覆盖需求 / Test scenarios）；DB 变更落 `docs/ops/install/` 的 migration sql（**回滚段必填**、时间戳、varchar 字段长度，与 design 的 ER 逐字段一致）；**三向覆盖矩阵**（`R/F → U → AE/AC`）无空格；与其他 plan 的并行/冲突关系已说明 |
 
 **frontmatter `status` 流转**：`active`（进行中）→ `done`（已交付）→ 可选 `archived`。
 
 ---
 
-## 阶段 4 · 开发
+## 阶段 5 · 开发
 
 | | |
 | --- | --- |
@@ -108,18 +125,18 @@ STRATEGY.md → brainstorm/PRD → prototype/ → plans/ → 编码 → code rev
 | **怎么做** | 在特性分支上开发；可用 `/ce-work` 驱动；复杂/并行特性用 `/ce-worktree` 隔离工作区。后端 `exam-api`（SpringBoot + MyBatis-Plus + Shiro），前端 `exam-vue`（Vue2 + Element-UI） |
 | **产出物** | 代码变更；DB migration（`docs/ops/install/`）；必要的开发说明 |
 | **进入标准** | plan 完成标准达成 |
-| **完成标准** | 功能本地可跑；遵循 [`conventions.md`](conventions.md) 的命名/分层/约定；自测主流程通过；plan 对应任务勾掉 |
+| **完成标准** | 功能本地可跑；遵循 [`constitution.md`](constitution.md) 编码基线（命名/注释参阿里、字段长度全链路一致等）与 [`conventions.md`](conventions.md) 的命名/分层/约定；自测主流程通过；plan 对应任务勾掉 |
 
 **约定**：
-- 开发规范见 [`conventions.md`](conventions.md)（命名/分层/API/数据库/异常/鉴权/前端）；AI agent 经仓库根 `CLAUDE.md` 自动加载。
+- 编码基线见 [`constitution.md`](constitution.md)「工程基线」，开发细则见 [`conventions.md`](conventions.md)；AI agent 经仓库根 `CLAUDE.md` 自动加载。
 - **前端 UI 以原型为准**：对照 [`prototype/`](prototype/) 对应页面实现（用真 Element-UI 还原其布局/字段/状态/交互/文案），偏离要先走 `/spec-change` 改原型再改代码。详见 [`conventions.md` §二·0](conventions.md)。
 - 不在默认分支直接开发，先开特性分支。
-- 一次提交聚焦一件事；提交信息遵循仓库习惯（见阶段 7）。
-- 改动需求范围时，**先回流更新 PRD/plan**，再继续写——用 `/spec-change`（先文档后代码，复用原序号、续编不重排）。
+- 一次提交聚焦一件事；提交信息遵循仓库习惯（见阶段 8）。
+- 改动需求范围时，**先回流更新 PRD/设计/plan**，再继续写——用 `/spec-change`（先文档后代码，复用原序号、续编不重排）。
 
 ---
 
-## 阶段 5 · 代码评审（Code Review）
+## 阶段 6 · 代码评审（Code Review）
 
 | | |
 | --- | --- |
@@ -134,7 +151,7 @@ STRATEGY.md → brainstorm/PRD → prototype/ → plans/ → 编码 → code rev
 
 ---
 
-## 阶段 6 · 测试
+## 阶段 7 · 测试
 
 | | |
 | --- | --- |
@@ -149,7 +166,7 @@ STRATEGY.md → brainstorm/PRD → prototype/ → plans/ → 编码 → code rev
 
 ---
 
-## 阶段 7 · 提交与合并
+## 阶段 8 · 提交与合并
 
 | | |
 | --- | --- |
@@ -169,7 +186,8 @@ STRATEGY.md → brainstorm/PRD → prototype/ → plans/ → 编码 → code rev
 | 策略 | STRATEGY.md | `docs/product/` |
 | 需求 | brainstorm 原稿 → PRD 定稿 | `docs/product/brainstorms/` → `docs/product/prd/` |
 | 原型 | 可点击静态页 | `docs/engineering/prototype/` |
-| 计划 | plan | `docs/engineering/plans/` |
+| 设计 | 技术设计（架构/ER/详细设计） | `docs/engineering/design/` |
+| 计划 | plan + migration + 覆盖矩阵 | `docs/engineering/plans/`、`docs/ops/install/` |
 | 开发 | 代码 + migration | `exam-api/`、`exam-vue/`、`docs/ops/install/` |
 | 评审 | 评审结论 / PR 评论 | PR |
 | 测试 | 验收结果 / 测试代码 | PR / 代码仓 |
@@ -177,10 +195,10 @@ STRATEGY.md → brainstorm/PRD → prototype/ → plans/ → 编码 → code rev
 
 ## 命名与追溯约定
 
-- **同一特性用同一 `NNN` 序号串起来**：`prd/2026-05-29-001-*` ↔ `plans/2026-05-29-001-*`，一眼对应。
+- **同一特性用同一 `NNN` 序号串起来**：`prd/2026-05-29-001-*` ↔ `design/2026-05-29-001-*` ↔ `plans/2026-05-29-001-*`，一眼对应。
 - 计划/需求类文档统一 `YYYY-MM-DD-NNN-<type>-<slug>.md`，其余英文小写连字符。
-- PRD 的需求编号（`R/F`）→ plan 的任务 → 测试的验收（`AE/AC`）三段保持引用，确保任何一条需求都能追到它的实现和验证。
+- 可追溯链 `R/F`（要做什么）→ `U`（怎么做，详细设计在 design）→ `AE/AC`（怎么算做对了）三段保持引用，落成**覆盖矩阵**逐行可核对。
 
 ## 一句话版
 
-> **需求写清楚（PRD 带编号验收）→ 界面先画（原型）→ 任务拆明白（plan）→ 照着实现（开发）→ 合并前挑刺（评审）→ 拿验收标准逐条验（测试）→ 历史干净地并入（PR）。** 每一步的产出物就是下一步的入场券，全程单一事实源、可双向追溯。
+> **需求写清楚（PRD 带编号验收）→ 界面先画（原型）→ 系统怎么搭（设计）→ 任务拆明白（plan）→ 照着实现（开发）→ 合并前挑刺（评审）→ 拿验收标准逐条验（测试）→ 历史干净地并入（PR）。** 每一步的产出物就是下一步的入场券，全程单一事实源、可双向追溯。

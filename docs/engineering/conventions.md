@@ -109,7 +109,8 @@ public class Exam extends Model<Exam> {
 - **审计字段**：`create_time` / `update_time`（`datetime`）。
 - **状态字段**：用业务状态列代替物理删除，如 `state int`（`0` 正常 / `1` 禁用）、`open_type int` 等，**不真删数据**。
 - **关联唯一约束**：用复合唯一键防重，如 `el_exam_booking` 的 `UNIQUE KEY exam_depart(exam_id, depart_id)`。
-- 表、字段都要写 `COMMENT`；DDL 落到 `docs/ops/install/migration-YYYY-<特性名>.sql`，并与 plan 里的 ER 模型一致。
+- **字段长度（全链路一致）**：`varchar(N)` 的 N=字符数（utf8mb4 下 N 个汉字），按业务最大汉字数定义、不按字节估算（杜绝「想存 10 字却定义 `varchar(30)`」）。**DB 字符数为唯一真值**：后端入参按字符数前置校验（不靠 DB 截断兜底）、前端输入框 `maxlength`、接口文档三处对齐。（本项目 MySQL；若迁异构/信创库的声明语义见 [`constitution.md`](constitution.md) #9。）
+- 表、字段都要写 `COMMENT`；DDL 落到 `docs/ops/install/migration-YYYY-<特性名>.sql`，含**回滚/down 段**，并与 design 里的 ER 模型逐字段一致。
 
 ## 5. API 与响应
 
