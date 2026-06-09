@@ -181,6 +181,7 @@ export function fetchDetail(id) { return post('/exam/api/exam/exam/detail', { id
 ```
 
 - 响应约定：`code === 0` 成功；`code === 10010002` 触发重新登录；其它 code 由 `request.js` 拦截器统一弹错。**业务代码默认拿到的就是成功数据**。
+- **防重复提交 / 防抖节流**：保存/提交按钮在请求期间禁用或加 `loading`，防连点重复提交；搜索框、滚动等高频触发用防抖 / 节流。
 
 ## 3. 路由与页面
 
@@ -194,6 +195,10 @@ export function fetchDetail(id) { return post('/exam/api/exam/exam/detail', { id
 - 优先复用既有二次封装组件，不直接重写：
   - `DataTable`（列表 = el-table + 分页 + 多选 + 操作，传 `options`/`listQuery`，用 `#filter-content` / `#data-columns` 插槽）
   - `Pagination`（分页）、`DepartTreeSelect`（部门树）、`MeetRole`（角色）、`FileUpload`、`SvgIcon`、`ExamSelect`/`RepoSelect`。
+- **组件 `props`** 明确定义 `type`/`required`/`default`/`validator`；`data` 必须是函数 `data() { return {...} }`。
+- **`v-for` 必带稳定 `key`**（用业务 id，不用 index），且**不与 `v-if` 同元素**（先 `computed` 过滤再渲染）。
+- 组件选项顺序固定：`name → components → props → data → computed → watch → 生命周期 → methods`。
+- 模板表达式保持简单，复杂逻辑提到 `computed`；自定义事件名用 `kebab-case`（`@row-click`）。公共逻辑抽 `mixin` / 工具方法复用，不在多组件复制粘贴。
 
 ## 5. Element-UI 用法
 
@@ -223,8 +228,30 @@ export function fetchDetail(id) { return post('/exam/api/exam/exam/detail', { id
 - 环境变量 `.env.development` / `.env.production`；`VUE_APP_BASE_API` 留空，靠 `vue.config.js` 代理（`/exam`、`/common`、`/upload` → `http://localhost:8101`）。
 - 脚本：`npm run dev`（开发，端口 9527）、`npm run build:prod`（生产）、`npm run lint`。
 
+## 9. JavaScript / ES 基础
+
+- `const` 优先、`let` 次之，**禁 `var`**；用 `===` 不用 `==`。
+- 善用解构、模板字符串、箭头函数、可选链 `?.` 与空值合并 `??`。
+- **魔法值抽常量**（同后端「零魔法值」），状态/类型映射走 `filters` 或常量，不硬编码。
+- 异步用 `async/await` + `try-catch`，不裸吞错误；`import` 分组排序（第三方 → `@/` 别名 → 相对路径）。
+
+## 10. 性能
+
+- 路由与重组件**懒加载**（`() => import(...)`，见 §3）；长列表分页（`DataTable`），超长数据考虑虚拟滚动。
+- 避免无效监听、重复请求、不必要的重渲染；UI 库与工具**按需引入**。
+
+## 11. 安全（XSS）
+
+- **慎用 `v-html`**，渲染不可信内容必须转义；不拼接不可信 URL。
+- token、个人隐私等敏感信息不打印到控制台、不长存 `localStorage`（token 走 `utils/auth.js`）。
+
+## 12. 注释与字段长度
+
+- 组件标注用途、`props`/`emit` 说明；复杂逻辑注释「为什么」；`TODO`/`FIXME` 带责任人与时间。
+- **输入框 `maxlength` 严格等于字段的业务字符数**（见 [`constitution.md`](constitution.md) #9）；表单校验文案标准化（如「最多 N 个字符」）。
+
 ---
 
 # 三、提交规范
 
-见 [`workflow.md`](workflow.md) 阶段 7：`<type>: <简述>`，正文列要点，结尾带 `Co-Authored-By`。常用 type：`feat / fix / docs / refactor / chore`。文档与代码改动分开提交（如 `docs(prd):` 与 `feat:`）。
+见 [`workflow.md`](workflow.md) 阶段 8：`<type>: <简述>`，正文列要点，结尾带 `Co-Authored-By`。常用 type：`feat / fix / docs / refactor / chore`。文档与代码改动分开提交（如 `docs(prd):` 与 `feat:`）。
