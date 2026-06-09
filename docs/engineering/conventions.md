@@ -123,6 +123,8 @@ public class Exam extends Model<Exam> {
 - 业务校验失败 `throw new ServiceException(...)`；优先用错误码枚举：`throw new ServiceException(ApiError.ERROR_10010003)`。
 - 全局由 `@RestControllerAdvice` 的 `ServiceExceptionHandler` 捕获并转 `ApiRest`，**不在 Controller 里 try-catch 包业务异常**。
 - 错误码定义在 `ApiError` 枚举，命名 `ERROR_<8位>`，按域分段：`1001xxxx` 通用、`2001xxxx` 考试、`9001xxxx` 用户、`6000xxxx` 其它。新增错误码续段、写中文 msg。
+- **异常不做流程控制**（能 `if` 判断的别靠 try-catch）；捕获后必须处理，**不裸吞**（空 catch）；**不在 `finally` 里 `return`**（吞主异常）；资源用 try-with-resources / finally 关闭。
+- **防 NPE**：方法返回空集合不返 `null`；调用方判空或用 `Objects` / `Optional`。
 
 ## 7. 鉴权
 
@@ -132,11 +134,35 @@ public class Exam extends Model<Exam> {
 
 ## 8. 其它
 
-- **事务**：写操作的 Service 方法加 `@Transactional(rollbackFor = Exception.class)`。
-- **日志**：类加 Lombok `@Slf4j`，用 `log.info/debug`。
+- **事务**：写操作的 Service 方法加 `@Transactional(rollbackFor = Exception.class)`；事务范围尽量小，**不在事务里做 RPC / 文件 / 远程调用等耗时操作**。
+- **日志**：类加 Lombok `@Slf4j`；参数用**占位符 `{}`** 不用字符串拼接（`log.info("examId={}", id)`）；异常打完整堆栈 `log.error("msg", e)`；级别得当（INFO/WARN/ERROR）；**敏感数据不入日志**。
 - **工具类**：集中在 `core/utils/`（`BeanMapper`、`DateUtils`、`StringUtils`、`PassHandler`、excel 等），优先复用不重造。
 - **常量/枚举**：枚举用**接口常量式**（`interface BookingStatus { Integer BOOKABLE = 1; ... }`），放模块 `enums/`；全局常量放 `ability/Constant.java`。
 - **ID 生成**：统一 `IdWorker.getIdStr()`。
+
+## 9. OOP（参阿里 Java 手册）
+
+- 包装类对象值比较用 `equals` 不用 `==`（`Integer` 缓存 -128~127 之外 `==` 会出错）；推荐 `Objects.equals(a, b)`。
+- 金额/精度用 `BigDecimal`，且 `BigDecimal.valueOf(x)` 或字符串构造，**禁 `new BigDecimal(double)`**。
+- POJO / DTO 字段用**包装类型**（默认 `null`，避免拆箱 NPE）；重写 `equals` 必重写 `hashCode`；构造方法 / getter/setter 不写业务逻辑；可序列化类显式 `serialVersionUID`。
+
+## 10. 集合（参阿里 Java 手册）
+
+- `foreach` 里**不能 `add`/`remove`**，增删用 `Iterator`（并发场景用并发容器）。
+- 遍历 `Map` 用 `entrySet`（同时要 key+value 时）；`Arrays.asList` 返回定长列表不能增删。
+- `HashMap` 等指定初始容量（`new HashMap<>(预期/0.75+1)`）；判空返回空集合不返 `null`。
+
+## 11. 并发（参阿里 Java 手册）
+
+- 线程池用 `ThreadPoolExecutor` 显式构造，**不用 `Executors`**（防 OOM）；线程/线程池命名有意义。
+- `SimpleDateFormat` 线程不安全 → 用 `DateTimeFormatter` 或每次新建 / 加锁。
+- 共享可变状态加锁或用并发容器 / 原子类；`ThreadLocal` 用完 `remove()` 防内存泄漏；加锁顺序一致防死锁。
+
+## 12. 控制语句与安全（参阿里 Java 手册）
+
+- `switch` 每个 `case` 有 `break`/`return` 且必有 `default`；if-else 嵌套**不超 3 层**，用卫语句（提前 `return`）/ 策略 / 状态模式替代深嵌套。
+- **SQL 注入**：MyBatis 用 `#{}` 参数化，**不用 `${}` 拼接**用户输入（`${}` 仅用于可信的排序字段等）。
+- 用户输入校验（防 XSS）；越权 / 数据权限校验（接口默认带 `@RequiresRoles` + 业务层部门归属校验）；敏感数据脱敏。
 
 ---
 

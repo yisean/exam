@@ -18,7 +18,7 @@
 5. **追溯编号**：PRD 用 `R/F` 编号需求、`AE/AC` 编号验收，续编不重排；plan 实现单元 `U` 映射 `R/F`、引用 design 小节，测试对照 `AE/AC`。
 6. **前端 UI 以原型为准**：对照 `docs/engineering/prototype/` 对应页面用真 Element-UI 还原（不照抄原型 HTML/CSS）；偏离先 `/spec-change` 改原型。
 7. **DB 变更**：落 `docs/ops/install/migration-YYYY-<特性名>.sql`，与 design 的 ER 模型逐字段一致，含**回滚/down 段**；表/字段带 `COMMENT`、带 `create_time`/`update_time`。
-8. **鉴权与事务**：权限标在 Controller 方法 `@RequiresRoles`（`sa`/`teacher`/`assistant`/`student`）；写操作 Service 加 `@Transactional(rollbackFor = Exception.class)`；敏感数据不进日志。
+8. **鉴权 / 事务 / 后端质量（参阿里 Java 手册）**：权限标在 Controller `@RequiresRoles`（`sa`/`teacher`/`assistant`/`student`）；写操作 Service 加 `@Transactional(rollbackFor = Exception.class)`、**事务内不做 RPC/IO**；包装类用 `equals` 比较、金额用 `BigDecimal.valueOf`、POJO 用包装类型；`foreach` 不增删（用 `Iterator`）；线程池用 `ThreadPoolExecutor` 不用 `Executors`；`SimpleDateFormat` 不共享；异常不裸吞、不做流程控制、`finally` 不 `return`；日志用 SLF4J 占位符 `{}`、敏感数据不入日志；MyBatis `#{}` 防注入。细则见 [`conventions.md`](docs/engineering/conventions.md) §一。
 9. **不在默认分支开发**：先开特性分支；一次提交聚焦一件事，文档与代码改动分开提交。
 
 ## 提交
