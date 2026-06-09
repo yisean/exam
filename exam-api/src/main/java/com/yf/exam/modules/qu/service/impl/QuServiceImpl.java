@@ -294,6 +294,11 @@ public class QuServiceImpl extends ServiceImpl<QuMapper, Qu> implements QuServic
                 qu.setQuType(Integer.parseInt(im.getQuType()));
                 qu.setCreateTime(new Date());
 
+                // 综合题含5个子题，Excel 无法承载，跳过以免整批导入中断
+                if (QuType.COMPOSITE.equals(qu.getQuType())) {
+                    continue;
+                }
+
                 //设置回答列表
                 List<QuAnswerDTO> answerList = this.processAnswerList(anMap.get(key));
                 //设置题目

@@ -526,11 +526,10 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     public void fillAnswer(PaperAnswerDTO reqDTO) {
 
 
-        // 未作答
-        if(CollectionUtils.isEmpty(reqDTO.getAnswers())
-                && StringUtils.isBlank(reqDTO.getAnswer())){
-            return;
-        }
+        // 本次是否有作答；取消全部选择(answers为空)时视为未作答，需把旧的勾选与得分清零，
+        // 不能直接 return，否则会残留上一次的 actual_score/isRight。
+        boolean answered = !(CollectionUtils.isEmpty(reqDTO.getAnswers())
+                && StringUtils.isBlank(reqDTO.getAnswer()));
 
         //查找答案列表
         List<PaperQuAnswer> list = paperQuAnswerService.listForFill(reqDTO.getPaperId(), reqDTO.getQuId());
@@ -570,7 +569,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
         qu.setQuId(reqDTO.getQuId());
         qu.setPaperId(reqDTO.getPaperId());
         qu.setAnswer(reqDTO.getAnswer());
-        qu.setAnswered(true);
+        qu.setAnswered(answered);
 
         if (QuType.UNCERTAIN.equals(quType)) {
             // 不定项·固定半分制：错选0分；全对满分；漏选(无错选)得满分一半(向下取整)
