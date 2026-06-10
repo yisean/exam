@@ -17,6 +17,7 @@ docs/
 ├── engineering/                 怎么做 —— 研发过程
 │   ├── constitution.md          工程宪法（原则基线）
 │   ├── workflow.md              ← 本文：研发流程总纲
+│   ├── registry.md              NNN 取号登记表（多人协作，先登记后开工）
 │   ├── prototype/               可点击静态原型 + _spec.md（阶段 2）
 │   ├── design/                  技术设计：概要设计 + ER + 详细设计（阶段 3）
 │   └── plans/                   实现计划：任务 + migration + 覆盖矩阵（阶段 4）
@@ -177,6 +178,21 @@ STRATEGY → brainstorm/PRD → prototype/ → design/ → plans/ → 编码 →
 - **同一特性用同一 `NNN` 序号串起来**：`prd/…-NNN-*` ↔ `design/…-NNN-*` ↔ `plans/…-NNN-*`，一眼对应。
 - 文档统一 `YYYY-MM-DD-NNN-<type>-<slug>.md`，其余英文小写连字符。
 - 可追溯链 `R/F`（要做什么）→ `U`（怎么做，详细设计在 design）→ `AE/AC`（怎么算做对了）三段保持引用，落成**覆盖矩阵**逐行自检。
+
+## 取号约定（多人协作：保证编号唯一）
+
+多分支并行下，`NNN = 现有最大号 + 1` 在各自分支里互相看不见，合并才撞号。规矩是**把取号从特性分支里挪到共享的 main 上、且在开工之前**。
+
+**NNN（特性号）—— 先登记后开工**
+1. **取号**：在最新 main 上往 `docs/engineering/registry.md` 追加一行 `| NNN | slug | owner | date | reserved |`，push 进 main（仅这一行，可免 PR）。并发抢同号时，后 push 者被拒/冲突 → 当场暴露 → 改取下一个号。
+2. **开工**：再开 `feat/NNN-slug` 分支，跑 `/spec-prd`，直接用登记好的号。
+3. **收尾**：特性合并后把该行 `reserved` 改 `done`；中途放弃改 `abandoned`。**号一经预留即作废不回收**（回收会打断 design/plan/测试/历史的引用）。
+
+**`R/F`、`AE/AC`、`U`（特性内子编号）—— rebase 后续编 + 校验兜底**
+- 同一特性多人并发改时，**续编前先 `git pull --rebase` 到最新**，从合并后的真实最大号往后接，绝不重排。
+- 万一仍撞号，`/spec-check` 的 C1（编号重复=FAIL）作为最后一道网在合并/评审前拦住。
+
+> 老项目未建 `registry.md` 时，`/spec-prd` 退回 `max+1` 并提示补建登记表——多人协作强烈建议补上。
 
 ## 一句话版
 

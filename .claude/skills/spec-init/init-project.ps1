@@ -1,6 +1,7 @@
 ﻿# 把 spec-* 的工程骨架文件初始化到当前项目
 #   docs/engineering/constitution.md（工程宪法）
 #   docs/engineering/workflow.md    （流程总纲）
+#   docs/engineering/registry.md    （NNN 取号登记表，多人协作）
 #   CLAUDE.md                        （项目根：编码规约，AI 自动加载）
 # 用法（在目标项目根目录运行）：
 # 注：-ExecutionPolicy Bypass 为临时授权，仅对本次调用生效、不改系统设置（规避 Restricted 策略禁止跑脚本）。
@@ -30,6 +31,7 @@ function Copy-One($name, $to, $label) {
 
 Copy-One 'constitution.md' (Join-Path $eng 'constitution.md') 'docs/engineering/constitution.md'
 Copy-One 'workflow.md'     (Join-Path $eng 'workflow.md')     'docs/engineering/workflow.md'
+Copy-One 'registry.md'     (Join-Path $eng 'registry.md')     'docs/engineering/registry.md'
 Copy-One 'CLAUDE.md'       (Join-Path $ProjectRoot 'CLAUDE.md') 'CLAUDE.md（项目根）'
 
 Write-Host ""

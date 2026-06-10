@@ -2,6 +2,7 @@
 # 把 spec-* 的工程骨架文件初始化到当前项目
 #   docs/engineering/constitution.md（工程宪法）
 #   docs/engineering/workflow.md    （流程总纲）
+#   docs/engineering/registry.md    （NNN 取号登记表，多人协作）
 #   CLAUDE.md                        （项目根：编码规约，AI 自动加载）
 # 用法（在目标项目根目录运行）：
 #   "$HOME/.claude/skills/spec-init/init-project.sh"            # 缺失才建，不覆盖
@@ -36,6 +37,7 @@ copy_one() {  # $1=模板名  $2=目标绝对路径  $3=显示名
 
 copy_one constitution.md "$eng/constitution.md"        "docs/engineering/constitution.md"
 copy_one workflow.md     "$eng/workflow.md"            "docs/engineering/workflow.md"
+copy_one registry.md     "$eng/registry.md"            "docs/engineering/registry.md"
 copy_one CLAUDE.md       "$project_root/CLAUDE.md"     "CLAUDE.md（项目根）"
 
 echo ""

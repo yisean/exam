@@ -31,21 +31,60 @@
 6. **标记**：`// TODO 〔责任人〕 〔日期〕 说明`、`// FIXME 〔责任人〕 〔日期〕 说明`。
 7. 中文把问题说清楚，专有名词、关键字、框架名保留英文。
 
-## 三、分层与结构（按技术栈细化）
+## 三、后端规范（参阿里《Java 开发手册》，按 `<后端栈>` 取用；非 Java 按等价原则）
 
-- 严格分层：`Controller → Service → Mapper/Repository → Entity`；禁跨层直连、禁 Controller 直接操作 DB。
-- 对外**不返回 Entity**，用 `DTO`/`VO` 转换。
-- 单一职责：一个方法只做一件事；固定状态/类型抽枚举（见 constitution「零魔法值」）。
-- 新增枚举/异常码：按域续编，集中放置（如 `modules/<域>/enums`、统一 `ApiError`）。
-- 〔补充本项目目录结构与既有模式：`<后端模块路径>`、`<前端目录路径>`〕
+### 1. 分层与领域模型
+- 严格分层：`Controller →（薄）Service →（可选 Manager 通用业务）→ Mapper/Repository → Entity`；禁跨层直连、禁 Controller 直接操作 DB。
+- 对外**不返回领域 Entity**，用 DTO/VO 转换；领域模型分层：`DO/Entity`（库映射）、`DTO`（传输）、`VO`（展示）、`Query`（查询参数）、`BO`（业务对象）。
+- 单一职责：一个方法只做一件事、行数克制；固定状态/类型抽枚举（constitution「零魔法值」）。
+- 新增枚举/异常码按域续编、集中放置（如 `modules/<域>/enums`、统一错误码类）。
+- 〔本项目目录与既有模式：`<后端模块路径>`〕
 
-## 四、异常 / 日志 / 安全（承接 constitution）
+### 2. OOP
+- 包装类对象值比较用 `equals` 不用 `==`（`Integer` 缓存 -128~127 之外 `==` 会出错）。
+- `equals` 把常量/确定非空值放前面（`"S".equals(x)`）防 NPE；推荐 `Objects.equals(a, b)`。
+- 金额/精度用 `BigDecimal`，且 `BigDecimal.valueOf(x)` 或字符串构造，**禁 `new BigDecimal(double)`**。
+- POJO / RPC 返回字段用**包装类型**（默认 `null`，避免拆箱 NPE 与默认值歧义）。
+- 重写 `equals` 必重写 `hashCode`；构造方法 / getter/setter 不写业务逻辑；可序列化类显式 `serialVersionUID`。
 
-- 异常分层兜底：区分业务/系统/第三方，全局统一处理，不裸抛原生堆栈（constitution #5）。
-- 多表/多步操作加事务保证原子性；外部调用加超时/重试/降级；资源用完必释放（constitution #4）。
-- 关键链路打印入参/出参/耗时/异常；**日志禁打手机号/密码/身份证等敏感数据**，敏感字段脱敏（constitution #1）。
-- 入参全校验（非空/边界/格式/业务合法）。
-- **字段长度全链路一致**（constitution #9）：业务最大字符数为唯一真值，后端按**字符数**校验（不靠 DB 截断）、前端 `maxLength`、接口文档三处对齐。DB 列长按所选库语义声明（存 10 个汉字为例）：
+### 3. 集合
+- `foreach` 里**不能 `add`/`remove` 元素**，增删用 `Iterator`（并发改用并发容器）。
+- 遍历 `Map` 用 `entrySet`（同时要 key+value 时）不用 `keySet` 二次取值。
+- `Arrays.asList` 返回定长列表，不能 `add`/`remove`；返回空集合用 `Collections.emptyList()` 等（不可变，调用方别改）。
+- `HashMap` 等指定初始容量（`new HashMap<>(预期 / 0.75 + 1)`）减少扩容；判空返回空集合不返回 `null`。
+
+### 4. 并发
+- 线程池用 `ThreadPoolExecutor` 显式构造，**不用 `Executors`**（防资源耗尽 OOM）；线程/线程池命名有意义。
+- `SimpleDateFormat` 线程不安全 → 用 `DateTimeFormatter`（JDK8+）或每次新建 / 加锁。
+- 共享可变状态加锁或用并发容器 / 原子类；加锁顺序一致防死锁；`ThreadLocal` 用完 `remove()` 防内存泄漏。
+- 高并发计数用 `LongAdder` / 原子类；能用局部变量 / 无锁就不加锁。
+
+### 5. 控制语句
+- `switch` 每个 `case` 有 `break`/`return` 且必有 `default`。
+- if-else 嵌套**不超 3 层**，用**卫语句**（提前 `return`）/ 策略 / 状态模式替代深嵌套；避免复杂否定表达式。
+- 循环体内减少不变运算与对象创建。
+
+### 6. 事务与数据库（ORM）
+- 写操作 Service 方法加事务（如 `@Transactional(rollbackFor = Exception.class)`）；事务范围尽量小，**不在事务里做 RPC / 文件 / 远程调用等耗时操作**。
+- 业务层前置校验，**不靠 DB 截断兜底**（含字段长度，见四）；批量走批量 SQL，不循环单条。
+- SQL：禁 `select *`、操作带有效 `where`、走索引 / 分页；参数化 `#{}` **不用 `${}` 拼接**（防注入）；复合唯一键防重。DDL 细则见 `conventions.md` / migration 规约。
+
+## 四、异常 / 日志 / 安全（参阿里《Java 开发手册》 + constitution）
+
+### 异常
+- **异常不用于流程控制**；能用 `if` 判断的（NPE、边界）不靠 try-catch。
+- 捕获后必须处理，**不裸吞**（空 catch）；**不在 `finally` 里 `return`/抛异常**（会吞掉主异常）；资源用 try-with-resources 或 finally 关闭（constitution #4）。
+- 分层兜底：区分业务/系统/第三方异常，全局统一处理，不裸抛原生堆栈（#5）；防 NPE（返回空集合不返 `null`、调用方判空 / `Optional`）。
+
+### 日志
+- 用 SLF4J 门面；参数用**占位符 `{}`**，不用字符串拼接（`log.info("id={}", id)`）。
+- 异常打完整堆栈（`log.error("msg", e)`）；级别得当（INFO 正常 / WARN 预警 / ERROR 异常）。
+- **敏感数据不入日志**（手机号/密码/身份证…），脱敏（#1）。
+
+### 安全
+- 用户输入校验：防 SQL 注入（参数化 `#{}`）、XSS；越权 / 数据权限校验（接口默认带权限）。
+- 敏感数据脱敏存储 / 返回；不硬编码密钥、账号、内网地址（#1）。
+- **字段长度全链路一致**（#9）：业务最大字符数为唯一真值，后端按**字符数**前置校验（不靠 DB 截断）、前端 `maxLength`、接口文档三处对齐。DB 列长按所选库语义声明（存 10 个汉字为例）：
 
   | 数据库 | 写法 |
   | --- | --- |
