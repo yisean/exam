@@ -53,4 +53,28 @@ public class UserUtils {
     public static String getUserId(){
         return getUserId(true);
     }
+
+    /**
+     * 获取当前登录用户的部门ID
+     * @param throwable
+     * @return
+     */
+    public static String getDepartId(boolean throwable){
+        try {
+            return ((SysUserLoginDTO) SecurityUtils.getSubject().getPrincipal()).getDepartId();
+        }catch (Exception e){
+            if(throwable){
+                throw new ServiceException(ApiError.ERROR_10010002);
+            }
+            return null;
+        }
+    }
+
+    /**
+     * 获取当前登录用户的部门ID，默认是会抛异常的
+     * @return
+     */
+    public static String getDepartId(){
+        return getDepartId(true);
+    }
 }

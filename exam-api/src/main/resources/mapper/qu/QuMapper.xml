@@ -54,6 +54,8 @@
 
     <sql id="query">
         <where>
+            <!-- 列表/导出只显示顶层题，综合题子题不独立出现 -->
+            AND q.parent_id IS NULL
             <if test="query!=null">
                 <if test="query.quType!=null">
                     AND q.qu_type = #{query.quType}

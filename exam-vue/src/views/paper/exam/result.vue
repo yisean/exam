@@ -22,15 +22,25 @@
 
     <el-card style="margin-top: 20px">
 
-      <div v-for="item in paperData.quList" :key="item.id" class="qu-content">
+      <div v-for="item in paperData.quList" :key="item.id" :style="item.parentId ? 'padding-left: 20px; border-left: 3px solid #ebeef5;' : ''" class="qu-content">
 
-        <p>{{ item.sort + 1 }}.{{ item.content }}（得分：{{ item.actualScore }}）</p>
-        <p v-if="item.image!=null && item.image!=''">
-          <el-image :src="item.image" style="max-width:100%;" />
-        </p>
+        <template v-if="item.quType === 6">
+          <p><strong>{{ item.sort + 1 }}. 【综合题】（小计：{{ compositeScores[item.id] }} / {{ compositeMax[item.id] }}）</strong></p>
+          <el-alert :title="item.content" :closable="false" type="info" style="margin-bottom: 10px;" />
+        </template>
+
+        <template v-else>
+          <p>
+            {{ item.sort + 1 }}.{{ item.content }}（得分：{{ item.actualScore }}<span v-if="item.quType===5 && item.answered && !item.isRight && item.actualScore>0">·部分对</span>）
+          </p>
+          <p v-if="item.image!=null && item.image!=''">
+            <el-image :src="item.image" style="max-width:100%;" />
+          </p>
+        </template>
+
         <div v-if="item.quType === 1 || item.quType===3">
           <el-radio-group v-model="radioValues[item.id]">
-            <el-radio v-for="an in item.answerList" :label="an.id">
+            <el-radio v-for="an in item.answerList" :key="an.id" :label="an.id">
               {{ an.abc }}.{{ an.content }}
               <div v-if="an.image!=null && an.image!=''" style="clear: both">
                 <el-image :src="an.image" style="max-width:100%;" />
@@ -72,7 +82,7 @@
 
         </div>
 
-        <div v-if="item.quType === 2">
+        <div v-if="item.quType === 2 || item.quType === 5">
           <el-checkbox-group v-model="multiValues[item.id]">
             <el-checkbox v-for="an in item.answerList" :key="an.id" :label="an.id">{{ an.abc }}.{{ an.content }}
               <div v-if="an.image!=null && an.image!=''" style="clear: both">
@@ -126,7 +136,10 @@ export default {
       radioRights: {},
       multiRights: {},
       myRadio: {},
-      myMulti: {}
+      myMulti: {},
+      // 综合题小计：父题id -> 子题实得分之和 / 满分之和
+      compositeScores: {},
+      compositeMax: {}
     }
   },
   created() {
@@ -144,6 +157,24 @@ export default {
         // 试卷内容
         this.paperData = response.data
 
+        // 综合题小计：父题id -> 子题实得分/满分之和
+        const cScore = {}
+        const cMax = {}
+        this.paperData.quList.forEach((it) => {
+          if (it.quType === 6) {
+            cScore[it.id] = 0
+            cMax[it.id] = 0
+          }
+        })
+        this.paperData.quList.forEach((it) => {
+          if (it.parentId) {
+            cScore[it.parentId] = (cScore[it.parentId] || 0) + (it.actualScore || 0)
+            cMax[it.parentId] = (cMax[it.parentId] || 0) + (it.score || 0)
+          }
+        })
+        this.compositeScores = cScore
+        this.compositeMax = cMax
+
         // 填充该题目的答案
         this.paperData.quList.forEach((item) => {
           let radioValue = ''
@@ -152,8 +183,9 @@ export default {
           const multiValue = []
           const multiRight = []
           const myMulti = []
+          const answerList = item.answerList || []
 
-          item.answerList.forEach((an) => {
+          answerList.forEach((an) => {
             // 用户选定的
             if (an.checked) {
               if (item.quType === 1 || item.quType === 3) {

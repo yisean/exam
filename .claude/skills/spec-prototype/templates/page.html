@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>〔页面标题〕</title>
+  <!-- 只引这一个样式表；不新增 CSS 文件 -->
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+  <!-- 仿 Element-UI；只用 app.css 已有 class，微调用内联 style -->
+  <div class="card">
+    <h2>〔页面标题，对应 PRD 的某条 R/F〕</h2>
+
+    <!-- 示例：表单项 -->
+    <div class="form-item">
+      <label>〔字段名〕</label>
+      <input class="input" placeholder="〔提示〕" />
+    </div>
+
+    <!-- 示例：操作按钮（打开弹窗） -->
+    <button class="btn" onclick="document.querySelector('.dialog-mask').style.display='flex'">
+      〔主操作〕
+    </button>
+  </div>
+
+  <!-- 示例：弹窗（默认隐藏） -->
+  <div class="dialog-mask" style="display:none">
+    <div class="dialog">
+      <h3>〔弹窗标题〕</h3>
+      <p>〔内容〕</p>
+      <button class="btn" onclick="document.querySelector('.dialog-mask').style.display='none'">关闭</button>
+    </div>
+  </div>
+
+  <!-- 仅允许少量内联交互：tab 切换 / 弹窗开关 / 选项高亮 -->
+  <script>
+    // 复杂逻辑不在原型实现；这里只放演示主流程所需的最小交互。
+  </script>
+</body>
+</html>

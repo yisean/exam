@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>考试人员 · 云帆考试系统</title>
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+  <div class="proto-bar">
+    <span class="pill">原型</span>
+    <span>云帆考试系统 · 管理端</span>
+    <a href="index.html">← 返回原型导航</a>
+    <span class="muted" style="color:#8492a6">仅作演示，数据为示例</span>
+  </div>
+
+  <div class="app-wrapper">
+    <!-- ============ 侧边栏 ============ -->
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-badge">云</span><span>云帆考试系统</span></div>
+      <nav class="menu">
+        <a class="menu-item" href="dashboard.html"><span class="ico">📊</span> 控制台</a>
+
+        <div class="menu-group-title">在线考试</div>
+        <a class="menu-item" href="my-exam.html"><span class="ico">📝</span> 在线考试</a>
+        <a class="menu-item" href="my-records.html"><span class="ico">🏆</span> 我的成绩</a>
+
+        <div class="menu-group-title">考试管理</div>
+        <a class="menu-item" href="repo.html"><span class="ico">📚</span> 题库管理</a>
+        <a class="menu-item" href="qu.html"><span class="ico">❓</span> 试题管理</a>
+        <a class="menu-item active" href="exam.html"><span class="ico">🗂️</span> 考试管理</a>
+
+        <div class="menu-group-title">系统设置</div>
+        <a class="menu-item" href="sys-config.html"><span class="ico">⚙️</span> 系统配置</a>
+        <a class="menu-item" href="sys-depart.html"><span class="ico">🌳</span> 部门管理</a>
+        <a class="menu-item" href="sys-role.html"><span class="ico">🔑</span> 角色管理</a>
+        <a class="menu-item" href="sys-user.html"><span class="ico">👤</span> 用户管理</a>
+      </nav>
+    </aside>
+
+    <!-- ============ 主区域 ============ -->
+    <div class="main">
+      <header class="topbar">
+        <div class="crumbs">
+          <span>首页</span><span class="sep">/</span>
+          <a href="exam.html">考试管理</a><span class="sep">/</span>
+          <span class="cur">考试人员</span>
+        </div>
+        <a class="user" href="profile.html"><span class="avatar">超</span><span>超管A</span></a>
+      </header>
+
+      <main class="content">
+        <div class="flex between items-center" style="margin-bottom:16px">
+          <div>
+            <div class="page-title" style="margin-bottom:2px">考试人员 · 2026 Q2 全员安全生产考核</div>
+            <div class="muted">查看本场考试的应考人员名单与个人考试结果</div>
+          </div>
+          <a class="btn" href="exam.html">← 返回考试列表</a>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="toolbar">
+              <select class="select" style="width:180px">
+                <option>全部部门</option>
+                <option>技术部</option>
+                <option>人事部</option>
+                <option>财务部</option>
+                <option>客服部</option>
+              </select>
+              <input class="input" style="width:200px" placeholder="搜索姓名" />
+              <select class="select" style="width:160px">
+                <option>全部状态</option>
+                <option>未参加</option>
+                <option>已完成</option>
+              </select>
+            </div>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>姓名</th><th>用户名</th><th>部门</th><th>考试次数</th>
+                  <th>最高分</th><th>是否通过</th><th>最近考试时间</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>张三</td><td>person</td><td>人事部</td><td>2</td><td>88</td>
+                  <td><span class="tag tag-success">通过</span></td><td>2026-05-26 10:12</td>
+                </tr>
+                <tr>
+                  <td>李四</td><td>lisi</td><td>技术部 / 后端组</td><td>1</td><td>92</td>
+                  <td><span class="tag tag-success">通过</span></td><td>2026-05-25 15:40</td>
+                </tr>
+                <tr>
+                  <td>王五</td><td>wangwu</td><td>技术部 / 前端组</td><td>1</td><td>54</td>
+                  <td><span class="tag tag-danger">未通过</span></td><td>2026-05-25 16:08</td>
+                </tr>
+                <tr>
+                  <td>赵敏</td><td>zhaomin</td><td>财务部</td><td>3</td><td>76</td>
+                  <td><span class="tag tag-success">通过</span></td><td>2026-05-27 09:30</td>
+                </tr>
+                <tr>
+                  <td>孙倩</td><td>sunqian</td><td>客服部 / 客户一组</td><td>1</td><td>49</td>
+                  <td><span class="tag tag-danger">未通过</span></td><td>2026-05-27 14:22</td>
+                </tr>
+                <tr>
+                  <td>周杰</td><td>zhoujie</td><td>技术部 / 测试组</td><td>0</td><td class="muted">—</td>
+                  <td><span class="tag tag-info">未参加</span></td><td class="muted">—</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="pagination">
+              <span class="muted" style="margin-right:8px">共 120 条</span>
+              <span class="pg">‹</span>
+              <span class="pg active">1</span>
+              <span class="pg">2</span>
+              <span class="pg">3</span>
+              <span class="pg">›</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

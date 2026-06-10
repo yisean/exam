@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>添加综合题 · 云帆考试系统</title>
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+  <div class="proto-bar">
+    <span class="pill">原型</span>
+    <span>云帆考试系统 · 管理端</span>
+    <a href="index.html">← 返回原型导航</a>
+    <span class="muted" style="color:#8492a6">仅作演示，数据为示例</span>
+  </div>
+
+  <div class="app-wrapper">
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-badge">云</span><span>云帆考试系统</span></div>
+      <nav class="menu">
+        <a class="menu-item" href="dashboard.html"><span class="ico">📊</span> 控制台</a>
+
+        <div class="menu-group-title">在线考试</div>
+        <a class="menu-item" href="my-exam.html"><span class="ico">📝</span> 在线考试</a>
+        <a class="menu-item" href="my-records.html"><span class="ico">🏆</span> 我的成绩</a>
+
+        <div class="menu-group-title">考试管理</div>
+        <a class="menu-item" href="repo.html"><span class="ico">📚</span> 题库管理</a>
+        <a class="menu-item active" href="qu.html"><span class="ico">❓</span> 试题管理</a>
+        <a class="menu-item" href="exam.html"><span class="ico">🗂️</span> 考试管理</a>
+
+        <div class="menu-group-title">系统设置</div>
+        <a class="menu-item" href="sys-config.html"><span class="ico">⚙️</span> 系统配置</a>
+        <a class="menu-item" href="sys-depart.html"><span class="ico">🌳</span> 部门管理</a>
+        <a class="menu-item" href="sys-role.html"><span class="ico">🔑</span> 角色管理</a>
+        <a class="menu-item" href="sys-user.html"><span class="ico">👤</span> 用户管理</a>
+      </nav>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="crumbs"><span>首页</span><span class="sep">/</span><a href="qu.html">试题管理</a><span class="sep">/</span><span class="cur">添加综合题</span></div>
+        <a class="user" href="profile.html"><span class="avatar">超</span><span>超管A</span></a>
+      </header>
+
+      <main class="content">
+        <div class="page-title">添加综合题</div>
+        <div class="page-desc">综合题由一段共享题干 / 材料和<b>恰好 5 个子题</b>组成；子题可以是单选、多选、判断、不定项，但子题不能再是综合题。</div>
+
+        <div class="alert alert-info">
+          🧩 综合题作为<b>一个整体</b>进入题库与组卷（其 5 个子题随题进卷）；综合题总分 = 5 个子题分值之和，随题携带。
+        </div>
+
+        <!-- ① 基本信息 -->
+        <div class="card">
+          <div class="card-header">① 基本信息</div>
+          <div class="card-body">
+            <div class="form-item">
+              <label>题型</label>
+              <div class="control">
+                <span class="tag" style="color:#11998e;background:#e8f6f4;border-color:#c5e8e3;height:30px">综合题</span>
+                <span class="form-tip" style="display:inline-block;margin-left:8px;margin-top:0">综合题为固定题型，含 5 个子题。</span>
+              </div>
+            </div>
+            <div class="form-item">
+              <label><span class="req">*</span>难度</label>
+              <div class="control">
+                <div class="radio-group">
+                  <label class="radio"><input type="radio" name="qlevel" checked /> 普通</label>
+                  <label class="radio"><input type="radio" name="qlevel" /> 较难</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-item">
+              <label><span class="req">*</span>所属题库</label>
+              <div class="control">
+                <select class="select">
+                  <option>安全生产题库</option>
+                  <option>【云帆】演示题库</option>
+                  <option>ISO9001 质量管理题库</option>
+                  <option>新员工入职题库</option>
+                  <option>消防安全题库</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ② 共享题干 / 材料 -->
+        <div class="card">
+          <div class="card-header">② 共享题干 / 材料</div>
+          <div class="card-body">
+            <div class="form-item">
+              <label><span class="req">*</span>材料内容</label>
+              <div class="control" style="max-width:none">
+                <textarea class="textarea" style="min-height:120px" placeholder="请输入供 5 个子题共用的题干 / 材料">2026 年 5 月，某机械加工车间发生一起机械伤害事故：操作工李某在设备运转状态下违规进入防护区域清理铁屑，未停机、未挂牌上锁，导致右手被卷入设备受伤。事故调查发现：车间安全管理制度不健全，班组长未进行班前安全交底，设备急停装置失效已逾一周未修复。</textarea>
+                <div class="form-tip">该材料将展示在 5 个子题之上，供所有子题共用。</div>
+              </div>
+            </div>
+            <div class="form-item">
+              <label>材料图片</label>
+              <div class="control">
+                <div style="width:140px;height:100px;border:1px dashed var(--border-base);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:var(--text-secondary);cursor:pointer">
+                  <span style="font-size:24px">＋</span>
+                  <span style="font-size:12px">点击上传</span>
+                </div>
+                <div class="form-tip">支持 JPG / PNG，单张不超过 2MB（选填）</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ 子题设置 -->
+        <div class="card">
+          <div class="card-header">③ 子题设置（共 5 个，不可增减）</div>
+          <div class="card-body">
+            <div class="alert alert-warning">
+              ⚠️ 综合题必须包含 <b>5 个子题</b>，不可多、不可少。每个子题按其题型录入：单选恰 1 个正确答案、判断为正确 / 错误两项、多选与不定项 1 个及以上正确答案。<b>子题不能再设为综合题</b>。
+            </div>
+
+            <!-- ===== 子题 1 · 单选 ===== -->
+            <div style="border:1px solid var(--border-base);border-radius:6px;padding:16px;margin-bottom:16px">
+              <div class="flex items-center gap" style="margin-bottom:12px;flex-wrap:wrap">
+                <span class="tag tag-primary" style="height:26px">子题 1</span>
+                <span class="muted">子题题型</span>
+                <div class="radio-group" style="height:auto">
+                  <label class="radio"><input type="radio" name="s1" checked /> 单选</label>
+                  <label class="radio"><input type="radio" name="s1" /> 多选</label>
+                  <label class="radio"><input type="radio" name="s1" /> 判断</label>
+                  <label class="radio"><input type="radio" name="s1" /> 不定项</label>
+                </div>
+                <span class="spacer" style="flex:1"></span>
+                <span class="muted">分值</span>
+                <input class="input" style="width:70px" value="2" /><span class="muted">分</span>
+              </div>
+              <div class="form-item">
+                <label>子题题干</label>
+                <div class="control" style="max-width:none"><textarea class="textarea">本次事故的直接原因是？</textarea></div>
+              </div>
+              <div class="form-item">
+                <label>选项 A</label>
+                <div class="control flex items-center gap" style="max-width:none"><input class="input" style="flex:1" value="设备急停装置失效未修复" /><label class="checkbox" style="white-space:nowrap"><input type="checkbox" /> 正确答案</label></div>
+              </div>
+              <div class="form-item">
+                <label>选项 B</label>
+                <div class="control flex items-center gap" style="max-width:none"><input class="input" style="flex:1" value="李某在设备运转状态下违规进入防护区域清理铁屑" /><label class="checkbox" style="white-space:nowrap"><input type="checkbox" checked /> 正确答案</label></div>
+              </div>
+              <div class="form-item">
+                <label>选项 C</label>
+                <div class="control flex items-center gap" style="max-width:none"><input class="input" style="flex:1" value="班组长未进行班前安全交底" /><label class="checkbox" style="white-space:nowrap"><input type="checkbox" /> 正确答案</label></div>
+              </div>
+              <div class="form-item">
+                <label>选项 D</label>
+                <div class="control flex items-center gap" style="max-width:none"><input class="input" style="flex:1" value="安全管理制度不健全" /><label class="checkbox" style="white-space:nowrap"><input type="checkbox" /> 正确答案</label></div>
+              </div>
+              <div class="form-item">
+                <label>子题解析</label>
+                <div class="control" style="max-width:none"><input class="input" value="直接原因指直接导致事故发生的行为，即违规进入运转设备防护区域作业。" /></div>
+              </div>
+            </div>
+
+            <!-- ===== 子题 2 · 多选 ===== -->
+            <div style="border:1px solid var(--border-base);border-radius:6px;padding:16px;margin-bottom:16px">
+              <div class="flex items-center gap" style="margin-bottom:12px;flex-wrap:wrap">
+                <span class="tag tag-primary" style="height:26px">子题 2</span>
+                <span class="muted">子题题型</span>
+                <div class="radio-group" style="height:auto">
+                  <label class="radio"><input type="radio" name="s2" /> 单选</label>
+                  <label class="radio"><input type="radio" name="s2" checked /> 多选</label>
+                  <label class="radio"><input type="radio" name="s2" /> 判断</label>
+                  <label class="radio"><input type="radio" name="s2" /> 不定项</label>
+                </div>
+                <span class="spacer" style="flex:1"></span>
+                <span class="muted">分值</span>
+                <input class="input" style="width:70px" value="3" /><span class="muted">分</span>
+              </div>
+              <div class="form-item">
+                <label>子题题干</label>
+                <div class="control" style="max-width:none"><textarea class="textarea">以下哪些属于本次事故中的违规行为？（多选，全部选对才得分）</textarea></div>
+              </div>
+              <div class="form-item">
+                <label>选项 A</label>
+                <div class="control flex items-center gap" style="max-width:none"><input class="input" style="flex:1" value="设备运转状态下进入防护区域" /><label class="checkbox" style="white-space:nowrap"><input type="checkbox" checked /> 正确答案</label></div>
+              </div>
+              <div class="form-item">
+                <label>选项 B</label>
+                <div class="control flex items-center gap" style="max-width:none"><input class="input" style="flex:1" value="未停机即清理铁屑" /><label class="checkbox" style="white-space:nowrap"><input type="checkbox" checked /> 正确答案</label></div>
+              </div>
+              <div class="form-item">
+                <label>选项 C</label>
+                <div class="control flex items-center gap" style="max-width:none"><input class="input" style="flex:1" value="未挂牌上锁（LOTO）" /><label class="checkbox" style="white-space:nowrap"><input type="checkbox" checked /> 正确答案</label></div>
+              </div>
+              <div class="form-item">
+                <label>选项 D</label>
+                <div class="control flex items-center gap" style="max-width:none"><input class="input" style="flex:1" value="作业时佩戴了防护手套" /><label class="checkbox" style="white-space:nowrap"><input type="checkbox" /> 正确答案</label></div>
+              </div>
+            </div>
+
+            <!-- ===== 子题 3 · 不定项 ===== -->
+            <div style="border:1px solid #e7c8ee;border-radius:6px;padding:16px;margin-bottom:16px;background:#fdfaff">
+              <div class="flex items-center gap" style="margin-bottom:12px;flex-wrap:wrap">
+                <span class="tag" style="color:#9c27b0;background:#f6ecf9;border-color:#e7c8ee;height:26px">子题 3</span>
+                <span class="muted">子题题型</span>
+                <div class="radio-group" style="height:auto">
+                  <label class="radio"><input type="radio" name="s3" /> 单选</label>
+                  <label class="radio"><input type="radio" name="s3" /> 多选</label>
+                  <label class="radio"><input type="radio" name="s3" /> 判断</label>
+                  <label class="radio"><input type="radio" name="s3" checked /> 不定项</label>
+                </div>
+                <span class="spacer" style="flex:1"></span>
+                <span class="muted">分值</span>
+                <input class="input" style="width:70px" value="2" /><span class="muted">分</span>
+              </div>
+              <div class="form-tip" style="margin-bottom:12px">不定项：正确答案为 1 个或多个；按固定半分制判分（漏选无错选得半分、错选得 0 分）。</div>
+              <div class="form-item">
+                <label>子题题干</label>
+                <div class="control" style="max-width:none"><textarea class="textarea">下列哪些主体对本次事故负有责任？（答案可能为一个或多个）</textarea></div>
+              </div>
+              <div class="form-item">
+                <label>选项 A</label>
+                <div class="control flex items-center gap" style="max-width:none"><input class="input" style="flex:1" value="操作工李某" /><label class="checkbox" style="white-space:nowrap"><input type="checkbox" checked /> 正确答案</label></div>
+              </div>
+              <div class="form-item">
+                <label>选项 B</label>
+                <div class="control flex items-center gap" style="max-width:none"><input class="input" style="flex:1" value="班组长" /><label class="checkbox" style="white-space:nowrap"><input type="checkbox" checked /> 正确答案</label></div>
+              </div>
+              <div class="form-item">
+                <label>选项 C</label>
+                <div class="control flex items-center gap" style="max-width:none"><input class="input" style="flex:1" value="设备维修责任人" /><label class="checkbox" style="white-space:nowrap"><input type="checkbox" checked /> 正确答案</label></div>
+              </div>
+              <div class="form-item">
+                <label>选项 D</label>
+                <div class="control flex items-center gap" style="max-width:none"><input class="input" style="flex:1" value="当日请假的同事" /><label class="checkbox" style="white-space:nowrap"><input type="checkbox" /> 正确答案</label></div>
+              </div>
+            </div>
+
+            <!-- ===== 子题 4 · 判断 ===== -->
+            <div style="border:1px solid var(--border-base);border-radius:6px;padding:16px;margin-bottom:16px">
+              <div class="flex items-center gap" style="margin-bottom:12px;flex-wrap:wrap">
+                <span class="tag tag-primary" style="height:26px">子题 4</span>
+                <span class="muted">子题题型</span>
+                <div class="radio-group" style="height:auto">
+                  <label class="radio"><input type="radio" name="s4" /> 单选</label>
+                  <label class="radio"><input type="radio" name="s4" /> 多选</label>
+                  <label class="radio"><input type="radio" name="s4" checked /> 判断</label>
+                  <label class="radio"><input type="radio" name="s4" /> 不定项</label>
+                </div>
+                <span class="spacer" style="flex:1"></span>
+                <span class="muted">分值</span>
+                <input class="input" style="width:70px" value="1" /><span class="muted">分</span>
+              </div>
+              <div class="form-item">
+                <label>子题题干</label>
+                <div class="control" style="max-width:none"><textarea class="textarea">该车间在事故发生前已落实安全生产「双重预防机制」。</textarea></div>
+              </div>
+              <div class="form-item">
+                <label>选项</label>
+                <div class="control" style="max-width:none">
+                  <div class="radio-group">
+                    <label class="radio"><input type="radio" name="s4ans" /> 正确</label>
+                    <label class="radio"><input type="radio" name="s4ans" checked /> 错误（正确答案）</label>
+                  </div>
+                  <div class="form-tip">判断题固定为「正确 / 错误」两项。</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ===== 子题 5 · 单选 ===== -->
+            <div style="border:1px solid var(--border-base);border-radius:6px;padding:16px;margin-bottom:4px">
+              <div class="flex items-center gap" style="margin-bottom:12px;flex-wrap:wrap">
+                <span class="tag tag-primary" style="height:26px">子题 5</span>
+                <span class="muted">子题题型</span>
+                <div class="radio-group" style="height:auto">
+                  <label class="radio"><input type="radio" name="s5" checked /> 单选</label>
+                  <label class="radio"><input type="radio" name="s5" /> 多选</label>
+                  <label class="radio"><input type="radio" name="s5" /> 判断</label>
+                  <label class="radio"><input type="radio" name="s5" /> 不定项</label>
+                </div>
+                <span class="spacer" style="flex:1"></span>
+                <span class="muted">分值</span>
+                <input class="input" style="width:70px" value="2" /><span class="muted">分</span>
+              </div>
+              <div class="form-item">
+                <label>子题题干</label>
+                <div class="control" style="max-width:none"><textarea class="textarea">发现同类设备隐患后，正确的首要处置是？</textarea></div>
+              </div>
+              <div class="form-item">
+                <label>选项 A</label>
+                <div class="control flex items-center gap" style="max-width:none"><input class="input" style="flex:1" value="立即停机断电、挂牌上锁并报修" /><label class="checkbox" style="white-space:nowrap"><input type="checkbox" checked /> 正确答案</label></div>
+              </div>
+              <div class="form-item">
+                <label>选项 B</label>
+                <div class="control flex items-center gap" style="max-width:none"><input class="input" style="flex:1" value="边运行边观察，避免影响产量" /><label class="checkbox" style="white-space:nowrap"><input type="checkbox" /> 正确答案</label></div>
+              </div>
+              <div class="form-item">
+                <label>选项 C</label>
+                <div class="control flex items-center gap" style="max-width:none"><input class="input" style="flex:1" value="等当班结束后再报修" /><label class="checkbox" style="white-space:nowrap"><input type="checkbox" /> 正确答案</label></div>
+              </div>
+              <div class="form-item">
+                <label>选项 D</label>
+                <div class="control flex items-center gap" style="max-width:none"><input class="input" style="flex:1" value="自行拆解维修" /><label class="checkbox" style="white-space:nowrap"><input type="checkbox" /> 正确答案</label></div>
+              </div>
+            </div>
+
+            <div class="flex between items-center mt">
+              <span class="muted">共 5 个子题（已满，不可增减）</span>
+              <span style="font-size:16px;font-weight:600">综合题总分（= 各子题分值之和）：<span class="text-primary">10</span> 分</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap" style="margin-top:16px">
+          <button class="btn btn-primary" onclick="location.href='qu.html'">保存</button>
+          <a class="btn" href="qu.html">取消</a>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

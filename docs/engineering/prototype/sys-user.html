@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>用户管理 · 云帆考试系统</title>
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+  <div class="proto-bar">
+    <span class="pill">原型</span>
+    <span>云帆考试系统 · 管理端</span>
+    <a href="index.html">← 返回原型导航</a>
+    <span class="muted" style="color:#8492a6">仅作演示，数据为示例</span>
+  </div>
+
+  <div class="app-wrapper">
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-badge">云</span><span>云帆考试系统</span></div>
+      <nav class="menu">
+        <a class="menu-item" href="dashboard.html"><span class="ico">📊</span> 控制台</a>
+
+        <div class="menu-group-title">在线考试</div>
+        <a class="menu-item" href="my-exam.html"><span class="ico">📝</span> 在线考试</a>
+        <a class="menu-item" href="my-records.html"><span class="ico">🏆</span> 我的成绩</a>
+
+        <div class="menu-group-title">考试管理</div>
+        <a class="menu-item" href="repo.html"><span class="ico">📚</span> 题库管理</a>
+        <a class="menu-item" href="qu.html"><span class="ico">❓</span> 试题管理</a>
+        <a class="menu-item" href="exam.html"><span class="ico">🗂️</span> 考试管理</a>
+
+        <div class="menu-group-title">系统设置</div>
+        <a class="menu-item" href="sys-config.html"><span class="ico">⚙️</span> 系统配置</a>
+        <a class="menu-item" href="sys-depart.html"><span class="ico">🌳</span> 部门管理</a>
+        <a class="menu-item" href="sys-role.html"><span class="ico">🔑</span> 角色管理</a>
+        <a class="menu-item active" href="sys-user.html"><span class="ico">👤</span> 用户管理</a>
+      </nav>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="crumbs"><span>首页</span><span class="sep">/</span><span>系统设置</span><span class="sep">/</span><span class="cur">用户管理</span></div>
+        <a class="user" href="profile.html"><span class="avatar">超</span><span>超管A</span></a>
+      </header>
+
+      <main class="content">
+        <div class="page-title">用户管理</div>
+        <div class="page-desc">管理系统账号，分配所属部门与角色。</div>
+
+        <div class="toolbar">
+          <select class="select" style="width:180px">
+            <option>全部部门</option>
+            <option>技术部</option>
+            <option>├ 后端组</option>
+            <option>├ 前端组</option>
+            <option>├ 产品组</option>
+            <option>├ 测试组</option>
+            <option>人事部</option>
+            <option>财务部</option>
+            <option>客服部</option>
+          </select>
+          <select class="select" style="width:150px">
+            <option>全部角色</option>
+            <option>超级管理员</option>
+            <option>老师</option>
+            <option>学员</option>
+            <option>考试助理</option>
+          </select>
+          <input class="input" style="width:200px" placeholder="姓名 / 用户名" />
+          <a class="btn" href="#">🔍 搜索</a>
+          <span class="spacer"></span>
+          <a class="btn btn-primary" href="#" onclick="openDlg('添加用户')">➕ 添加用户</a>
+        </div>
+
+        <div class="card">
+          <div class="card-body" style="padding:0">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>用户名</th><th>真实姓名</th><th>所属部门</th><th>角色</th>
+                  <th>状态</th><th>创建时间</th><th style="width:180px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>admin</td><td>超管A</td><td>技术部</td>
+                  <td><span class="tag tag-danger">超级管理员</span></td>
+                  <td><span class="tag tag-success">启用</span></td>
+                  <td>2025-01-08 09:12</td>
+                  <td class="actions">
+                    <a class="btn-text" href="#" onclick="openDlg('编辑用户')">编辑</a>
+                    <a class="btn-text" href="#" onclick="openReset('admin','超管A')">重置密码</a>
+                    <a class="btn-text danger" href="#">禁用</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>person</td><td>张三</td><td>人事部</td>
+                  <td><span class="tag tag-success">学员</span></td>
+                  <td><span class="tag tag-success">启用</span></td>
+                  <td>2025-03-15 14:30</td>
+                  <td class="actions">
+                    <a class="btn-text" href="#" onclick="openDlg('编辑用户')">编辑</a>
+                    <a class="btn-text" href="#" onclick="openReset('person','张三')">重置密码</a>
+                    <a class="btn-text danger" href="#">禁用</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>assistant</td><td>李助理</td><td>技术部</td>
+                  <td><span class="tag tag-warning">考试助理</span></td>
+                  <td><span class="tag tag-success">启用</span></td>
+                  <td>2025-03-20 10:05</td>
+                  <td class="actions">
+                    <a class="btn-text" href="#" onclick="openDlg('编辑用户')">编辑</a>
+                    <a class="btn-text" href="#" onclick="openReset('assistant','李助理')">重置密码</a>
+                    <a class="btn-text danger" href="#">禁用</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>teacher_wang</td><td>王老师</td><td>技术部</td>
+                  <td><span class="tag tag-primary">老师</span></td>
+                  <td><span class="tag tag-success">启用</span></td>
+                  <td>2025-04-02 11:48</td>
+                  <td class="actions">
+                    <a class="btn-text" href="#" onclick="openDlg('编辑用户')">编辑</a>
+                    <a class="btn-text" href="#" onclick="openReset('teacher_wang','王老师')">重置密码</a>
+                    <a class="btn-text danger" href="#">禁用</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>lisi</td><td>李四</td><td>财务部</td>
+                  <td><span class="tag tag-success">学员</span></td>
+                  <td><span class="tag tag-success">启用</span></td>
+                  <td>2025-05-11 16:22</td>
+                  <td class="actions">
+                    <a class="btn-text" href="#" onclick="openDlg('编辑用户')">编辑</a>
+                    <a class="btn-text" href="#" onclick="openReset('lisi','李四')">重置密码</a>
+                    <a class="btn-text danger" href="#">禁用</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>wangwu</td><td>王五</td><td>客服部 / 客户一组</td>
+                  <td><span class="tag tag-success">学员</span></td>
+                  <td><span class="tag tag-info">禁用</span></td>
+                  <td>2025-05-18 08:40</td>
+                  <td class="actions">
+                    <a class="btn-text" href="#" onclick="openDlg('编辑用户')">编辑</a>
+                    <a class="btn-text" href="#" onclick="openReset('wangwu','王五')">重置密码</a>
+                    <a class="btn-text" href="#">启用</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="pagination" style="padding:0 16px 16px">
+              <span class="muted" style="margin-right:auto">共 156 条</span>
+              <span class="pg">‹</span>
+              <span class="pg active">1</span>
+              <span class="pg">2</span>
+              <span class="pg">3</span>
+              <span class="pg">…</span>
+              <span class="pg">16</span>
+              <span class="pg">›</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- 添加/编辑用户对话框 -->
+  <div class="dialog-mask" id="userDlg">
+    <div class="dialog">
+      <div class="dialog-header" id="userDlgTitle">添加用户</div>
+      <div class="dialog-body">
+        <div class="form-item">
+          <label><span class="req">*</span>用户名</label>
+          <div class="control"><input class="input" placeholder="登录账号，唯一" /></div>
+        </div>
+        <div class="form-item">
+          <label><span class="req">*</span>真实姓名</label>
+          <div class="control"><input class="input" placeholder="如：张三" /></div>
+        </div>
+        <div class="form-item">
+          <label><span class="req">*</span>所属部门</label>
+          <div class="control">
+            <select class="select">
+              <option>技术部</option>
+              <option>├ 后端组</option>
+              <option>├ 前端组</option>
+              <option>├ 产品组</option>
+              <option>├ 测试组</option>
+              <option>人事部</option>
+              <option>财务部</option>
+              <option>客服部</option>
+              <option>├ 客户一组</option>
+              <option>├ 客服二组</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-item">
+          <label><span class="req">*</span>角色</label>
+          <div class="control">
+            <div class="checkbox-group">
+              <label class="checkbox"><input type="checkbox" /> 超级管理员</label>
+              <label class="checkbox"><input type="checkbox" /> 老师</label>
+              <label class="checkbox"><input type="checkbox" checked /> 学员</label>
+              <label class="checkbox"><input type="checkbox" /> 考试助理</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-item">
+          <label><span class="req">*</span>初始密码</label>
+          <div class="control">
+            <input class="input" type="password" value="123456" />
+            <div class="form-tip">首次登录后建议提示用户修改密码。</div>
+          </div>
+        </div>
+      </div>
+      <div class="dialog-footer">
+        <a class="btn" href="#" onclick="closeDlg()">取 消</a>
+        <a class="btn btn-primary" href="#" onclick="closeDlg()">确 定</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 重置密码确认对话框（R3：二次确认并显示目标账号） -->
+  <div class="dialog-mask" id="resetDlg">
+    <div class="dialog" style="width:440px">
+      <div class="dialog-header">重置密码</div>
+      <div class="dialog-body">
+        <p style="margin:0 0 10px">确定将用户 <strong id="resetUser">—</strong> 的密码重置为系统默认初始密码 <strong>123456</strong> 吗？</p>
+        <div class="form-tip">仅超级管理员可执行；重置后请通知用户用新密码登录并尽快修改。本操作不影响该用户的角色、部门与状态。</div>
+      </div>
+      <div class="dialog-footer">
+        <a class="btn" href="#" onclick="closeReset()">取 消</a>
+        <a class="btn btn-primary" href="#" onclick="closeReset()">确定重置</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openDlg(title) {
+      document.getElementById('userDlgTitle').textContent = title;
+      document.getElementById('userDlg').classList.add('open');
+    }
+    function closeDlg() {
+      document.getElementById('userDlg').classList.remove('open');
+    }
+    function openReset(account, name) {
+      document.getElementById('resetUser').textContent = name + '（' + account + '）';
+      document.getElementById('resetDlg').classList.add('open');
+    }
+    function closeReset() {
+      document.getElementById('resetDlg').classList.remove('open');
+    }
+  </script>
+</body>
+</html>

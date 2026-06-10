@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>错题本 · 云帆考试系统 · 学员端</title>
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+  <div class="proto-bar">
+    <span class="pill">原型</span>
+    <span>云帆考试系统 · 学员端</span>
+    <a href="index.html">← 返回原型导航</a>
+    <span class="muted" style="color:#8492a6">仅作演示，数据为示例</span>
+  </div>
+
+  <div class="app-wrapper">
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-badge">云</span><span>云帆考试系统</span></div>
+      <nav class="menu">
+        <div class="menu-group-title">在线考试</div>
+        <a class="menu-item" href="my-exam.html"><span class="ico">📝</span> 在线考试</a>
+        <a class="menu-item" href="my-records.html"><span class="ico">🏆</span> 我的成绩</a>
+      </nav>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="crumbs"><span>在线考试</span><span class="sep">/</span><span>我的成绩</span><span class="sep">/</span><span class="cur">错题本</span></div>
+        <a class="user" href="profile.html"><span class="avatar">张</span><span>张三</span></a>
+      </header>
+
+      <main class="content">
+        <div class="page-title">错题本与错题训练</div>
+        <div class="page-desc">回顾历次考试中的错题，并通过针对性训练巩固知识点。</div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="tabs">
+              <div class="tab active" id="tab-list" onclick="switchTab('list')">错题列表</div>
+              <div class="tab" id="tab-train" onclick="switchTab('train')">错题训练</div>
+            </div>
+
+            <!-- ============ 错题列表 ============ -->
+            <div id="pane-list">
+
+              <!-- 错题 1：单选 -->
+              <div class="qu-block" style="padding-top:0;border-top:none;">
+                <div class="flex gap items-center" style="margin-bottom:6px;">
+                  <span class="tag tag-primary">单选题</span>
+                  <span class="tag tag-danger">错 2 次</span>
+                </div>
+                <div class="qu-stem"><span class="qu-no">1.</span>我国最北面的城市是哪个？</div>
+                <div class="qu-option wrong"><span class="opt-key">B</span><span>齐齐哈尔　<span class="text-danger">（你的答案 · 错误）</span></span></div>
+                <div class="qu-option correct"><span class="opt-key">D</span><span>漠河　<span class="text-success">（正确答案）</span></span></div>
+                <div class="alert alert-info mt"><b>解析：</b>漠河市位于黑龙江省最北端，是我国纬度最高、位置最北的城市，有“神州北极”之称。</div>
+              </div>
+
+              <!-- 错题 2：多选 -->
+              <div class="qu-block">
+                <div class="flex gap items-center" style="margin-bottom:6px;">
+                  <span class="tag tag-warning">多选题</span>
+                  <span class="tag tag-danger">错 1 次</span>
+                </div>
+                <div class="qu-stem"><span class="qu-no">2.</span>以下哪些属于中国的特别行政区？（多选）</div>
+                <div class="qu-option correct"><span class="opt-key">A</span><span>香港　<span class="text-success">（正确答案）</span></span></div>
+                <div class="qu-option correct"><span class="opt-key">B</span><span>澳门　<span class="text-success">（正确答案）</span></span></div>
+                <div class="qu-option wrong"><span class="opt-key">C</span><span>珠海　<span class="text-danger">（你的答案 · 多选错误）</span></span></div>
+                <div class="alert alert-info mt"><b>解析：</b>中国目前有香港、澳门两个特别行政区；珠海为广东省地级市，重庆为直辖市，均不属于特别行政区。</div>
+              </div>
+
+              <!-- 错题 3：判断 -->
+              <div class="qu-block" style="border-bottom:none;">
+                <div class="flex gap items-center" style="margin-bottom:6px;">
+                  <span class="tag tag-info">判断题</span>
+                  <span class="tag tag-danger">错 3 次</span>
+                </div>
+                <div class="qu-stem"><span class="qu-no">3.</span>咖啡的故乡是非洲。</div>
+                <div class="qu-option wrong"><span class="opt-key">×</span><span>错误　<span class="text-danger">（你的答案 · 错误）</span></span></div>
+                <div class="qu-option correct"><span class="opt-key">√</span><span>正确　<span class="text-success">（正确答案）</span></span></div>
+                <div class="alert alert-info mt"><b>解析：</b>咖啡起源于非洲埃塞俄比亚高原，后传播至世界各地，故说法正确。</div>
+              </div>
+            </div>
+
+            <!-- ============ 错题训练 ============ -->
+            <div id="pane-train" style="display:none;">
+              <div class="flex between items-center" style="margin-bottom:14px;">
+                <span class="muted">单题练习模式 · 第 1 题 / 共 8 题</span>
+                <span class="tag tag-primary">单选题</span>
+              </div>
+
+              <div class="qu-block" style="padding-top:0;border-top:none;border-bottom:none;">
+                <div class="qu-stem"><span class="qu-no">1.</span>我国最北面的城市是哪个？</div>
+                <div class="qu-option" data-key="A" onclick="trainPick(this)"><span class="opt-key">A</span><span>铁岭</span></div>
+                <div class="qu-option" data-key="B" onclick="trainPick(this)"><span class="opt-key">B</span><span>齐齐哈尔</span></div>
+                <div class="qu-option" data-key="C" onclick="trainPick(this)"><span class="opt-key">C</span><span>沈阳</span></div>
+                <div class="qu-option" data-key="D" onclick="trainPick(this)"><span class="opt-key">D</span><span>漠河</span></div>
+              </div>
+
+              <div id="trainFeedback" style="display:none;margin:6px 0 12px;"></div>
+
+              <div class="divider"></div>
+              <div class="flex gap">
+                <a class="btn btn-primary" href="javascript:void(0)" onclick="trainSubmit()">提交答案</a>
+                <a class="btn" href="javascript:void(0)" onclick="trainNext()">下一题 →</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // 标签页切换
+    function switchTab(which) {
+      var isList = which === 'list';
+      document.getElementById('tab-list').classList.toggle('active', isList);
+      document.getElementById('tab-train').classList.toggle('active', !isList);
+      document.getElementById('pane-list').style.display = isList ? 'block' : 'none';
+      document.getElementById('pane-train').style.display = isList ? 'none' : 'block';
+    }
+
+    // 错题训练：选择 + 即时对错反馈
+    var CORRECT = 'D';
+    var trainChosen = null;
+    function trainPick(el) {
+      if (el.classList.contains('correct') || el.classList.contains('wrong')) return; // 已判定后锁定
+      var opts = el.parentNode.querySelectorAll('.qu-option');
+      opts.forEach(function (o) { o.classList.remove('selected'); });
+      el.classList.add('selected');
+      trainChosen = el.getAttribute('data-key');
+    }
+    function trainSubmit() {
+      if (!trainChosen) { alert('请先选择一个答案'); return; }
+      var opts = document.querySelectorAll('#pane-train .qu-option');
+      opts.forEach(function (o) {
+        o.classList.remove('selected');
+        var k = o.getAttribute('data-key');
+        if (k === CORRECT) o.classList.add('correct');
+        else if (k === trainChosen) o.classList.add('wrong');
+      });
+      var fb = document.getElementById('trainFeedback');
+      fb.style.display = 'block';
+      if (trainChosen === CORRECT) {
+        fb.className = 'alert alert-success';
+        fb.innerHTML = '✓ 回答正确！漠河是我国位置最北的城市。';
+      } else {
+        fb.className = 'alert alert-warning';
+        fb.innerHTML = '✗ 回答错误。正确答案为 <b>D · 漠河</b>。';
+      }
+    }
+    function trainNext() {
+      // 原型：重置当前题状态以演示“下一题”
+      var opts = document.querySelectorAll('#pane-train .qu-option');
+      opts.forEach(function (o) { o.classList.remove('selected', 'correct', 'wrong'); });
+      document.getElementById('trainFeedback').style.display = 'none';
+      trainChosen = null;
+    }
+  </script>
+</body>
+</html>

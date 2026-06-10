@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>题库管理 · 云帆考试系统</title>
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+  <div class="proto-bar">
+    <span class="pill">原型</span>
+    <span>云帆考试系统 · 管理端</span>
+    <a href="index.html">← 返回原型导航</a>
+    <span class="muted" style="color:#8492a6">仅作演示，数据为示例</span>
+  </div>
+
+  <div class="app-wrapper">
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-badge">云</span><span>云帆考试系统</span></div>
+      <nav class="menu">
+        <a class="menu-item" href="dashboard.html"><span class="ico">📊</span> 控制台</a>
+
+        <div class="menu-group-title">在线考试</div>
+        <a class="menu-item" href="my-exam.html"><span class="ico">📝</span> 在线考试</a>
+        <a class="menu-item" href="my-records.html"><span class="ico">🏆</span> 我的成绩</a>
+
+        <div class="menu-group-title">考试管理</div>
+        <a class="menu-item active" href="repo.html"><span class="ico">📚</span> 题库管理</a>
+        <a class="menu-item" href="qu.html"><span class="ico">❓</span> 试题管理</a>
+        <a class="menu-item" href="exam.html"><span class="ico">🗂️</span> 考试管理</a>
+
+        <div class="menu-group-title">系统设置</div>
+        <a class="menu-item" href="sys-config.html"><span class="ico">⚙️</span> 系统配置</a>
+        <a class="menu-item" href="sys-depart.html"><span class="ico">🌳</span> 部门管理</a>
+        <a class="menu-item" href="sys-role.html"><span class="ico">🔑</span> 角色管理</a>
+        <a class="menu-item" href="sys-user.html"><span class="ico">👤</span> 用户管理</a>
+      </nav>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="crumbs"><span>首页</span><span class="sep">/</span><span>考试管理</span><span class="sep">/</span><span class="cur">题库管理</span></div>
+        <a class="user" href="profile.html"><span class="avatar">超</span><span>超管A</span></a>
+      </header>
+
+      <main class="content">
+        <div class="page-title">题库管理</div>
+        <div class="page-desc">维护考试题库，按业务分类组织试题。共 12 个题库。</div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="toolbar">
+              <input class="input" style="width:240px" placeholder="搜索题库名称" />
+              <select class="select" style="width:120px">
+                <option>全部状态</option>
+                <option>开放</option>
+                <option>关闭</option>
+              </select>
+              <button class="btn">查询</button>
+              <button class="btn">重置</button>
+              <span class="spacer"></span>
+              <button class="btn btn-primary" onclick="openDlg()">➕ 新建题库</button>
+            </div>
+
+            <div class="alert alert-info">💡 关闭状态的题库不会出现在考试组卷的可选范围内。</div>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width:120px">题库编号</th>
+                  <th>题库名称</th>
+                  <th style="width:100px">试题数量</th>
+                  <th style="width:100px">开放类型</th>
+                  <th style="width:170px">创建时间</th>
+                  <th style="width:260px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>RP-1001</td>
+                  <td>【云帆】演示题库</td>
+                  <td>30</td>
+                  <td><span class="tag tag-success">开放</span></td>
+                  <td>2026-03-12 09:24</td>
+                  <td class="actions">
+                    <a class="btn-text" href="qu.html">查看试题</a>
+                    <a class="btn-text" href="javascript:openDlg()">编辑</a>
+                    <a class="btn-text danger" href="javascript:;">关闭</a>
+                    <a class="btn-text danger" href="javascript:;">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>RP-1002</td>
+                  <td>安全生产题库</td>
+                  <td>120</td>
+                  <td><span class="tag tag-success">开放</span></td>
+                  <td>2026-02-28 14:05</td>
+                  <td class="actions">
+                    <a class="btn-text" href="qu.html">查看试题</a>
+                    <a class="btn-text" href="javascript:openDlg()">编辑</a>
+                    <a class="btn-text danger" href="javascript:;">关闭</a>
+                    <a class="btn-text danger" href="javascript:;">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>RP-1003</td>
+                  <td>ISO9001 质量管理题库</td>
+                  <td>85</td>
+                  <td><span class="tag tag-success">开放</span></td>
+                  <td>2026-02-15 11:30</td>
+                  <td class="actions">
+                    <a class="btn-text" href="qu.html">查看试题</a>
+                    <a class="btn-text" href="javascript:openDlg()">编辑</a>
+                    <a class="btn-text danger" href="javascript:;">关闭</a>
+                    <a class="btn-text danger" href="javascript:;">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>RP-1004</td>
+                  <td>新员工入职题库</td>
+                  <td>60</td>
+                  <td><span class="tag tag-success">开放</span></td>
+                  <td>2026-01-20 16:48</td>
+                  <td class="actions">
+                    <a class="btn-text" href="qu.html">查看试题</a>
+                    <a class="btn-text" href="javascript:openDlg()">编辑</a>
+                    <a class="btn-text danger" href="javascript:;">关闭</a>
+                    <a class="btn-text danger" href="javascript:;">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>RP-1005</td>
+                  <td>消防安全题库</td>
+                  <td>45</td>
+                  <td><span class="tag tag-info">关闭</span></td>
+                  <td>2026-01-08 10:12</td>
+                  <td class="actions">
+                    <a class="btn-text" href="qu.html">查看试题</a>
+                    <a class="btn-text" href="javascript:openDlg()">编辑</a>
+                    <a class="btn-text" href="javascript:;">开放</a>
+                    <a class="btn-text danger" href="javascript:;">删除</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="pagination">
+              <span class="muted" style="margin-right:8px">共 12 条</span>
+              <span class="pg">‹</span>
+              <span class="pg active">1</span>
+              <span class="pg">2</span>
+              <span class="pg">3</span>
+              <span class="pg">›</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- 新建/编辑题库对话框 -->
+  <div class="dialog-mask" id="repoDlg">
+    <div class="dialog">
+      <div class="dialog-header">新建题库</div>
+      <div class="dialog-body">
+        <div class="form-item">
+          <label><span class="req">*</span>题库编号</label>
+          <div class="control"><input class="input" placeholder="如 RP-1006" /></div>
+        </div>
+        <div class="form-item">
+          <label><span class="req">*</span>题库名称</label>
+          <div class="control"><input class="input" placeholder="请输入题库名称" /></div>
+        </div>
+        <div class="form-item">
+          <label>备注</label>
+          <div class="control"><textarea class="textarea" placeholder="选填，描述题库用途、适用范围等"></textarea></div>
+        </div>
+      </div>
+      <div class="dialog-footer">
+        <button class="btn" onclick="closeDlg()">取消</button>
+        <button class="btn btn-primary" onclick="closeDlg()">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openDlg() { document.getElementById('repoDlg').classList.add('open'); }
+    function closeDlg() { document.getElementById('repoDlg').classList.remove('open'); }
+  </script>
+</body>
+</html>

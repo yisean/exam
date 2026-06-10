@@ -24,6 +24,10 @@ public class ExamApplication implements WebMvcConfigurer {
 		ConfigurableApplicationContext application = SpringApplication.run(ExamApplication.class, args);
 		Environment env = application.getEnvironment();
 		String ip = InetAddress.getLocalHost().getHostAddress();
+
+
+
+
 		String port = env.getProperty("server.port");
 		String path = env.getProperty("server.servlet.context-path");
 

@@ -50,4 +50,10 @@ public class SysConfig extends Model<SysConfig> {
      */
     @TableField("copy_right")
     private String copyRight;
+
+    /**
+     * 考试提前可见时长(分钟)
+     */
+    @TableField("advance_visible_minutes")
+    private Integer advanceVisibleMinutes;
 }

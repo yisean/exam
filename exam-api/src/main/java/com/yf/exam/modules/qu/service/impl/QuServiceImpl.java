@@ -69,23 +69,42 @@ public class QuServiceImpl extends ServiceImpl<QuMapper, Qu> implements QuServic
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void delete(List<String> ids) {
+
+        // 综合题：把其子题ID一并纳入删除集合（级联删子题）
+        List<String> allIds = new ArrayList<>(ids);
+        QueryWrapper<Qu> subWrapper = new QueryWrapper<>();
+        subWrapper.lambda().in(Qu::getParentId, ids);
+        List<Qu> subs = this.list(subWrapper);
+        if (!CollectionUtils.isEmpty(subs)) {
+            for (Qu s : subs) {
+                allIds.add(s.getId());
+            }
+        }
+
         // 移除题目
-        this.removeByIds(ids);
+        this.removeByIds(allIds);
 
         // 移除选项
         QueryWrapper<QuAnswer> wrapper = new QueryWrapper<>();
-        wrapper.lambda().in(QuAnswer::getQuId, ids);
+        wrapper.lambda().in(QuAnswer::getQuId, allIds);
         quAnswerService.remove(wrapper);
 
         // 移除题库绑定
         QueryWrapper<QuRepo> wrapper1 = new QueryWrapper<>();
-        wrapper1.lambda().in(QuRepo::getQuId, ids);
+        wrapper1.lambda().in(QuRepo::getQuId, allIds);
         quRepoService.remove(wrapper1);
     }
 
     @Override
     public List<Qu> listByRandom(String repoId, Integer quType, List<String> excludes, Integer size) {
         return baseMapper.listByRandom(repoId, quType, excludes, size);
+    }
+
+    @Override
+    public List<Qu> listByParent(String parentId) {
+        QueryWrapper<Qu> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(Qu::getParentId, parentId).orderByAsc(Qu::getSort);
+        return this.list(wrapper);
     }
 
     @Override
@@ -101,6 +120,23 @@ public class QuServiceImpl extends ServiceImpl<QuMapper, Qu> implements QuServic
         List<String> repoIds = quRepoService.listByQu(id);
         respDTO.setRepoIds(repoIds);
 
+        // 综合题：回填5个子题（含各自选项与分值），按 sort 排序
+        if (QuType.COMPOSITE.equals(qu.getQuType())) {
+            QueryWrapper<Qu> wrapper = new QueryWrapper<>();
+            wrapper.lambda().eq(Qu::getParentId, id).orderByAsc(Qu::getSort);
+            List<Qu> subs = this.list(wrapper);
+            List<QuDetailDTO> subList = new ArrayList<>();
+            if (!CollectionUtils.isEmpty(subs)) {
+                for (Qu sub : subs) {
+                    QuDetailDTO subDTO = new QuDetailDTO();
+                    BeanMapper.copy(sub, subDTO);
+                    subDTO.setAnswerList(quAnswerService.listByQu(sub.getId()));
+                    subList.add(subDTO);
+                }
+            }
+            respDTO.setSubQuList(subList);
+        }
+
         return respDTO;
     }
 
@@ -109,8 +145,13 @@ public class QuServiceImpl extends ServiceImpl<QuMapper, Qu> implements QuServic
     @Override
     public void save(QuDetailDTO reqDTO) {
 
+        // 综合题走父子保存
+        if (QuType.COMPOSITE.equals(reqDTO.getQuType())) {
+            this.saveComposite(reqDTO);
+            return;
+        }
 
-        // 校验数据
+        // 校验数据（单选/多选/判断/不定项）
         this.checkData(reqDTO, "");
 
         Qu qu = new Qu();
@@ -128,6 +169,72 @@ public class QuServiceImpl extends ServiceImpl<QuMapper, Qu> implements QuServic
         // 保存到题库
         quRepoService.saveAll(qu.getId(), qu.getQuType(), reqDTO.getRepoIds());
 
+    }
+
+    /**
+     * 保存综合题：父题（共享材料，无选项）+ 恰好5个子题（各含选项与分值）
+     *
+     * @param reqDTO
+     */
+    private void saveComposite(QuDetailDTO reqDTO) {
+
+        // 校验综合题
+        this.checkComposite(reqDTO);
+
+        // 保存父题（综合题本身：content=共享材料，无父、无分值、无选项）
+        Qu parent = new Qu();
+        BeanMapper.copy(reqDTO, parent);
+        parent.setParentId(null);
+        parent.setSort(null);
+        parent.setScore(null);
+        imageCheckUtils.checkImage(parent.getImage(), "题干图片地址错误！");
+        this.saveOrUpdate(parent);
+
+        // 父题绑定题库（子题不单独绑库）
+        quRepoService.saveAll(parent.getId(), QuType.COMPOSITE, reqDTO.getRepoIds());
+
+        // 编辑场景：先清掉旧子题及其选项，再整体重建
+        this.deleteSubQu(parent.getId());
+
+        // 保存5个子题
+        int sort = 0;
+        for (QuDetailDTO sub : reqDTO.getSubQuList()) {
+            Qu subQu = new Qu();
+            BeanMapper.copy(sub, subQu);
+            // 强制新增，建立父子关系与排序
+            subQu.setId(null);
+            subQu.setParentId(parent.getId());
+            subQu.setSort(sort);
+            imageCheckUtils.checkImage(subQu.getImage(), "子题图片地址错误！");
+            this.saveOrUpdate(subQu);
+
+            // 子题选项
+            quAnswerService.saveAll(subQu.getId(), sub.getAnswerList());
+            sort++;
+        }
+    }
+
+    /**
+     * 删除某综合题父题下的全部子题及其选项
+     *
+     * @param parentId
+     */
+    private void deleteSubQu(String parentId) {
+        QueryWrapper<Qu> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(Qu::getParentId, parentId);
+        List<Qu> subs = this.list(wrapper);
+        if (CollectionUtils.isEmpty(subs)) {
+            return;
+        }
+        List<String> subIds = new ArrayList<>();
+        for (Qu sub : subs) {
+            subIds.add(sub.getId());
+        }
+        this.removeByIds(subIds);
+
+        QueryWrapper<QuAnswer> aw = new QueryWrapper<>();
+        aw.lambda().in(QuAnswer::getQuId, subIds);
+        quAnswerService.remove(aw);
     }
 
     @Override
@@ -187,6 +294,11 @@ public class QuServiceImpl extends ServiceImpl<QuMapper, Qu> implements QuServic
                 qu.setQuType(Integer.parseInt(im.getQuType()));
                 qu.setCreateTime(new Date());
 
+                // 综合题含5个子题，Excel 无法承载，跳过以免整批导入中断
+                if (QuType.COMPOSITE.equals(qu.getQuType())) {
+                    continue;
+                }
+
                 //设置回答列表
                 List<QuAnswerDTO> answerList = this.processAnswerList(anMap.get(key));
                 //设置题目
@@ -235,49 +347,103 @@ public class QuServiceImpl extends ServiceImpl<QuMapper, Qu> implements QuServic
      */
     public void checkData(QuDetailDTO qu, String no) {
 
-
         if (StringUtils.isEmpty(qu.getContent())) {
             throw new ServiceException(1, no + "题目内容不能为空！");
         }
-
 
         if (CollectionUtils.isEmpty(qu.getRepoIds())) {
             throw new ServiceException(1, no + "至少要选择一个题库！");
         }
 
-        List<QuAnswerDTO> answers = qu.getAnswerList();
+        this.checkAnswerList(qu.getAnswerList(), qu.getQuType(), no);
+    }
 
+    /**
+     * 校验客观题选项（单选/多选/判断/不定项通用，也用于综合题子题）
+     *
+     * @param answers 选项列表
+     * @param quType  题型
+     * @param no      错误前缀
+     */
+    private void checkAnswerList(List<QuAnswerDTO> answers, Integer quType, String no) {
 
-            if (CollectionUtils.isEmpty(answers)) {
-                throw new ServiceException(1, no + "客观题至少要包含一个备选答案！");
+        if (CollectionUtils.isEmpty(answers)) {
+            throw new ServiceException(1, no + "客观题至少要包含一个备选答案！");
+        }
+
+        int trueCount = 0;
+        for (QuAnswerDTO a : answers) {
+
+            if (a.getIsRight() == null) {
+                throw new ServiceException(1, no + "必须定义选项是否正确项！");
             }
 
-
-            int trueCount = 0;
-            for (QuAnswerDTO a : answers) {
-
-                if (a.getIsRight() == null) {
-                    throw new ServiceException(1, no + "必须定义选项是否正确项！");
-                }
-
-                if (StringUtils.isEmpty(a.getContent())) {
-                    throw new ServiceException(1, no + "选项内容不为空！");
-                }
-
-                if (a.getIsRight()) {
-                    trueCount += 1;
-                }
+            if (StringUtils.isEmpty(a.getContent())) {
+                throw new ServiceException(1, no + "选项内容不为空！");
             }
 
-            if (trueCount == 0) {
-                throw new ServiceException(1, no + "至少要包含一个正确项！");
+            if (a.getIsRight()) {
+                trueCount += 1;
+            }
+        }
+
+        if (trueCount == 0) {
+            throw new ServiceException(1, no + "至少要包含一个正确项！");
+        }
+
+        //单选题
+        if (QuType.RADIO.equals(quType) && trueCount > 1) {
+            throw new ServiceException(1, no + "单选题不能包含多个正确项！");
+        }
+
+        //不定项：至少两个选项（答案可一个或多个）
+        if (QuType.UNCERTAIN.equals(quType) && answers.size() < 2) {
+            throw new ServiceException(1, no + "不定项至少要包含两个选项！");
+        }
+    }
+
+    /**
+     * 校验综合题：共享材料 + 题库 + 恰好5个子题（题型四选一、各带分值、各自选项合法）
+     *
+     * @param qu
+     */
+    private void checkComposite(QuDetailDTO qu) {
+
+        if (StringUtils.isEmpty(qu.getContent())) {
+            throw new ServiceException(1, "综合题的共享题干/材料不能为空！");
+        }
+
+        if (CollectionUtils.isEmpty(qu.getRepoIds())) {
+            throw new ServiceException(1, "至少要选择一个题库！");
+        }
+
+        List<QuDetailDTO> subs = qu.getSubQuList();
+        if (subs == null || subs.size() != 5) {
+            throw new ServiceException(1, "综合题必须包含5个子题！");
+        }
+
+        int i = 1;
+        for (QuDetailDTO sub : subs) {
+
+            String no = "第" + i + "个子题：";
+            Integer type = sub.getQuType();
+
+            if (type == null
+                    || !(QuType.RADIO.equals(type) || QuType.MULTI.equals(type)
+                    || QuType.JUDGE.equals(type) || QuType.UNCERTAIN.equals(type))) {
+                throw new ServiceException(1, no + "子题题型只能是单选/多选/判断/不定项（不能是综合题）！");
             }
 
-
-            //单选题
-            if (qu.getQuType().equals(QuType.RADIO) && trueCount > 1) {
-                throw new ServiceException(1, no + "单选题不能包含多个正确项！");
+            if (sub.getScore() == null || sub.getScore() <= 0) {
+                throw new ServiceException(1, no + "子题分值必须大于0！");
             }
 
+            if (StringUtils.isEmpty(sub.getContent())) {
+                throw new ServiceException(1, no + "子题题干不能为空！");
+            }
+
+            this.checkAnswerList(sub.getAnswerList(), type, no);
+            i++;
+        }
     }
 }

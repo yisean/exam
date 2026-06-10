@@ -50,12 +50,18 @@
 
         <el-table-column
           label="考试时间"
-          width="220px"
+          width="240px"
           align="center"
         >
 
           <template v-slot="scope">
-            <span v-if="scope.row.timeLimit">
+            <!-- 时间段考试：展示对该学员可见的时段窗口 -->
+            <template v-if="scope.row.timeSlots && scope.row.timeSlots.length">
+              <div v-for="slot in scope.row.timeSlots" :key="slot.id" style="font-size:12px;">
+                {{ slot.startTime }} ~ {{ slot.endTime }}
+              </div>
+            </template>
+            <span v-else-if="scope.row.timeLimit">
               {{ scope.row.startTime }} ~ {{ scope.row.endTime }}
             </span>
             <span v-else>不限时</span>
@@ -91,10 +97,18 @@
           align="center"
         >
           <template v-slot="scope">
-            <el-button v-if="scope.row.state===0" icon="el-icon-caret-right" type="primary" size="mini" @click="handlePre(scope.row.id)">去考试</el-button>
-            <el-button v-if="scope.row.state===1" icon="el-icon-s-release" size="mini" disabled>已禁用</el-button>
-            <el-button v-if="scope.row.state===2" icon="el-icon-s-fold" size="mini" disabled>待开始</el-button>
-            <el-button v-if="scope.row.state===3" icon="el-icon-s-unfold" size="mini" disabled>已结束</el-button>
+            <!-- 时间段考试：按当前是否可作答控制 -->
+            <template v-if="scope.row.timeSlots && scope.row.timeSlots.length">
+              <el-button v-if="scope.row.canAnswer" icon="el-icon-caret-right" type="primary" size="mini" @click="handlePre(scope.row.id)">去考试</el-button>
+              <el-button v-else icon="el-icon-s-fold" size="mini" disabled>未到时段</el-button>
+            </template>
+            <!-- 历史考试：沿用考试状态 -->
+            <template v-else>
+              <el-button v-if="scope.row.state===0" icon="el-icon-caret-right" type="primary" size="mini" @click="handlePre(scope.row.id)">去考试</el-button>
+              <el-button v-if="scope.row.state===1" icon="el-icon-s-release" size="mini" disabled>已禁用</el-button>
+              <el-button v-if="scope.row.state===2" icon="el-icon-s-fold" size="mini" disabled>待开始</el-button>
+              <el-button v-if="scope.row.state===3" icon="el-icon-s-unfold" size="mini" disabled>已结束</el-button>
+            </template>
           </template>
 
         </el-table-column>

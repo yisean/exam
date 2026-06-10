@@ -14,9 +14,14 @@ import com.yf.exam.core.utils.BeanMapper;
 import com.yf.exam.core.utils.CronUtils;
 import com.yf.exam.modules.exam.dto.ExamDTO;
 import com.yf.exam.modules.exam.dto.ExamRepoDTO;
+import com.yf.exam.modules.exam.dto.ExamTimeSlotDTO;
 import com.yf.exam.modules.exam.dto.ext.ExamRepoExtDTO;
+import com.yf.exam.modules.exam.entity.Exam;
+import com.yf.exam.modules.exam.service.ExamEligibilityService;
 import com.yf.exam.modules.exam.service.ExamRepoService;
 import com.yf.exam.modules.exam.service.ExamService;
+import com.yf.exam.modules.exam.service.ExamTimeSlotService;
+import com.yf.exam.modules.user.UserUtils;
 import com.yf.exam.modules.paper.dto.PaperDTO;
 import com.yf.exam.modules.paper.dto.PaperQuDTO;
 import com.yf.exam.modules.paper.dto.ext.PaperQuAnswerExtDTO;
@@ -70,6 +75,12 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
 
     @Autowired
     private ExamService examService;
+
+    @Autowired
+    private ExamTimeSlotService examTimeSlotService;
+
+    @Autowired
+    private ExamEligibilityService examEligibilityService;
 
     @Autowired
     private QuService quService;
@@ -138,6 +149,16 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
             throw new ServiceException(1, "考试状态不正确！");
         }
 
+        // 时间段门禁：仅对配置了时间段的考试生效（历史考试沿用上面的状态校验）
+        List<ExamTimeSlotDTO> slots = examTimeSlotService.listByExam(examId);
+        if (!CollectionUtils.isEmpty(slots)) {
+            Exam examEntity = examService.getById(examId);
+            String departId = UserUtils.getDepartId(false);
+            if (!examEligibilityService.canAnswer(examEntity, departId, new Date())) {
+                throw new ServiceException(1, "当前不在该考试的可考时间段，或无应考资格！");
+            }
+        }
+
         // 考试题目列表
         List<PaperQu> quList = this.generateByRepo(examId);
 
@@ -165,27 +186,45 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
         Paper paper = paperService.getById(paperId);
         BeanMapper.copy(paper, respDTO);
 
-        // 查找题目列表
+        // 查找题目列表（按 sort 升序，父题在子题之前）
         List<PaperQuDTO> list = paperQuService.listByPaper(paperId);
 
         List<PaperQuDTO> radioList = new ArrayList<>();
         List<PaperQuDTO> multiList = new ArrayList<>();
         List<PaperQuDTO> judgeList = new ArrayList<>();
+        List<PaperQuDTO> uncertainList = new ArrayList<>();
+        List<PaperQuDTO> compositeList = new ArrayList<>();
+        Map<String, PaperQuDTO> compositeMap = new HashMap<>(16);
+
+        // 先收集综合题父题，建立映射
         for(PaperQuDTO item: list){
-            if(QuType.RADIO.equals(item.getQuType())){
+            if(QuType.COMPOSITE.equals(item.getQuType())){
+                item.setSubList(new ArrayList<>());
+                compositeList.add(item);
+                compositeMap.put(item.getId(), item);
+            }
+        }
+
+        // 再分配其余题目；综合题子题挂到父题 subList
+        for(PaperQuDTO item: list){
+            if(item.getParentId() != null && compositeMap.containsKey(item.getParentId())){
+                compositeMap.get(item.getParentId()).getSubList().add(item);
+            } else if(QuType.RADIO.equals(item.getQuType())){
                 radioList.add(item);
-            }
-            if(QuType.MULTI.equals(item.getQuType())){
+            } else if(QuType.MULTI.equals(item.getQuType())){
                 multiList.add(item);
-            }
-            if(QuType.JUDGE.equals(item.getQuType())){
+            } else if(QuType.JUDGE.equals(item.getQuType())){
                 judgeList.add(item);
+            } else if(QuType.UNCERTAIN.equals(item.getQuType())){
+                uncertainList.add(item);
             }
         }
 
         respDTO.setRadioList(radioList);
         respDTO.setMultiList(multiList);
         respDTO.setJudgeList(judgeList);
+        respDTO.setUncertainList(uncertainList);
+        respDTO.setCompositeList(compositeList);
         return respDTO;
     }
 
@@ -276,6 +315,61 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
                         excludes.add(qu.getId());
                     }
                 }
+
+                // 不定项题
+                if(item.getUncertainCount() != null && item.getUncertainCount() > 0) {
+                    List<Qu> uncertainList = quService.listByRandom(item.getRepoId(), QuType.UNCERTAIN, excludes,
+                            item.getUncertainCount());
+                    for (Qu qu : uncertainList) {
+                        PaperQu paperQu = this.processPaperQu(item, qu);
+                        quList.add(paperQu);
+                        excludes.add(qu.getId());
+                    }
+                }
+
+                // 综合题：整题抽取，拍平为「父行 + 5个子行」
+                if(item.getCompositeCount() != null && item.getCompositeCount() > 0) {
+                    List<Qu> compositeList = quService.listByRandom(item.getRepoId(), QuType.COMPOSITE, excludes,
+                            item.getCompositeCount());
+                    for (Qu parent : compositeList) {
+                        excludes.add(parent.getId());
+
+                        List<Qu> subs = quService.listByParent(parent.getId());
+                        if (CollectionUtils.isEmpty(subs)) {
+                            // 异常数据：综合题无子题，跳过
+                            continue;
+                        }
+
+                        // 父行：预生成ID供子行引用；分值=子题之和；父题不参与判分
+                        String parentPaperQuId = IdWorker.getIdStr();
+                        int compositeScore = 0;
+                        for (Qu sub : subs) {
+                            compositeScore += (sub.getScore() == null ? 0 : sub.getScore());
+                        }
+                        PaperQu parentPq = new PaperQu();
+                        parentPq.setId(parentPaperQuId);
+                        parentPq.setQuId(parent.getId());
+                        parentPq.setQuType(QuType.COMPOSITE);
+                        parentPq.setAnswered(false);
+                        parentPq.setIsRight(false);
+                        parentPq.setScore(compositeScore);
+                        parentPq.setActualScore(0);
+                        quList.add(parentPq);
+
+                        // 子行：各按自身题型判分，parentId 指向父行
+                        for (Qu sub : subs) {
+                            PaperQu subPq = new PaperQu();
+                            subPq.setQuId(sub.getId());
+                            subPq.setQuType(sub.getQuType());
+                            subPq.setAnswered(false);
+                            subPq.setIsRight(false);
+                            subPq.setScore(sub.getScore() == null ? 0 : sub.getScore());
+                            subPq.setActualScore(0);
+                            subPq.setParentId(parentPaperQuId);
+                            quList.add(subPq);
+                        }
+                    }
+                }
             }
         }
         return quList;
@@ -297,20 +391,23 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
         paperQu.setAnswered(false);
         paperQu.setIsRight(false);
         paperQu.setQuType(qu.getQuType());
+        // 实得分初始为0，交卷判分时按题型写回（支持不定项部分给分）
+        paperQu.setActualScore(0);
 
         if (QuType.RADIO.equals(qu.getQuType())) {
             paperQu.setScore(repo.getRadioScore());
-            paperQu.setActualScore(repo.getRadioScore());
         }
 
         if (QuType.MULTI.equals(qu.getQuType())) {
             paperQu.setScore(repo.getMultiScore());
-            paperQu.setActualScore(repo.getMultiScore());
         }
 
         if (QuType.JUDGE.equals(qu.getQuType())) {
             paperQu.setScore(repo.getJudgeScore());
-            paperQu.setActualScore(repo.getJudgeScore());
+        }
+
+        if (QuType.UNCERTAIN.equals(qu.getQuType())) {
+            paperQu.setScore(repo.getUncertainScore());
         }
 
         return paperQu;
@@ -335,7 +432,17 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
         paper.setDepartId(user.getDepartId());
         paper.setExamId(exam.getId());
         paper.setTitle(exam.getTitle());
-        paper.setTotalScore(exam.getTotalScore());
+        // 试卷实际总分 = 抽中的叶子题分值之和（综合题父行不计，其分由5个子行各自计入；
+        // 综合题分值随题，无法在考试配置期精确预估，故以实际抽中题目为准）
+        int totalScore = 0;
+        if (!CollectionUtils.isEmpty(quList)) {
+            for (PaperQu pq : quList) {
+                if (!QuType.COMPOSITE.equals(pq.getQuType()) && pq.getScore() != null) {
+                    totalScore += pq.getScore();
+                }
+            }
+        }
+        paper.setTotalScore(totalScore);
         paper.setTotalTime(exam.getTotalTime());
         paper.setUserScore(0);
         paper.setUserId(userId);
@@ -377,7 +484,10 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
 
             item.setPaperId(paperId);
             item.setSort(sort);
-            item.setId(IdWorker.getIdStr());
+            // 综合题父行已预生成ID供子行引用，不能覆盖
+            if (StringUtils.isBlank(item.getId())) {
+                item.setId(IdWorker.getIdStr());
+            }
 
             //回答列表
             List<QuAnswer> answerList = quAnswerService.listAnswerByRandom(item.getQuId());
@@ -416,41 +526,75 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     public void fillAnswer(PaperAnswerDTO reqDTO) {
 
 
-        // 未作答
-        if(CollectionUtils.isEmpty(reqDTO.getAnswers())
-                && StringUtils.isBlank(reqDTO.getAnswer())){
-            return;
-        }
+        // 本次是否有作答；取消全部选择(answers为空)时视为未作答，需把旧的勾选与得分清零，
+        // 不能直接 return，否则会残留上一次的 actual_score/isRight。
+        boolean answered = !(CollectionUtils.isEmpty(reqDTO.getAnswers())
+                && StringUtils.isBlank(reqDTO.getAnswer()));
 
         //查找答案列表
         List<PaperQuAnswer> list = paperQuAnswerService.listForFill(reqDTO.getPaperId(), reqDTO.getQuId());
 
-        //是否正确
-        boolean right = true;
+        // 本题（取题型与满分，用于计算实得分）
+        PaperQu paperQu = paperQuService.findByKey(reqDTO.getPaperId(), reqDTO.getQuId());
 
-        //更新正确答案
+        boolean hasWrongChecked = false;   // 选了错误项
+        boolean allRightChecked = true;    // 所有正确项都被选中
+        boolean anyRightChecked = false;   // 至少选中一个正确项
+
+        //更新选项勾选状态
         for (PaperQuAnswer item : list) {
 
-            if (reqDTO.getAnswers().contains(item.getId())) {
-                item.setChecked(true);
-            } else {
-                item.setChecked(false);
+            boolean checked = reqDTO.getAnswers().contains(item.getId());
+            item.setChecked(checked);
+
+            boolean isRight = item.getIsRight() != null && item.getIsRight();
+            if (isRight && checked) {
+                anyRightChecked = true;
+            }
+            if (isRight && !checked) {
+                allRightChecked = false;
+            }
+            if (!isRight && checked) {
+                hasWrongChecked = true;
             }
 
-            //有一个对不上就是错的
-            if (item.getIsRight()!=null && !item.getIsRight().equals(item.getChecked())) {
-                right = false;
-            }
             paperQuAnswerService.updateById(item);
         }
 
-        //修改为已回答
+        Integer quType = paperQu != null ? paperQu.getQuType() : null;
+        int score = (paperQu != null && paperQu.getScore() != null) ? paperQu.getScore() : 0;
+
+        //修改为已回答 + 按题型判分写回实得分
         PaperQu qu = new PaperQu();
         qu.setQuId(reqDTO.getQuId());
         qu.setPaperId(reqDTO.getPaperId());
-        qu.setIsRight(right);
         qu.setAnswer(reqDTO.getAnswer());
-        qu.setAnswered(true);
+        qu.setAnswered(answered);
+
+        if (QuType.UNCERTAIN.equals(quType)) {
+            // 不定项·固定半分制：错选0分；全对满分；漏选(无错选)得满分一半(向下取整)
+            if (hasWrongChecked) {
+                qu.setIsRight(false);
+                qu.setActualScore(0);
+            } else if (allRightChecked) {
+                qu.setIsRight(true);
+                qu.setActualScore(score);
+            } else if (anyRightChecked) {
+                qu.setIsRight(false);
+                qu.setActualScore(score / 2);
+            } else {
+                qu.setIsRight(false);
+                qu.setActualScore(0);
+            }
+        } else if (QuType.RADIO.equals(quType) || QuType.MULTI.equals(quType) || QuType.JUDGE.equals(quType)) {
+            // 单选/多选/判断：全部选对得满分，否则0（与原行为一致）
+            boolean right = !hasWrongChecked && allRightChecked;
+            qu.setIsRight(right);
+            qu.setActualScore(right ? score : 0);
+        } else {
+            // 主观题等：仅标记已答，不自动给分（由阅卷处理，actual_score 不在此更新）
+            qu.setIsRight(true);
+        }
 
         paperQuService.updateByKey(qu);
 
@@ -508,6 +652,10 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
         //把打错的问题加入错题本
         List<PaperQuDTO> list = paperQuService.listByPaper(paperId);
         for(PaperQuDTO qu: list){
+            // 综合题父题本身不入错题本（其子题各自按对错处理）
+            if(QuType.COMPOSITE.equals(qu.getQuType())){
+                continue;
+            }
             // 主观题和对的都不加入错题库
             if(qu.getIsRight()){
                 continue;

@@ -55,6 +55,13 @@ public interface QuService extends IService<Qu> {
     QuDetailDTO detail(String id);
 
     /**
+     * 查询某综合题父题下的全部子题（按 sort 升序）
+     * @param parentId 父题ID
+     * @return
+     */
+    List<Qu> listByParent(String parentId);
+
+    /**
      * 保存试题
      * @param reqDTO
      */

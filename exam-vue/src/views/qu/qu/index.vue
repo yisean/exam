@@ -27,6 +27,7 @@
             <el-input v-model="listQuery.params.content" placeholder="题目内容" style="width: 200px;" class="filter-item" />
 
             <el-button-group class="filter-item" style="float:  right">
+              <el-button size="mini" type="primary" icon="el-icon-plus" @click="addComposite">添加综合题</el-button>
               <el-button size="mini" icon="el-icon-upload2" @click="showImport">导入</el-button>
               <el-button size="mini" icon="el-icon-download" @click="exportExcel">导出</el-button>
             </el-button-group>
@@ -53,7 +54,7 @@
           show-overflow-tooltip
         >
           <template v-slot="scope">
-            <router-link :to="{ name: 'UpdateQu', params:{ id: scope.row.id}}">
+            <router-link :to="editRoute(scope.row)">
               {{ scope.row.content }}
             </router-link>
           </template>
@@ -149,6 +150,14 @@ export default {
         {
           value: 3,
           label: '判断题'
+        },
+        {
+          value: 5,
+          label: '不定项'
+        },
+        {
+          value: 6,
+          label: '综合题'
         }
       ],
 
@@ -182,6 +191,18 @@ export default {
     }
   },
   methods: {
+
+    // 综合题用专属编辑页，其余题型用通用编辑页
+    editRoute(row) {
+      if (row.quType === 6) {
+        return { name: 'UpdateComposite', params: { id: row.id }}
+      }
+      return { name: 'UpdateQu', params: { id: row.id }}
+    },
+
+    addComposite() {
+      this.$router.push({ name: 'AddComposite' })
+    },
 
     handleMultiAction(obj) {
       if (obj.opt === 'add-repo') {

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
 * <p>
@@ -50,5 +51,11 @@ public class PaperQuDTO implements Serializable {
 
     @ApiModelProperty(value = "是否答对", required=true)
     private Boolean isRight;
-    
+
+    @ApiModelProperty(value = "父题在本试卷中的ID（综合题子题用，普通题为空）")
+    private String parentId;
+
+    @ApiModelProperty(value = "子题列表（仅综合题父题：其5个子题）")
+    private List<PaperQuDTO> subList;
+
 }

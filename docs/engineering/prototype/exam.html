@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>考试管理 · 云帆考试系统</title>
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+  <div class="proto-bar">
+    <span class="pill">原型</span>
+    <span>云帆考试系统 · 管理端</span>
+    <a href="index.html">← 返回原型导航</a>
+    <span class="muted" style="color:#8492a6">仅作演示，数据为示例</span>
+  </div>
+
+  <div class="app-wrapper">
+    <!-- ============ 侧边栏（管理端通用） ============ -->
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-badge">云</span><span>云帆考试系统</span></div>
+      <nav class="menu">
+        <a class="menu-item" href="dashboard.html"><span class="ico">📊</span> 控制台</a>
+
+        <div class="menu-group-title">在线考试</div>
+        <a class="menu-item" href="my-exam.html"><span class="ico">📝</span> 在线考试</a>
+        <a class="menu-item" href="my-records.html"><span class="ico">🏆</span> 我的成绩</a>
+
+        <div class="menu-group-title">考试管理</div>
+        <a class="menu-item" href="repo.html"><span class="ico">📚</span> 题库管理</a>
+        <a class="menu-item" href="qu.html"><span class="ico">❓</span> 试题管理</a>
+        <a class="menu-item active" href="exam.html"><span class="ico">🗂️</span> 考试管理</a>
+
+        <div class="menu-group-title">系统设置</div>
+        <a class="menu-item" href="sys-config.html"><span class="ico">⚙️</span> 系统配置</a>
+        <a class="menu-item" href="sys-depart.html"><span class="ico">🌳</span> 部门管理</a>
+        <a class="menu-item" href="sys-role.html"><span class="ico">🔑</span> 角色管理</a>
+        <a class="menu-item" href="sys-user.html"><span class="ico">👤</span> 用户管理</a>
+      </nav>
+    </aside>
+
+    <!-- ============ 主区域 ============ -->
+    <div class="main">
+      <header class="topbar">
+        <div class="crumbs"><span>首页</span><span class="sep">/</span><span class="cur">考试管理</span></div>
+        <a class="user" href="profile.html"><span class="avatar">超</span><span>超管A</span></a>
+      </header>
+
+      <main class="content">
+        <div class="page-title">考试管理</div>
+        <div class="page-desc">创建并管理企业内训考试，可为同一场考试配置多个时间段与开放方式（含预约考试）。</div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="toolbar">
+              <input class="input" style="width:240px" placeholder="搜索考试名称" />
+              <select class="select" style="width:160px">
+                <option>全部状态</option>
+                <option>未开始</option>
+                <option>进行中</option>
+                <option>已结束</option>
+              </select>
+              <select class="select" style="width:160px">
+                <option>全部开放方式</option>
+                <option>完全公开</option>
+                <option>指定部门</option>
+                <option>预约考试</option>
+              </select>
+              <select class="select" style="width:160px">
+                <option>全部考试类型</option>
+                <option>模拟考试</option>
+                <option>正式考试</option>
+              </select>
+              <span class="spacer"></span>
+              <a class="btn btn-primary" href="exam-form.html">➕ 创建考试</a>
+            </div>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>考试名称</th><th>考试类型</th><th>开放方式</th><th>开放类型</th><th>状态</th><th>总分</th>
+                  <th>时长</th><th>及格分</th><th>补考次数</th><th>参考人数</th><th style="width:220px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>【云帆演示】考试</td>
+                  <td><span class="tag tag-info">模拟考试</span></td>
+                  <td><span class="tag tag-info">完全公开</span></td>
+                  <td><span class="tag tag-info">关闭</span></td>
+                  <td><span class="tag tag-info">未开始</span></td>
+                  <td>100</td><td>30 分钟</td><td>60</td><td class="muted">不限次数</td><td>0</td>
+                  <td class="actions">
+                    <a class="btn-text" href="exam-form.html">编辑</a>
+                    <a class="btn-text" href="exam-users.html">考试人员</a>
+                    <a class="btn-text" href="exam-papers.html">考试记录</a>
+                    <a class="btn-text danger" href="#">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2026 Q2 全员安全生产考核</td>
+                  <td><span class="tag tag-warning">正式考试</span></td>
+                  <td><span class="tag tag-warning">指定部门</span></td>
+                  <td><span class="tag tag-success">开放</span></td>
+                  <td><span class="tag tag-success">进行中</span></td>
+                  <td>100</td><td>60 分钟</td><td>60</td><td>补考 2 次</td><td>120</td>
+                  <td class="actions">
+                    <a class="btn-text" href="exam-form.html">编辑</a>
+                    <a class="btn-text" href="exam-users.html">考试人员</a>
+                    <a class="btn-text" href="exam-papers.html">考试记录</a>
+                    <a class="btn-text danger" href="#">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>新员工入职考试</td>
+                  <td><span class="tag tag-warning">正式考试</span></td>
+                  <td><span class="tag tag-primary">预约考试</span></td>
+                  <td><span class="tag tag-success">开放</span></td>
+                  <td><span class="tag tag-success">进行中</span></td>
+                  <td>100</td><td>45 分钟</td><td>70</td><td>补考 1 次</td><td>42</td>
+                  <td class="actions">
+                    <a class="btn-text" href="exam-form.html">编辑</a>
+                    <a class="btn-text" href="exam-users.html">考试人员</a>
+                    <a class="btn-text" href="exam-papers.html">考试记录</a>
+                    <a class="btn-text danger" href="#">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>质量管理体系 ISO9001 测评</td>
+                  <td><span class="tag tag-warning">正式考试</span></td>
+                  <td><span class="tag tag-warning">指定部门</span></td>
+                  <td><span class="tag tag-info">关闭</span></td>
+                  <td><span class="tag tag-danger">已结束</span></td>
+                  <td>100</td><td>90 分钟</td><td>80</td><td>补考 0 次</td><td>35</td>
+                  <td class="actions">
+                    <a class="btn-text" href="exam-form.html">编辑</a>
+                    <a class="btn-text" href="exam-users.html">考试人员</a>
+                    <a class="btn-text" href="exam-papers.html">考试记录</a>
+                    <a class="btn-text danger" href="#">删除</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>消防安全月度考核</td>
+                  <td><span class="tag tag-info">模拟考试</span></td>
+                  <td><span class="tag tag-primary">预约考试</span></td>
+                  <td><span class="tag tag-success">开放</span></td>
+                  <td><span class="tag tag-info">未开始</span></td>
+                  <td>100</td><td>40 分钟</td><td>60</td><td class="muted">不限次数</td><td>0</td>
+                  <td class="actions">
+                    <a class="btn-text" href="exam-form.html">编辑</a>
+                    <a class="btn-text" href="exam-users.html">考试人员</a>
+                    <a class="btn-text" href="exam-papers.html">考试记录</a>
+                    <a class="btn-text danger" href="#">删除</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="pagination">
+              <span class="muted" style="margin-right:8px">共 5 条</span>
+              <span class="pg">‹</span>
+              <span class="pg active">1</span>
+              <span class="pg">›</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

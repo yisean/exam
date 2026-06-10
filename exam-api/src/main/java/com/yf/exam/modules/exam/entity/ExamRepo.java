@@ -74,5 +74,23 @@ public class ExamRepo extends Model<ExamRepo> {
     */
     @TableField("judge_score")
     private Integer judgeScore;
-    
+
+    /**
+    * 不定项题数量
+    */
+    @TableField("uncertain_count")
+    private Integer uncertainCount;
+
+    /**
+    * 不定项题每题分值
+    */
+    @TableField("uncertain_score")
+    private Integer uncertainScore;
+
+    /**
+    * 综合题数量（整题抽取，分值随题=子题分值之和）
+    */
+    @TableField("composite_count")
+    private Integer compositeCount;
+
 }

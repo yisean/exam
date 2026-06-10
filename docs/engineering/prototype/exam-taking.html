@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>在线答题 · 云帆考试系统 · 学员端</title>
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body style="background:var(--bg-page);">
+  <div class="proto-bar">
+    <span class="pill">原型</span>
+    <span>云帆考试系统 · 学员端</span>
+    <a href="index.html">← 返回原型导航</a>
+    <span class="muted" style="color:#8492a6">仅作演示，数据为示例</span>
+  </div>
+
+  <!-- 顶部考试条 -->
+  <header class="topbar" style="padding:0 24px;height:56px;">
+    <div style="font-size:16px;font-weight:600;">2026 Q2 全员安全生产考核</div>
+    <div class="flex items-center gap">
+      <span class="muted">剩余时间</span>
+      <span id="timer" class="tag tag-danger" style="height:32px;font-size:18px;font-weight:700;padding:0 14px;font-variant-numeric:tabular-nums;">24:35</span>
+      <a class="btn btn-danger" href="javascript:void(0)" onclick="openSubmit()">交卷</a>
+    </div>
+  </header>
+
+  <!-- 答题主体 -->
+  <div style="display:flex;gap:18px;padding:18px 24px;align-items:flex-start;">
+
+    <!-- 左侧题目区 -->
+    <div class="card" style="flex:1;">
+      <div class="card-body">
+
+        <!-- 单选题 -->
+        <div class="qu-block" style="padding-top:0;border-top:none;">
+          <div class="flex gap items-center" style="margin-bottom:6px;">
+            <span class="tag tag-primary">单选题</span>
+            <span class="muted">每题 5 分</span>
+          </div>
+          <div class="qu-stem"><span class="qu-no">1.</span>我国最北面的城市是哪个？</div>
+          <div class="qu-option" onclick="pickSingle(this)"><span class="opt-key">A</span><span>铁岭</span></div>
+          <div class="qu-option" onclick="pickSingle(this)"><span class="opt-key">B</span><span>齐齐哈尔</span></div>
+          <div class="qu-option" onclick="pickSingle(this)"><span class="opt-key">C</span><span>沈阳</span></div>
+          <div class="qu-option" onclick="pickSingle(this)"><span class="opt-key">D</span><span>漠河</span></div>
+        </div>
+
+        <!-- 多选题 -->
+        <div class="qu-block" style="border-bottom:none;">
+          <div class="flex gap items-center" style="margin-bottom:6px;">
+            <span class="tag tag-warning">多选题</span>
+            <span class="muted">每题 5 分，少选不得分</span>
+          </div>
+          <div class="qu-stem"><span class="qu-no">2.</span>以下哪些属于中国的特别行政区？（多选）</div>
+          <div class="qu-option" onclick="pickMulti(this)"><span class="opt-key">A</span><span>香港</span></div>
+          <div class="qu-option" onclick="pickMulti(this)"><span class="opt-key">B</span><span>澳门</span></div>
+          <div class="qu-option" onclick="pickMulti(this)"><span class="opt-key">C</span><span>珠海</span></div>
+          <div class="qu-option" onclick="pickMulti(this)"><span class="opt-key">D</span><span>重庆</span></div>
+        </div>
+
+        <!-- 不定项题 -->
+        <div class="qu-block">
+          <div class="flex gap items-center" style="margin-bottom:6px;">
+            <span class="tag" style="color:#9c27b0;background:#f6ecf9;border-color:#e7c8ee">不定项</span>
+            <span class="muted">每题 6 分 · 答案可能为一个或多个，错选不得分、漏选得半分</span>
+          </div>
+          <div class="qu-stem"><span class="qu-no">3.</span>下列哪些情形属于生产安全事故的责任主体？（答案可能为一个或多个）</div>
+          <div class="qu-option" onclick="pickMulti(this)"><span class="opt-key">A</span><span>违规操作的当事员工</span></div>
+          <div class="qu-option" onclick="pickMulti(this)"><span class="opt-key">B</span><span>未履职的班组长</span></div>
+          <div class="qu-option" onclick="pickMulti(this)"><span class="opt-key">C</span><span>未及时排除隐患的设备维修责任人</span></div>
+          <div class="qu-option" onclick="pickMulti(this)"><span class="opt-key">D</span><span>当日请假的同事</span></div>
+        </div>
+
+        <!-- 综合题 -->
+        <div class="qu-block" style="border-bottom:none;">
+          <div class="flex gap items-center" style="margin-bottom:6px;">
+            <span class="tag" style="color:#11998e;background:#e8f6f4;border-color:#c5e8e3">综合题</span>
+            <span class="muted">本大题含 5 个子题，共 10 分</span>
+          </div>
+          <div class="qu-stem"><span class="qu-no">4.</span>【案例分析】阅读以下材料，回答第 4-1 ~ 4-5 题：</div>
+          <div class="alert alert-info" style="line-height:1.7">
+            2026 年 5 月，某机械加工车间发生一起机械伤害事故：操作工李某在设备运转状态下违规进入防护区域清理铁屑，未停机、未挂牌上锁，导致右手被卷入设备受伤。事故调查发现：车间安全管理制度不健全，班组长未进行班前安全交底，设备急停装置失效已逾一周未修复。
+          </div>
+
+          <!-- 子题 4-1 单选 -->
+          <div style="padding:8px 0 4px">
+            <div class="flex gap items-center" style="margin-bottom:6px;"><span class="tag tag-primary">单选</span><span class="muted">2 分</span></div>
+            <div class="qu-stem" style="font-size:14px;margin-bottom:10px"><span class="qu-no">4-1</span>本次事故的直接原因是？</div>
+            <div class="qu-option" onclick="pickSingle(this)"><span class="opt-key">A</span><span>设备急停装置失效未修复</span></div>
+            <div class="qu-option" onclick="pickSingle(this)"><span class="opt-key">B</span><span>李某在设备运转状态下违规进入防护区域清理铁屑</span></div>
+            <div class="qu-option" onclick="pickSingle(this)"><span class="opt-key">C</span><span>班组长未进行班前安全交底</span></div>
+            <div class="qu-option" onclick="pickSingle(this)"><span class="opt-key">D</span><span>安全管理制度不健全</span></div>
+          </div>
+
+          <!-- 子题 4-2 多选 -->
+          <div style="padding:8px 0 4px">
+            <div class="flex gap items-center" style="margin-bottom:6px;"><span class="tag tag-warning">多选</span><span class="muted">3 分 · 少选不得分</span></div>
+            <div class="qu-stem" style="font-size:14px;margin-bottom:10px"><span class="qu-no">4-2</span>以下哪些属于本次事故中的违规行为？</div>
+            <div class="qu-option" onclick="pickMulti(this)"><span class="opt-key">A</span><span>设备运转状态下进入防护区域</span></div>
+            <div class="qu-option" onclick="pickMulti(this)"><span class="opt-key">B</span><span>未停机即清理铁屑</span></div>
+            <div class="qu-option" onclick="pickMulti(this)"><span class="opt-key">C</span><span>未挂牌上锁（LOTO）</span></div>
+            <div class="qu-option" onclick="pickMulti(this)"><span class="opt-key">D</span><span>作业时佩戴了防护手套</span></div>
+          </div>
+
+          <!-- 子题 4-3 不定项 -->
+          <div style="padding:8px 0 4px">
+            <div class="flex gap items-center" style="margin-bottom:6px;"><span class="tag" style="color:#9c27b0;background:#f6ecf9;border-color:#e7c8ee">不定项</span><span class="muted">2 分 · 漏选得半分</span></div>
+            <div class="qu-stem" style="font-size:14px;margin-bottom:10px"><span class="qu-no">4-3</span>下列哪些主体对本次事故负有责任？（答案可能为一个或多个）</div>
+            <div class="qu-option" onclick="pickMulti(this)"><span class="opt-key">A</span><span>操作工李某</span></div>
+            <div class="qu-option" onclick="pickMulti(this)"><span class="opt-key">B</span><span>班组长</span></div>
+            <div class="qu-option" onclick="pickMulti(this)"><span class="opt-key">C</span><span>设备维修责任人</span></div>
+            <div class="qu-option" onclick="pickMulti(this)"><span class="opt-key">D</span><span>当日请假的同事</span></div>
+          </div>
+
+          <!-- 子题 4-4 判断 -->
+          <div style="padding:8px 0 4px">
+            <div class="flex gap items-center" style="margin-bottom:6px;"><span class="tag tag-primary">判断</span><span class="muted">1 分</span></div>
+            <div class="qu-stem" style="font-size:14px;margin-bottom:10px"><span class="qu-no">4-4</span>该车间在事故发生前已落实安全生产「双重预防机制」。</div>
+            <div class="qu-option" onclick="pickSingle(this)"><span class="opt-key">✓</span><span>正确</span></div>
+            <div class="qu-option" onclick="pickSingle(this)"><span class="opt-key">✗</span><span>错误</span></div>
+          </div>
+
+          <!-- 子题 4-5 单选 -->
+          <div style="padding:8px 0 4px">
+            <div class="flex gap items-center" style="margin-bottom:6px;"><span class="tag tag-primary">单选</span><span class="muted">2 分</span></div>
+            <div class="qu-stem" style="font-size:14px;margin-bottom:10px"><span class="qu-no">4-5</span>发现同类设备隐患后，正确的首要处置是？</div>
+            <div class="qu-option" onclick="pickSingle(this)"><span class="opt-key">A</span><span>立即停机断电、挂牌上锁并报修</span></div>
+            <div class="qu-option" onclick="pickSingle(this)"><span class="opt-key">B</span><span>边运行边观察，避免影响产量</span></div>
+            <div class="qu-option" onclick="pickSingle(this)"><span class="opt-key">C</span><span>等当班结束后再报修</span></div>
+            <div class="qu-option" onclick="pickSingle(this)"><span class="opt-key">D</span><span>自行拆解维修</span></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="flex between items-center">
+          <a class="btn" href="javascript:void(0)">← 上一题</a>
+          <span class="muted">第 1 ~ 4 题 / 共 20 题</span>
+          <a class="btn btn-primary" href="javascript:void(0)">下一题 →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右侧答题卡 -->
+    <div class="card" style="width:300px;flex-shrink:0;">
+      <div class="card-header" style="font-size:15px;">答题卡</div>
+      <div class="card-body">
+        <div class="qu-card-grid" id="cardGrid"></div>
+
+        <div class="divider"></div>
+        <div class="flex gap" style="flex-wrap:wrap;font-size:12px;color:var(--text-regular);">
+          <span class="flex items-center" style="gap:6px;"><span class="q" style="width:18px;height:18px;background:var(--color-primary);border-color:var(--color-primary);"></span> 已答</span>
+          <span class="flex items-center" style="gap:6px;"><span class="q" style="width:18px;height:18px;"></span> 未答</span>
+          <span class="flex items-center" style="gap:6px;"><span class="q" style="width:18px;height:18px;box-shadow:0 0 0 2px var(--color-primary-light);"></span> 当前</span>
+        </div>
+
+        <a class="btn btn-danger mt" href="javascript:void(0)" onclick="openSubmit()" style="width:100%;">交卷</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 交卷确认对话框 -->
+  <div class="dialog-mask" id="submitDlg">
+    <div class="dialog">
+      <div class="dialog-header">确认交卷</div>
+      <div class="dialog-body">
+        <p>您当前已作答 <b id="ansCount">2</b> / 20 题，仍有部分题目未作答。</p>
+        <p class="muted" style="margin-top:8px;">交卷后将无法继续修改答案，是否确认交卷？</p>
+      </div>
+      <div class="dialog-footer">
+        <a class="btn" href="javascript:void(0)" onclick="closeSubmit()">继续答题</a>
+        <a class="btn btn-danger" href="exam-result.html">确认交卷</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 答题卡 1~20
+    var grid = document.getElementById('cardGrid');
+    for (var i = 1; i <= 20; i++) {
+      var d = document.createElement('div');
+      d.className = 'q';
+      d.textContent = i;
+      if (i <= 4) d.classList.add('answered'); // 示例已答（含不定项与综合题）
+      if (i === 1) d.classList.add('current');             // 当前题
+      grid.appendChild(d);
+    }
+
+    // 单选：组内互斥
+    function pickSingle(el) {
+      var sibs = el.parentNode.querySelectorAll('.qu-option');
+      sibs.forEach(function (s) { s.classList.remove('selected'); });
+      el.classList.add('selected');
+    }
+    // 多选：切换
+    function pickMulti(el) { el.classList.toggle('selected'); }
+
+    // 交卷对话框
+    function openSubmit() {
+      var answered = document.querySelectorAll('#cardGrid .q.answered').length;
+      document.getElementById('ansCount').textContent = answered;
+      document.getElementById('submitDlg').classList.add('open');
+    }
+    function closeSubmit() { document.getElementById('submitDlg').classList.remove('open'); }
+
+    // 倒计时（演示用，从 24:35 开始递减）
+    var remain = 24 * 60 + 35;
+    var timerEl = document.getElementById('timer');
+    setInterval(function () {
+      if (remain <= 0) { timerEl.textContent = '00:00'; return; }
+      remain--;
+      var m = String(Math.floor(remain / 60)).padStart(2, '0');
+      var s = String(remain % 60).padStart(2, '0');
+      timerEl.textContent = m + ':' + s;
+    }, 1000);
+  </script>
+</body>
+</html>
