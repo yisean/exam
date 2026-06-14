@@ -151,8 +151,13 @@ public class QuServiceImpl extends ServiceImpl<QuMapper, Qu> implements QuServic
             return;
         }
 
-        // 校验数据（单选/多选/判断/不定项）
-        this.checkData(reqDTO, "");
+        // 简答题：主观题，无客观选项，校验与客观题不同（参考答案以单行答案承载）
+        if (QuType.SHORT_ANSWER.equals(reqDTO.getQuType())) {
+            this.checkShortAnswer(reqDTO);
+        } else {
+            // 校验数据（单选/多选/判断/不定项）
+            this.checkData(reqDTO, "");
+        }
 
         Qu qu = new Qu();
         BeanMapper.copy(reqDTO, qu);
@@ -356,6 +361,37 @@ public class QuServiceImpl extends ServiceImpl<QuMapper, Qu> implements QuServic
         }
 
         this.checkAnswerList(qu.getAnswerList(), qu.getQuType(), no);
+    }
+
+    /**
+     * 校验简答题（主观题）：必须有题干与题库；无客观选项，参考答案以单行答案承载（强制 is_right=1）；
+     * 分值不在题目侧设置，由组卷 saq_score 统一配置。
+     *
+     * @param qu 题目请求
+     */
+    private void checkShortAnswer(QuDetailDTO qu) {
+
+        if (StringUtils.isEmpty(qu.getContent())) {
+            throw new ServiceException(1, "题目内容不能为空！");
+        }
+
+        if (CollectionUtils.isEmpty(qu.getRepoIds())) {
+            throw new ServiceException(1, "至少要选择一个题库！");
+        }
+
+        // 简答题必须填写参考答案（以单行答案的内容承载）
+        List<QuAnswerDTO> answers = qu.getAnswerList();
+        if (CollectionUtils.isEmpty(answers) || StringUtils.isEmpty(answers.get(0).getContent())) {
+            throw new ServiceException(1, "简答题必须填写参考答案！");
+        }
+
+        // 仅保留单行参考答案并强制为正确项；忽略可能多传的选项与题目侧分值
+        QuAnswerDTO ref = answers.get(0);
+        ref.setIsRight(true);
+        List<QuAnswerDTO> one = new ArrayList<>(1);
+        one.add(ref);
+        qu.setAnswerList(one);
+        qu.setScore(null);
     }
 
     /**
