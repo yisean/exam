@@ -14,6 +14,7 @@ import com.yf.exam.modules.paper.dto.request.PaperAnswerDTO;
 import com.yf.exam.modules.paper.dto.request.PaperCreateReqDTO;
 import com.yf.exam.modules.paper.dto.request.PaperListReqDTO;
 import com.yf.exam.modules.paper.dto.request.PaperQuQueryDTO;
+import com.yf.exam.modules.paper.dto.request.PaperReviewReqDTO;
 import com.yf.exam.modules.paper.dto.response.ExamDetailRespDTO;
 import com.yf.exam.modules.paper.dto.response.ExamResultRespDTO;
 import com.yf.exam.modules.paper.dto.response.PaperListRespDTO;
@@ -22,6 +23,7 @@ import com.yf.exam.modules.paper.service.PaperService;
 import com.yf.exam.modules.user.UserUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,6 +141,34 @@ public class PaperController extends BaseController {
         //根据ID删除
         ExamResultRespDTO respDTO = baseService.paperResult(reqDTO.getId());
         return super.success(respDTO);
+    }
+
+
+    /**
+     * 加载待阅卷试卷供阅卷（含简答题：题干/考生作答/参考答案/解析）
+     * @param reqDTO
+     * @return
+     */
+    @RequiresRoles(value = {"sa", "teacher"}, logical = Logical.OR)
+    @ApiOperation(value = "阅卷详情")
+    @RequestMapping(value = "/review-detail", method = { RequestMethod.POST})
+    public ApiRest<ExamResultRespDTO> reviewDetail(@RequestBody BaseIdReqDTO reqDTO) {
+        ExamResultRespDTO respDTO = baseService.reviewDetail(reqDTO.getId());
+        return super.success(respDTO);
+    }
+
+
+    /**
+     * 整份阅卷：为简答题逐题打分+点评，合分并置为已完成
+     * @param reqDTO
+     * @return
+     */
+    @RequiresRoles(value = {"sa", "teacher"}, logical = Logical.OR)
+    @ApiOperation(value = "整份阅卷")
+    @RequestMapping(value = "/review", method = { RequestMethod.POST})
+    public ApiRest review(@RequestBody PaperReviewReqDTO reqDTO) {
+        baseService.review(reqDTO);
+        return super.success();
     }
 
 
