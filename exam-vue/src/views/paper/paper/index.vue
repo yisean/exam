@@ -133,6 +133,27 @@
 
         </el-table-column>
 
+        <el-table-column
+          label="操作"
+          align="center"
+          width="120px"
+        >
+
+          <template v-slot="scope">
+            <el-button
+              v-permission="['sa','teacher']"
+              v-if="scope.row.state===1"
+              type="warning"
+              size="small"
+              @click="handleGrade(scope.row.id)"
+            >阅卷</el-button>
+            <router-link v-else :to="{ name: 'ShowExam', params: {id : scope.row.id}}">
+              <el-button type="text" size="small">查看试卷</el-button>
+            </router-link>
+          </template>
+
+        </el-table-column>
+
       </template>
 
     </data-table>
@@ -213,6 +234,11 @@ export default {
       listCaptures(paperId).then(res => {
         this.captureList = res.data
       })
+    },
+
+    // 进入整份阅卷页（待阅卷试卷）
+    handleGrade(paperId) {
+      this.$router.push({ name: 'GradeExam', params: { id: paperId }})
     }
   }
 }

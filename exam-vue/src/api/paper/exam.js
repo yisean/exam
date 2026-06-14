@@ -56,11 +56,26 @@ export function training(data) {
   return post('/exam/api/paper/paper/training', data)
 }
 
-
 /**
  * 检查是否有进行中的考试
  * @returns {*}
  */
 export function checkProcess() {
   return post('/exam/api/paper/paper/check-process', {})
+}
+
+/**
+ * 加载待阅卷试卷供阅卷
+ * @param data
+ */
+export function reviewDetail(data) {
+  return post('/exam/api/paper/paper/review-detail', data)
+}
+
+/**
+ * 提交整份阅卷
+ * @param data
+ */
+export function submitReview(data) {
+  return post('/exam/api/paper/paper/review', data)
 }

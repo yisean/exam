@@ -156,6 +156,10 @@ export default {
           label: '不定项'
         },
         {
+          value: 4,
+          label: '简答题'
+        },
+        {
           value: 6,
           label: '综合题'
         }

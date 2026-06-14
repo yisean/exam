@@ -196,6 +196,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
         List<PaperQuDTO> judgeList = new ArrayList<>();
         List<PaperQuDTO> uncertainList = new ArrayList<>();
         List<PaperQuDTO> compositeList = new ArrayList<>();
+        List<PaperQuDTO> saqList = new ArrayList<>();
         Map<String, PaperQuDTO> compositeMap = new HashMap<>(16);
 
         // 先收集综合题父题，建立映射
@@ -219,6 +220,8 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
                 judgeList.add(item);
             } else if(QuType.UNCERTAIN.equals(item.getQuType())){
                 uncertainList.add(item);
+            } else if(QuType.SHORT_ANSWER.equals(item.getQuType())){
+                saqList.add(item);
             }
         }
 
@@ -227,6 +230,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
         respDTO.setJudgeList(judgeList);
         respDTO.setUncertainList(uncertainList);
         respDTO.setCompositeList(compositeList);
+        respDTO.setSaqList(saqList);
         return respDTO;
     }
 
