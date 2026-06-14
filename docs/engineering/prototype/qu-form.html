@@ -146,6 +146,20 @@
           </div>
         </div>
 
+        <div class="card" id="cardEssay" style="display:none">
+          <div class="card-header">简答题设置</div>
+          <div class="card-body">
+            <div class="alert alert-info">📝 简答题为主观题，无客观选项，由 <b>sa / 老师</b> 在考生交卷后人工阅卷评分；<b>分值不在此设置</b>，在「创建考试 · 组卷规则」按题型统一配置（同单选/多选）。</div>
+            <div class="form-item" style="margin-bottom:0">
+              <label><span class="req">*</span>参考答案</label>
+              <div class="control">
+                <textarea class="textarea" placeholder="请输入参考答案，供阅卷人对照、并随成绩展示给考生">① 保持冷静、判断火势与逃生路线；② 捂口鼻、低姿前行避开浓烟；③ 走安全通道/楼梯，严禁乘电梯；④ 触门前先试温；⑤ 撤至安全区清点人数并报警。</textarea>
+                <div class="form-tip">参考答案会在阅卷页与考生成绩详情中展示。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="card">
           <div class="card-header">解析与备注</div>
           <div class="card-body">
@@ -181,8 +195,9 @@
         essay: '简答题为主观题，无客观选项，由老师人工阅卷评分。'
       };
       document.getElementById('optTip').innerHTML = tips[t] || tips.radio;
-      // 简答题无客观选项，隐藏选项设置卡片
+      // 简答题无客观选项：隐藏选项设置卡片，改为显示「简答题设置」（参考答案 + 分值）
       document.getElementById('cardOptions').style.display = (t === 'essay') ? 'none' : '';
+      document.getElementById('cardEssay').style.display = (t === 'essay') ? '' : 'none';
     }
     function addOption() {
       optCount++;

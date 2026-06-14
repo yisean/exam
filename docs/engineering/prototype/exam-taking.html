@@ -130,10 +130,21 @@
           </div>
         </div>
 
+        <!-- 简答题 -->
+        <div class="qu-block">
+          <div class="flex gap items-center" style="margin-bottom:6px;">
+            <span class="tag tag-info">简答题</span>
+            <span class="muted">15 分 · 主观题，交卷后由老师人工阅卷评分</span>
+          </div>
+          <div class="qu-stem"><span class="qu-no">5.</span>请简述发生火灾时的正确逃生步骤。</div>
+          <textarea class="textarea" placeholder="请在此作答（作答后本题将标记为「已答」）" style="min-height:120px" oninput="markEssay(this)"></textarea>
+          <div class="form-tip">本题为主观题，提交后需老师评分；评分完成后可在「我的成绩」查看得分与点评。</div>
+        </div>
+
         <div class="divider"></div>
         <div class="flex between items-center">
           <a class="btn" href="javascript:void(0)">← 上一题</a>
-          <span class="muted">第 1 ~ 4 题 / 共 20 题</span>
+          <span class="muted">第 1 ~ 5 题 / 共 20 题</span>
           <a class="btn btn-primary" href="javascript:void(0)">下一题 →</a>
         </div>
       </div>
@@ -192,6 +203,12 @@
     }
     // 多选：切换
     function pickMulti(el) { el.classList.toggle('selected'); }
+    // 简答：作答非空即标记第 5 题为已答
+    function markEssay(ta) {
+      var q5 = document.querySelectorAll('#cardGrid .q')[4];
+      if (!q5) return;
+      if (ta.value.trim()) { q5.classList.add('answered'); } else { q5.classList.remove('answered'); }
+    }
 
     // 交卷对话框
     function openSubmit() {
