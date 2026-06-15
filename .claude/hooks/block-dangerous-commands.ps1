@@ -13,7 +13,18 @@ if ([string]::IsNullOrWhiteSpace($cmd)) { exit 0 }
 
 # Normalize whitespace so multi-space / newline forms still match. -match is
 # case-insensitive by default, so no lowercasing needed.
-$n = ($cmd -replace '\s+', ' ').Trim()
+$norm = ($cmd -replace '\s+', ' ').Trim()
+
+# Reduce false positives: dangerous tokens that appear *inside quotes* are data,
+# not executed code (commit messages, echo/grep arguments, descriptions), so
+# strip quoted substrings before scanning.
+# EXCEPTION: when the command runs its argument as code (bash -c "...",
+# powershell -Command "...", eval, xargs), the quoted payload IS executed -- so
+# in that case scan the original command instead of the stripped one.
+$stripped = ($norm -replace '"[^"]*"', ' ') -replace "'[^']*'", ' '
+$execMode = ($norm -match '\b(eval|xargs)\b') -or `
+            ($norm -match '\b(bash|sh|zsh|pwsh|powershell|cmd)\b.*(\s-c\b|\s-command\b|\s/c\b|\s-e\b|\s-encodedcommand\b)')
+$scan = if ($execMode) { $norm } else { $stripped }
 
 function Emit($decision, $reason) {
   $out = @{
@@ -50,7 +61,7 @@ $deny = @(
   @{ rx = '\b(curl|wget|iwr|invoke-webrequest|irm|invoke-restmethod)\b.*\|\s*(sh|bash|zsh|pwsh|powershell|cmd|iex|invoke-expression)\b'; why = 'pipe-download to shell (supply-chain risk)' },
   @{ rx = '\b(iex|invoke-expression)\b.*\b(downloadstring|iwr|invoke-webrequest|irm|invoke-restmethod|net\.webclient)\b'; why = 'iex executes remotely downloaded content' }
 )
-foreach ($p in $deny) { if ($n -match $p.rx) { Emit 'deny' $p.why } }
+foreach ($p in $deny) { if ($scan -match $p.rx) { Emit 'deny' $p.why } }
 
 # --- ASK: outward / not-easily-reversible (force a confirmation prompt) ---
 $ask = @(
@@ -62,6 +73,6 @@ $ask = @(
   @{ rx = '\b(shutdown|reboot)\b';                 why = 'shutdown/reboot' },
   @{ rx = '\b(stop-computer|restart-computer)\b';  why = 'shutdown/reboot' }
 )
-foreach ($p in $ask) { if ($n -match $p.rx) { Emit 'ask' $p.why } }
+foreach ($p in $ask) { if ($scan -match $p.rx) { Emit 'ask' $p.why } }
 
 exit 0
