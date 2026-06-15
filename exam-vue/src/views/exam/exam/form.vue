@@ -570,7 +570,8 @@ export default {
             return
           }
 
-          if ((repo.saqCount > 0 && repo.saqScore === 0) || (repo.saqCount === 0 && repo.saqScore > 0)) {
+          // saqScore 经 el-input-number 清空后为 undefined，用 !(>0) 归一，避免「有数量无分值」漏判
+          if ((repo.saqCount > 0 && !(repo.saqScore > 0)) || (repo.saqCount === 0 && repo.saqScore > 0)) {
             this.$notify({
               title: '提示信息',
               message: '题库第：[' + (i + 1) + ']项存在无效的简答题配置！',

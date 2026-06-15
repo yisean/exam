@@ -117,6 +117,7 @@
               v-model="answerText"
               :rows="6"
               type="textarea"
+              maxlength="5000"
               placeholder="请输入您的作答（本题为简答题，交卷后由老师人工评分）"
             />
           </div>

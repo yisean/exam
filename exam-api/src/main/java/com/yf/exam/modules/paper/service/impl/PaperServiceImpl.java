@@ -263,8 +263,14 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
         respDTO.setImage(qu.getImage());
 
         // 答案列表
-        List<PaperQuAnswerExtDTO> list = paperQuAnswerService.listForExam(paperId, quId);
-        respDTO.setAnswerList(list);
+        // 简答题的参考答案以单行答案的 content 承载，考试中不可下发给考生（否则可在网络响应里看到标准答案）；
+        // 考生 SAQ 作答区绑定 answer 文本、不依赖 answerList，故返回空列表。阅卷走 reviewDetail，仍可见参考答案。
+        if (QuType.SHORT_ANSWER.equals(qu.getQuType())) {
+            respDTO.setAnswerList(new ArrayList<>());
+        } else {
+            List<PaperQuAnswerExtDTO> list = paperQuAnswerService.listForExam(paperId, quId);
+            respDTO.setAnswerList(list);
+        }
 
         return respDTO;
     }
@@ -750,6 +756,10 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
             int full = pq.getScore() == null ? 0 : pq.getScore();
             if (item.getScore() < 0 || item.getScore() > full) {
                 throw new ServiceException(1, "简答题得分须为 0~该题满分的整数！");
+            }
+            // 阅卷点评按字符前置校验，与前端 maxlength、el_paper_qu.comment varchar(200) 三处对齐（不靠 DB 截断）
+            if (item.getComment() != null && item.getComment().length() > 200) {
+                throw new ServiceException(1, "阅卷点评不能超过200字！");
             }
         }
 
