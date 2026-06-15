@@ -105,6 +105,8 @@ export default {
         this.simpleList = list
         this.scores = scores
         this.comments = comments
+      }).catch(() => {
+        this.$message.error('加载阅卷详情失败，请返回重试')
       })
     },
 
@@ -141,6 +143,9 @@ export default {
             duration: 2000
           })
           this.$router.go(-1)
+        }).catch(() => {
+          // 提交失败：保留在当前页供重试，不随确认弹窗的取消一并吞掉
+          this.$message.error('阅卷提交失败，请重试')
         })
       }).catch(() => {})
     },

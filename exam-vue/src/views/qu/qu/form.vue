@@ -133,6 +133,7 @@
             v-model="postForm.answerList[0].content"
             :rows="4"
             type="textarea"
+            maxlength="5000"
             placeholder="请输入参考答案，供阅卷人对照并随成绩展示给考生"
           />
         </el-form-item>

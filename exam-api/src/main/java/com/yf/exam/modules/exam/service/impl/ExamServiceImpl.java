@@ -240,6 +240,17 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
                     && item.getUncertainScore()>0){
                 objScore+=item.getUncertainCount()*item.getUncertainScore();
             }
+            // 简答题：数量×每题分值确定（同单选/多选口径），计入总分；阅卷在此满分内打分。
+            // 同时做配对校验：有数量必须有分值、有分值必须有数量（与前端组卷校验、createPaper 一致）。
+            if (item.getSaqCount() != null && item.getSaqCount() > 0) {
+                if (item.getSaqScore() == null || item.getSaqScore() <= 0) {
+                    throw new ServiceException(1, "存在简答题数量但未配置每题分值！");
+                }
+                objScore += item.getSaqCount() * item.getSaqScore();
+            } else if (item.getSaqScore() != null && item.getSaqScore() > 0) {
+                throw new ServiceException(1, "存在简答题分值但未配置题目数量！");
+            }
+
             // 综合题分值随题（=子题分值之和），抽取随机，配置期无法精确预估，
             // 不计入此处估算；试卷实际总分在交卷判分时以抽中题目为准（见 PaperServiceImpl.savePaper）。
         }

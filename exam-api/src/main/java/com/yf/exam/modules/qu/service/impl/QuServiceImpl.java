@@ -384,6 +384,10 @@ public class QuServiceImpl extends ServiceImpl<QuMapper, Qu> implements QuServic
         if (CollectionUtils.isEmpty(answers) || StringUtils.isEmpty(answers.get(0).getContent())) {
             throw new ServiceException(1, "简答题必须填写参考答案！");
         }
+        // 参考答案按字符前置校验，与前端 maxlength、el_qu_answer.content varchar(5000) 对齐
+        if (answers.get(0).getContent().length() > 5000) {
+            throw new ServiceException(1, "参考答案不能超过5000字！");
+        }
 
         // 仅保留单行参考答案并强制为正确项；忽略可能多传的选项与题目侧分值
         QuAnswerDTO ref = answers.get(0);

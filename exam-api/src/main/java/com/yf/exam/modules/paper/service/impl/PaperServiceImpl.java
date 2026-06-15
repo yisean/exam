@@ -237,15 +237,40 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     @Override
     public ExamResultRespDTO paperResult(String paperId) {
 
-        ExamResultRespDTO respDTO = new ExamResultRespDTO();
-
         // 试题基本信息
         Paper paper = paperService.getById(paperId);
+
+        // 仅成绩公开（已完成）后才向考生下发简答题参考答案；进行中/待阅卷一律屏蔽，
+        // 防止考生绕过页面、直接调用本接口从 answerList.content 读取标准答案（与 findQuDetail 同口径）。
+        boolean showSaqAnswer = paper != null && PaperState.FINISHED.equals(paper.getState());
+        return this.buildPaperResult(paperId, paper, showSaqAnswer);
+    }
+
+    /**
+     * 装配试卷结果（题干/考生作答/选项或参考答案/解析）。
+     *
+     * @param paperId       试卷ID
+     * @param paper         试卷实体（基本信息来源）
+     * @param showSaqAnswer 是否下发简答题参考答案（成绩页已完成态、阅卷页放行；考试中屏蔽）
+     * @return 试卷结果
+     */
+    private ExamResultRespDTO buildPaperResult(String paperId, Paper paper, boolean showSaqAnswer) {
+
+        ExamResultRespDTO respDTO = new ExamResultRespDTO();
         BeanMapper.copy(paper, respDTO);
 
         List<PaperQuDetailDTO> quList = paperQuService.listForPaperResult(paperId);
-        respDTO.setQuList(quList);
 
+        // 简答题参考答案以单行答案的 content 承载，未到展示时机时清空，避免随结果接口外泄
+        if (!showSaqAnswer) {
+            for (PaperQuDetailDTO qu : quList) {
+                if (QuType.SHORT_ANSWER.equals(qu.getQuType())) {
+                    qu.setAnswerList(new ArrayList<>());
+                }
+            }
+        }
+
+        respDTO.setQuList(quList);
         return respDTO;
     }
 
@@ -569,6 +594,11 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
         boolean answered = !(CollectionUtils.isEmpty(reqDTO.getAnswers())
                 && StringUtils.isBlank(reqDTO.getAnswer()));
 
+        // 简答作答按字符前置校验，与前端 maxlength、el_paper_qu.answer varchar(5000) 三处对齐（不靠 DB 截断）
+        if (reqDTO.getAnswer() != null && reqDTO.getAnswer().length() > 5000) {
+            throw new ServiceException(1, "作答内容不能超过5000字！");
+        }
+
         //查找答案列表
         List<PaperQuAnswer> list = paperQuAnswerService.listForFill(reqDTO.getPaperId(), reqDTO.getQuId());
 
@@ -703,7 +733,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
         }
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(readOnly = true)
     @Override
     public ExamResultRespDTO reviewDetail(String paperId) {
 
@@ -716,8 +746,8 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
             throw new ServiceException(1, "试卷不是待阅卷状态！");
         }
 
-        // 复用考试结果装配（含题干/考生作答/参考答案/解析）；前端按 qu_type=4 取简答题阅卷
-        return this.paperResult(paperId);
+        // 复用结果装配（含题干/考生作答/参考答案/解析）；阅卷人需对照参考答案打分，故放行简答题参考答案
+        return this.buildPaperResult(paperId, paper, true);
     }
 
     @Transactional(rollbackFor = Exception.class)
