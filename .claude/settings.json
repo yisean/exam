@@ -1,0 +1,92 @@
+{
+  "permissions": {
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(npm publish:*)",
+      "Bash(docker push:*)",
+      "Bash(kubectl delete:*)",
+      "Bash(terraform apply:*)",
+      "Bash(terraform destroy:*)",
+      "Bash(shutdown:*)",
+      "Bash(reboot:*)",
+      "PowerShell(Restart-Computer *)",
+      "PowerShell(Stop-Computer *)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(rm -fr:*)",
+      "Bash(rm -r -f:*)",
+      "Bash(sudo rm:*)",
+      "Bash(dd:*)",
+      "Bash(mkfs:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git clean -fdx:*)",
+      "Bash(git clean -xfd:*)",
+      "Bash(git clean -fd:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(chmod -R 777:*)",
+      "Bash(chmod 777 -R:*)",
+      "PowerShell(Remove-Item -Recurse -Force *)",
+      "PowerShell(Remove-Item -Force -Recurse *)",
+      "PowerShell(Format-Volume *)",
+      "PowerShell(Clear-Content *)",
+      "PowerShell(del /s /q*)",
+      "PowerShell(del /q /s*)",
+      "PowerShell(Remove-Item -Recurse *)",
+      "PowerShell(Remove-Item -Force *)",
+      "PowerShell(ri -Recurse *)",
+      "PowerShell(rm -Recurse *)",
+      "PowerShell(rmdir *)",
+      "PowerShell(rd /s*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "powershell",
+            "command": "powershell -NoProfile -File \"$env:CLAUDE_PROJECT_DIR/.claude/hooks/block-dangerous-commands.ps1\"",
+            "statusMessage": "Scanning for dangerous commands"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "powershell",
+            "command": "powershell -NoProfile -File \"$env:CLAUDE_PROJECT_DIR/.claude/hooks/protect-sensitive-files.ps1\"",
+            "statusMessage": "Checking for sensitive files"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "powershell",
+            "command": "powershell -NoProfile -File \"$env:CLAUDE_PROJECT_DIR/.claude/hooks/snapshot-baseline.ps1\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "powershell",
+            "command": "powershell -NoProfile -File \"$env:CLAUDE_PROJECT_DIR/.claude/hooks/summarize-changes.ps1\""
+          }
+        ]
+      }
+    ]
+  }
+}
