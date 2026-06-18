@@ -274,6 +274,13 @@ export const asyncRoutes = [
         name: 'ListPaper',
         meta: { title: '考试记录', noCache: true, activeMenu: '/exam/exam' },
         hidden: true
+      },
+      {
+        path: 'exam/grade/:id',
+        component: () => import('@/views/paper/exam/grade'),
+        name: 'GradeExam',
+        meta: { title: '试卷阅卷', noCache: true, activeMenu: '/exam/exam' },
+        hidden: true
       }
     ]
   },

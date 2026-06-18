@@ -16,6 +16,7 @@ import com.yf.exam.modules.exam.entity.Exam;
 import com.yf.exam.modules.exam.service.ExamService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -138,7 +139,7 @@ public class ExamController extends BaseController {
      * @param reqDTO
      * @return
      */
-    @RequiresRoles("sa")
+    @RequiresRoles(value = {"sa", "teacher"}, logical = Logical.OR)
     @ApiOperation(value = "待阅试卷")
     @RequestMapping(value = "/review-paging", method = { RequestMethod.POST})
     public ApiRest<IPage<ExamReviewRespDTO>> reviewPaging(@RequestBody PagingReqDTO<ExamDTO> reqDTO) {

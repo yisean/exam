@@ -15,10 +15,18 @@
       </el-col>
 
       <el-col :span="8" class="text-center">
-        考试得分：{{ paperData.userScore }}
+        考试得分：<span v-if="paperData.state === 1" style="color:#e6a23c">待阅卷</span><span v-else>{{ paperData.userScore }}</span>
       </el-col>
 
     </el-row>
+
+    <el-alert
+      v-if="paperData.state === 1"
+      :closable="false"
+      title="本试卷含简答题，正在等待老师阅卷，成绩与点评待评定后可见。"
+      type="warning"
+      style="margin-top: 16px;"
+    />
 
     <el-card style="margin-top: 20px">
 
@@ -74,8 +82,16 @@
 
           <el-row :gutter="24">
 
-            <el-col :span="12">
+            <el-col :span="24" style="margin-bottom: 8px;">
               我的回答：{{ item.answer }}
+            </el-col>
+
+            <el-col :span="24" style="color: #24da70; margin-bottom: 8px;">
+              参考答案：{{ (item.answerList && item.answerList.length) ? item.answerList[0].content : '' }}
+            </el-col>
+
+            <el-col v-if="item.comment" :span="24" style="color: #e6a23c;">
+              老师点评：{{ item.comment }}
             </el-col>
 
           </el-row>

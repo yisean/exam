@@ -65,6 +65,13 @@
             </div>
           </div>
 
+          <div v-if="paperData.saqList!==undefined && paperData.saqList.length > 0">
+            <p class="card-title">简答题</p>
+            <el-row :gutter="24" class="card-line">
+              <el-tag v-for="item in paperData.saqList" :key="item.quId" :type="cardItemClass(item.answered, item.quId)" @click="handSave(item)">{{ item.sort+1 }}</el-tag>
+            </el-row>
+          </div>
+
         </el-card>
 
       </el-col>
@@ -103,6 +110,16 @@
               </el-checkbox>
             </el-checkbox-group>
 
+          </div>
+
+          <div v-if="quData.quType === 4">
+            <el-input
+              v-model="answerText"
+              :rows="6"
+              type="textarea"
+              maxlength="5000"
+              placeholder="请输入您的作答（本题为简答题，交卷后由老师人工评分）"
+            />
           </div>
 
           <div style="margin-top: 20px">
@@ -158,12 +175,15 @@ export default {
         multiList: [],
         judgeList: [],
         uncertainList: [],
-        compositeList: []
+        compositeList: [],
+        saqList: []
       },
       // 单选选定值
       radioValue: '',
       // 多选选定值
       multiValue: [],
+      // 简答作答文本
+      answerText: '',
       // 已答ID
       answeredIds: []
     }
@@ -218,9 +238,9 @@ export default {
         }
       })
 
-      // 不定项 + 综合题子题（综合题父题不作答）
+      // 不定项 + 简答 + 综合题子题（综合题父题不作答）
       this.allItem.forEach(function(item) {
-        if ((item.quType === 5 || item.parentId) && !item.answered) {
+        if ((item.quType === 5 || item.quType === 4 || item.parentId) && !item.answered) {
           notAnswered += 1
         }
       })
@@ -309,18 +329,22 @@ export default {
         this.showNext = true
       }
 
-      const answers = this.multiValue
-      if (this.radioValue !== '') {
-        answers.push(this.radioValue)
+      // 简答题以文本作答；客观题以选项ID数组作答
+      let answers = []
+      let answer = ''
+      if (this.cardItem.quType === 4) {
+        answer = this.answerText
+      } else {
+        answers = this.multiValue.slice()
+        if (this.radioValue !== '') {
+          answers.push(this.radioValue)
+        }
       }
 
-      const params = { paperId: this.paperId, quId: this.cardItem.quId, answers: answers, answer: '' }
+      const params = { paperId: this.paperId, quId: this.cardItem.quId, answers: answers, answer: answer }
       fillAnswer(params).then(() => {
-        // 必须选择一个值
-        if (answers.length > 0) {
-          // 加入已答列表
-          this.cardItem.answered = true
-        }
+        // 已答判定：客观题选了项、或简答题作答文本非空
+        this.cardItem.answered = answers.length > 0 || (!!answer && answer.trim() !== '')
 
         // 最后一个动作，交卷
         if (callback) {
@@ -350,6 +374,12 @@ export default {
         this.quData = response.data
         this.radioValue = ''
         this.multiValue = []
+        this.answerText = ''
+
+        // 简答题：回填考生已作答文本
+        if (this.quData.quType === 4) {
+          this.answerText = this.quData.answer || ''
+        }
 
         // 填充该题目的答案
         this.quData.answerList.forEach((item) => {
@@ -397,6 +427,10 @@ export default {
               that.allItem.push(sub)
             })
           })
+        }
+        // 简答题：加入作答序列
+        if (this.paperData.saqList) {
+          this.paperData.saqList.forEach(function(item) { that.allItem.push(item) })
         }
 
         // 获得第一题内容

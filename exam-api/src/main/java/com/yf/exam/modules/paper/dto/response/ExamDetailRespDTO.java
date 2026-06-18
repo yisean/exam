@@ -29,6 +29,9 @@ public class ExamDetailRespDTO extends PaperDTO {
     @ApiModelProperty(value = "综合题列表（每项父题含 subList 子题）")
     private List<PaperQuDTO> compositeList;
 
+    @ApiModelProperty(value = "简答题列表（主观题，作答为文本）")
+    private List<PaperQuDTO> saqList;
+
 
     @ApiModelProperty(value = "剩余结束秒数", required=true)
     public Long getLeftSeconds(){

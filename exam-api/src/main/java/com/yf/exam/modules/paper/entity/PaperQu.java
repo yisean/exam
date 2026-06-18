@@ -83,4 +83,10 @@ public class PaperQu extends Model<PaperQu> {
     @TableField("parent_id")
     private String parentId;
 
+    /**
+     * 阅卷点评（简答题人工阅卷填写，考生可见）
+     */
+    @TableField("comment")
+    private String comment;
+
 }

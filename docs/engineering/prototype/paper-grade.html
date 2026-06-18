@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>试卷阅卷 · 云帆考试系统</title>
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+  <div class="proto-bar">
+    <span class="pill">原型</span>
+    <span>云帆考试系统 · 管理端</span>
+    <a href="index.html">← 返回原型导航</a>
+    <span class="muted" style="color:#8492a6">仅作演示，数据为示例</span>
+  </div>
+
+  <div class="app-wrapper">
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-badge">云</span><span>云帆考试系统</span></div>
+      <nav class="menu">
+        <a class="menu-item" href="dashboard.html"><span class="ico">📊</span> 控制台</a>
+        <div class="menu-group-title">在线考试</div>
+        <a class="menu-item" href="my-exam.html"><span class="ico">📝</span> 在线考试</a>
+        <a class="menu-item" href="my-records.html"><span class="ico">🏆</span> 我的成绩</a>
+        <div class="menu-group-title">考试管理</div>
+        <a class="menu-item" href="repo.html"><span class="ico">📚</span> 题库管理</a>
+        <a class="menu-item" href="qu.html"><span class="ico">❓</span> 试题管理</a>
+        <a class="menu-item active" href="exam.html"><span class="ico">🗂️</span> 考试管理</a>
+        <div class="menu-group-title">系统设置</div>
+        <a class="menu-item" href="sys-config.html"><span class="ico">⚙️</span> 系统配置</a>
+        <a class="menu-item" href="sys-depart.html"><span class="ico">🌳</span> 部门管理</a>
+        <a class="menu-item" href="sys-role.html"><span class="ico">🔑</span> 角色管理</a>
+        <a class="menu-item" href="sys-user.html"><span class="ico">👤</span> 用户管理</a>
+      </nav>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="crumbs"><span>考试管理</span><span class="sep">/</span><a href="exam-papers.html">考试记录</a><span class="sep">/</span><span class="cur">试卷阅卷</span></div>
+        <a class="user" href="profile.html"><span class="avatar">王</span><span>王老师</span></a>
+      </header>
+
+      <main class="content">
+        <!-- ====== 试卷概览 ====== -->
+        <div class="card">
+          <div class="card-header">
+            <span>试卷阅卷 —— 2026 Q2 全员安全生产考核</span>
+            <a class="btn btn-sm" href="exam-papers.html">← 返回待阅卷列表</a>
+          </div>
+          <div class="card-body">
+            <div class="flex gap" style="flex-wrap:wrap">
+              <div class="stat-card" style="flex:1;min-width:160px"><div class="ico-box" style="background:#409eff">🧑</div><div><div class="num" style="font-size:18px">张三</div><div class="lbl">人事部 · person</div></div></div>
+              <div class="stat-card" style="flex:1;min-width:160px"><div class="ico-box" style="background:#409eff">🧮</div><div><div class="num">55</div><div class="lbl">客观题已自动判分 / 70</div></div></div>
+              <div class="stat-card" style="flex:1;min-width:160px"><div class="ico-box" style="background:#e6a23c">✍️</div><div><div class="num" id="subjSum">— </div><div class="lbl">主观题待评 / 30</div></div></div>
+              <div class="stat-card" style="flex:1;min-width:160px"><div class="ico-box" style="background:#909399">📅</div><div><div class="num" style="font-size:15px">06-10 09:23</div><div class="lbl">交卷时间</div></div></div>
+            </div>
+            <div class="divider"></div>
+            <div class="flex gap items-center" style="flex-wrap:wrap">
+              <span class="tag tag-warning">待阅卷</span>
+              <span class="tag tag-primary">客观分 55</span>
+              <span class="tag tag-info">及格分 60</span>
+              <span class="muted">总分 = 客观分 55 + 主观分（待评），整份提交后自动合分并判定是否通过。</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====== 客观题（已自动判分，折叠摘要） ====== -->
+        <div class="card">
+          <div class="card-header">客观题（已自动判分，无需人工干预）</div>
+          <div class="card-body">
+            <div class="alert alert-success">✓ 本卷客观题共 5 道、70 分，系统已自动判分，合计得 <b>55</b> 分。明细可在<a class="text-primary" href="paper-detail.html">试卷详情</a>查看。</div>
+          </div>
+        </div>
+
+        <!-- ====== 简答题阅卷 ====== -->
+        <div class="card">
+          <div class="card-header">简答题阅卷 · 2 题（共 30 分）</div>
+          <div class="card-body">
+            <div class="alert alert-info">💡 为每道简答题录入得分（0 ~ 该题满分的整数）；点评为选填，<b>提交后考生可见</b>。整份提交后试卷转「已完成」、成绩对考生公开。</div>
+
+            <!-- 简答题 1 -->
+            <div class="qu-block">
+              <div class="qu-stem"><span class="qu-no">6.</span><span class="tag tag-info" style="margin-right:8px">简答题</span>请简述发生火灾时的正确逃生步骤。 <span class="muted" style="float:right">满分 15 分</span></div>
+              <div class="alert alert-info" style="line-height:1.7"><b>考生作答：</b>保持冷静，用湿毛巾捂住口鼻、弯腰低姿沿安全通道有序撤离，不乘坐电梯；逃生中用手背试探门把温度，到达安全区域后清点人数并拨打 119 报警。</div>
+              <div class="alert alert-success" style="line-height:1.7"><b>参考答案：</b>① 保持冷静、判断火势与逃生路线；② 捂口鼻、低姿前行避开浓烟；③ 走安全通道/楼梯，严禁乘电梯；④ 触门前先试温，防止开门助燃；⑤ 撤至安全区清点人数并报警。</div>
+              <div class="alert" style="background:#f4f4f5;color:var(--text-regular);line-height:1.7"><b>解析：</b>火场逃生核心是「防烟 + 正确路线」，电梯在断电/烟囱效应下极危险，故严禁乘坐。</div>
+              <div class="form-item" style="margin-top:14px;margin-bottom:14px">
+                <label><span class="req">*</span>本题得分</label>
+                <div class="control flex gap items-center" style="max-width:none">
+                  <input class="input score-input" data-max="15" style="width:120px" value="12" oninput="recalc()" />
+                  <span class="muted">/ 满分 15 分（请填 0 ~ 15 的整数）</span>
+                  <span class="score-err text-danger" style="display:none">⚠ 分数需为 0 ~ 15 的整数</span>
+                </div>
+              </div>
+              <div class="form-item" style="margin-bottom:0">
+                <label>评语点评</label>
+                <div class="control" style="max-width:none">
+                  <textarea class="textarea" placeholder="选填，提交后考生可见">要点齐全，逃生路线与防烟描述准确；可补充「随手关门隔烟」一步，扣 3 分。</textarea>
+                  <div class="form-tip">点评为选填；填写后将随成绩对考生公开。</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 简答题 2 -->
+            <div class="qu-block">
+              <div class="qu-stem"><span class="qu-no">7.</span><span class="tag tag-info" style="margin-right:8px">简答题</span>请说明班组长在班前安全交底中应履行的主要职责。 <span class="muted" style="float:right">满分 15 分</span></div>
+              <div class="alert alert-info" style="line-height:1.7"><b>考生作答：</b>交代当天作业内容和危险点，检查个人防护用品是否齐全，提醒注意事项。</div>
+              <div class="alert alert-success" style="line-height:1.7"><b>参考答案：</b>① 明确当班作业任务与分工；② 辨识并告知作业危险点及防控措施；③ 检查作业环境、设备与个人防护用品；④ 确认作业人员身体与精神状态；⑤ 强调应急处置与联络方式。</div>
+              <div class="alert" style="background:#f4f4f5;color:var(--text-regular);line-height:1.7"><b>解析：</b>班前交底重在「危险点告知 + 防护确认」，是双重预防机制的班组落地环节。</div>
+              <div class="form-item" style="margin-top:14px;margin-bottom:14px">
+                <label><span class="req">*</span>本题得分</label>
+                <div class="control flex gap items-center" style="max-width:none">
+                  <input class="input score-input" data-max="15" style="width:120px" value="9" oninput="recalc()" />
+                  <span class="muted">/ 满分 15 分（请填 0 ~ 15 的整数）</span>
+                  <span class="score-err text-danger" style="display:none">⚠ 分数需为 0 ~ 15 的整数</span>
+                </div>
+              </div>
+              <div class="form-item" style="margin-bottom:0">
+                <label>评语点评</label>
+                <div class="control" style="max-width:none">
+                  <textarea class="textarea" placeholder="选填，提交后考生可见">答出 3 个要点，危险点告知与防护检查到位；漏「身体状态确认」「应急联络」，得 9 分。</textarea>
+                  <div class="form-tip">点评为选填；填写后将随成绩对考生公开。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====== 合分与提交 ====== -->
+        <div class="card">
+          <div class="card-body">
+            <div class="flex between items-center" style="flex-wrap:wrap;gap:12px">
+              <div>
+                <div style="font-size:15px">客观分 <b class="text-primary">55</b> ＋ 主观分 <b class="text-primary" id="subjScore">21</b> ＝ 预计总分 <b style="font-size:20px" id="totalScore">76</b> / 100</div>
+                <div class="muted" id="passHint" style="margin-top:4px">及格分 60 —— 预计判定：<span class="text-success">通过</span>。提交后试卷转「已完成」、考生即时可见成绩与点评。</div>
+              </div>
+              <div class="flex gap">
+                <a class="btn" href="exam-papers.html">返回</a>
+                <button class="btn btn-primary" onclick="submitGrade()">提交评分</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- 提交成功对话框 -->
+  <div class="dialog-mask" id="okDlg">
+    <div class="dialog" style="width:440px">
+      <div class="dialog-header">阅卷已提交</div>
+      <div class="dialog-body">
+        <p>本卷总分 <b id="okTotal">76</b> 分，已判定<b id="okPass">通过</b>，试卷状态更新为「已完成」。</p>
+        <p class="muted" style="margin-top:8px">考生现可在「我的成绩」即时查看总分、逐题得分、参考答案与您的点评。</p>
+      </div>
+      <div class="dialog-footer">
+        <a class="btn btn-primary" href="exam-papers.html">返回待阅卷列表</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var OBJECTIVE = 55, PASS = 60;
+    // 校验单题得分是否为 0~满分 的整数
+    function valid(inp) {
+      var max = parseInt(inp.getAttribute('data-max'), 10);
+      var v = inp.value.trim();
+      if (!/^\d+$/.test(v)) return false;
+      var n = parseInt(v, 10);
+      return n >= 0 && n <= max;
+    }
+    // 实时合分
+    function recalc() {
+      var inputs = document.querySelectorAll('.score-input');
+      var sum = 0, allValid = true;
+      inputs.forEach(function (inp) {
+        var ok = valid(inp);
+        inp.parentNode.querySelector('.score-err').style.display = ok ? 'none' : '';
+        if (ok) { sum += parseInt(inp.value, 10); } else { allValid = false; }
+      });
+      document.getElementById('subjScore').textContent = allValid ? sum : '—';
+      var total = OBJECTIVE + sum;
+      document.getElementById('totalScore').textContent = allValid ? total : '—';
+      document.getElementById('subjSum').textContent = allValid ? sum : '—';
+      if (allValid) {
+        var pass = total >= PASS;
+        document.getElementById('passHint').innerHTML =
+          '及格分 ' + PASS + ' —— 预计判定：<span class="' + (pass ? 'text-success">通过' : 'text-danger">不通过') +
+          '</span>。提交后试卷转「已完成」、考生即时可见成绩与点评。';
+      }
+      return allValid;
+    }
+    function submitGrade() {
+      if (!recalc()) {
+        alert('存在未评或超出区间的简答题，请检查每题得分（0 ~ 该题满分的整数）后再提交。');
+        return;
+      }
+      var total = OBJECTIVE + parseInt(document.getElementById('subjScore').textContent, 10);
+      var pass = total >= PASS;
+      document.getElementById('okTotal').textContent = total;
+      document.getElementById('okPass').textContent = pass ? '通过' : '不通过';
+      document.getElementById('okDlg').classList.add('open');
+    }
+    recalc();
+  </script>
+</body>
+</html>

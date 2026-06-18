@@ -123,6 +123,25 @@
           </el-table-column>
 
           <el-table-column
+            label="简答数量"
+            align="center"
+          >
+            <template v-slot="scope">
+              <el-input-number v-model="scope.row.saqCount" :min="0" :controls="false" style="width: 100px" />
+              <div style="color:#909399;font-size:12px;">主观题·需阅卷</div>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            label="简答分数"
+            align="center"
+          >
+            <template v-slot="scope">
+              <el-input-number v-model="scope.row.saqScore" :min="0" :controls="false" style="width: 100%" />
+            </template>
+          </el-table-column>
+
+          <el-table-column
             label="删除"
             align="center"
             width="80px"
@@ -461,6 +480,10 @@ export default {
           if (item.uncertainCount>0 && item.uncertainScore>0) {
             totalScore += item.uncertainCount * item.uncertainScore
           }
+
+          if (item.saqCount>0 && item.saqScore>0) {
+            totalScore += item.saqCount * item.saqScore
+          }
           // 综合题分值随题，配置期无法精确预估，不计入此处估算
           this.excludes.push(item.id)
         }
@@ -541,6 +564,17 @@ export default {
             this.$notify({
               title: '提示信息',
               message: '题库第：[' + (i + 1) + ']项存在无效的判断题配置！',
+              type: 'warning',
+              duration: 2000
+            })
+            return
+          }
+
+          // saqScore 经 el-input-number 清空后为 undefined，用 !(>0) 归一，避免「有数量无分值」漏判
+          if ((repo.saqCount > 0 && !(repo.saqScore > 0)) || (repo.saqCount === 0 && repo.saqScore > 0)) {
+            this.$notify({
+              title: '提示信息',
+              message: '题库第：[' + (i + 1) + ']项存在无效的简答题配置！',
               type: 'warning',
               duration: 2000
             })

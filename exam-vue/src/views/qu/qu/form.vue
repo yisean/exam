@@ -121,6 +121,24 @@
 
       </div>
 
+      <el-card v-if="postForm.quType===4 && postForm.answerList.length" style="margin-top: 25px">
+        <el-alert
+          :closable="false"
+          title="简答题为主观题，无客观选项，由 sa/老师人工阅卷评分；分值不在此设置，在「创建考试 · 组卷规则」按题型统一配置（同单选/多选）。"
+          type="info"
+          style="margin-bottom: 16px"
+        />
+        <el-form-item label="参考答案" prop="referenceAnswer">
+          <el-input
+            v-model="postForm.answerList[0].content"
+            :rows="4"
+            type="textarea"
+            maxlength="5000"
+            placeholder="请输入参考答案，供阅卷人对照并随成绩展示给考生"
+          />
+        </el-form-item>
+      </el-card>
+
       <div style="margin-top: 20px">
         <el-button type="primary" @click="submitForm">保存</el-button>
         <el-button type="info" @click="onCancel">返回</el-button>
@@ -164,6 +182,10 @@ export default {
       {
         value: 5,
         label: '不定项'
+      },
+      {
+        value: 4,
+        label: '简答题'
       }
       ],
 
@@ -212,6 +234,11 @@ export default {
         this.postForm.answerList.push({ isRight: false, content: '', analysis: '' })
         this.postForm.answerList.push({ isRight: false, content: '', analysis: '' })
         this.postForm.answerList.push({ isRight: false, content: '', analysis: '' })
+      }
+
+      // 简答题：主观题无选项，以单行答案承载参考答案（强制为正确项）
+      if (v === 4) {
+        this.postForm.answerList.push({ isRight: true, content: '', analysis: '' })
       }
     },
 
@@ -285,6 +312,17 @@ export default {
         if (rightCount < 1) {
           this.$message({
             message: '不定项至少要有一个正确答案！',
+            type: 'warning'
+          })
+
+          return
+        }
+      }
+
+      if (this.postForm.quType === 4) {
+        if (!this.postForm.answerList.length || !this.postForm.answerList[0].content) {
+          this.$message({
+            message: '简答题必须填写参考答案！',
             type: 'warning'
           })
 

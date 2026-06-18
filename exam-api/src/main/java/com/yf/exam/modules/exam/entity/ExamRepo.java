@@ -93,4 +93,16 @@ public class ExamRepo extends Model<ExamRepo> {
     @TableField("composite_count")
     private Integer compositeCount;
 
+    /**
+    * 简答题数量（可为0；组卷时按题型统一配置）
+    */
+    @TableField("saq_count")
+    private Integer saqCount;
+
+    /**
+    * 简答题每题分值（组卷统一配置，同单选/多选）
+    */
+    @TableField("saq_score")
+    private Integer saqScore;
+
 }

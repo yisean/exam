@@ -55,6 +55,9 @@ public class PaperQuDTO implements Serializable {
     @ApiModelProperty(value = "父题在本试卷中的ID（综合题子题用，普通题为空）")
     private String parentId;
 
+    @ApiModelProperty(value = "阅卷点评（简答题人工阅卷填写，考生可见）")
+    private String comment;
+
     @ApiModelProperty(value = "子题列表（仅综合题父题：其5个子题）")
     private List<PaperQuDTO> subList;
 

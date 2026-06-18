@@ -7,6 +7,7 @@ import com.yf.exam.modules.paper.dto.PaperDTO;
 import com.yf.exam.modules.paper.dto.ext.PaperQuDetailDTO;
 import com.yf.exam.modules.paper.dto.request.PaperAnswerDTO;
 import com.yf.exam.modules.paper.dto.request.PaperListReqDTO;
+import com.yf.exam.modules.paper.dto.request.PaperReviewReqDTO;
 import com.yf.exam.modules.paper.dto.response.ExamDetailRespDTO;
 import com.yf.exam.modules.paper.dto.response.ExamResultRespDTO;
 import com.yf.exam.modules.paper.dto.response.PaperListRespDTO;
@@ -65,6 +66,19 @@ public interface PaperService extends IService<Paper> {
      * @return
      */
     void handExam(String paperId);
+
+    /**
+     * 加载一份待阅卷试卷供阅卷（仅 WAIT_OPT 可加载）
+     * @param paperId
+     * @return
+     */
+    ExamResultRespDTO reviewDetail(String paperId);
+
+    /**
+     * 整份阅卷：为简答题逐题打分+点评，合分并置为已完成
+     * @param reqDTO
+     */
+    void review(PaperReviewReqDTO reqDTO);
 
     /**
      * 试卷列表响应类

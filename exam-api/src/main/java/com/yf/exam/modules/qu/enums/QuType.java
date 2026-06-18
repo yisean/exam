@@ -24,6 +24,11 @@ public interface QuType {
     Integer JUDGE = 3;
 
     /**
+     * 简答题（主观题，无客观选项，由 sa/teacher 人工阅卷评分；分值在组卷 saq_score 统一配置）
+     */
+    Integer SHORT_ANSWER = 4;
+
+    /**
      * 不定项（1个或多个正确答案，固定半分制判分）
      */
     Integer UNCERTAIN = 5;

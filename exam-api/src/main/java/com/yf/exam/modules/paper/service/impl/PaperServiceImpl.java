@@ -28,6 +28,8 @@ import com.yf.exam.modules.paper.dto.ext.PaperQuAnswerExtDTO;
 import com.yf.exam.modules.paper.dto.ext.PaperQuDetailDTO;
 import com.yf.exam.modules.paper.dto.request.PaperAnswerDTO;
 import com.yf.exam.modules.paper.dto.request.PaperListReqDTO;
+import com.yf.exam.modules.paper.dto.request.PaperReviewItemDTO;
+import com.yf.exam.modules.paper.dto.request.PaperReviewReqDTO;
 import com.yf.exam.modules.paper.dto.response.ExamDetailRespDTO;
 import com.yf.exam.modules.paper.dto.response.ExamResultRespDTO;
 import com.yf.exam.modules.paper.dto.response.PaperListRespDTO;
@@ -194,6 +196,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
         List<PaperQuDTO> judgeList = new ArrayList<>();
         List<PaperQuDTO> uncertainList = new ArrayList<>();
         List<PaperQuDTO> compositeList = new ArrayList<>();
+        List<PaperQuDTO> saqList = new ArrayList<>();
         Map<String, PaperQuDTO> compositeMap = new HashMap<>(16);
 
         // 先收集综合题父题，建立映射
@@ -217,6 +220,8 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
                 judgeList.add(item);
             } else if(QuType.UNCERTAIN.equals(item.getQuType())){
                 uncertainList.add(item);
+            } else if(QuType.SHORT_ANSWER.equals(item.getQuType())){
+                saqList.add(item);
             }
         }
 
@@ -225,21 +230,47 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
         respDTO.setJudgeList(judgeList);
         respDTO.setUncertainList(uncertainList);
         respDTO.setCompositeList(compositeList);
+        respDTO.setSaqList(saqList);
         return respDTO;
     }
 
     @Override
     public ExamResultRespDTO paperResult(String paperId) {
 
-        ExamResultRespDTO respDTO = new ExamResultRespDTO();
-
         // 试题基本信息
         Paper paper = paperService.getById(paperId);
+
+        // 仅成绩公开（已完成）后才向考生下发简答题参考答案；进行中/待阅卷一律屏蔽，
+        // 防止考生绕过页面、直接调用本接口从 answerList.content 读取标准答案（与 findQuDetail 同口径）。
+        boolean showSaqAnswer = paper != null && PaperState.FINISHED.equals(paper.getState());
+        return this.buildPaperResult(paperId, paper, showSaqAnswer);
+    }
+
+    /**
+     * 装配试卷结果（题干/考生作答/选项或参考答案/解析）。
+     *
+     * @param paperId       试卷ID
+     * @param paper         试卷实体（基本信息来源）
+     * @param showSaqAnswer 是否下发简答题参考答案（成绩页已完成态、阅卷页放行；考试中屏蔽）
+     * @return 试卷结果
+     */
+    private ExamResultRespDTO buildPaperResult(String paperId, Paper paper, boolean showSaqAnswer) {
+
+        ExamResultRespDTO respDTO = new ExamResultRespDTO();
         BeanMapper.copy(paper, respDTO);
 
         List<PaperQuDetailDTO> quList = paperQuService.listForPaperResult(paperId);
-        respDTO.setQuList(quList);
 
+        // 简答题参考答案以单行答案的 content 承载，未到展示时机时清空，避免随结果接口外泄
+        if (!showSaqAnswer) {
+            for (PaperQuDetailDTO qu : quList) {
+                if (QuType.SHORT_ANSWER.equals(qu.getQuType())) {
+                    qu.setAnswerList(new ArrayList<>());
+                }
+            }
+        }
+
+        respDTO.setQuList(quList);
         return respDTO;
     }
 
@@ -257,8 +288,14 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
         respDTO.setImage(qu.getImage());
 
         // 答案列表
-        List<PaperQuAnswerExtDTO> list = paperQuAnswerService.listForExam(paperId, quId);
-        respDTO.setAnswerList(list);
+        // 简答题的参考答案以单行答案的 content 承载，考试中不可下发给考生（否则可在网络响应里看到标准答案）；
+        // 考生 SAQ 作答区绑定 answer 文本、不依赖 answerList，故返回空列表。阅卷走 reviewDetail，仍可见参考答案。
+        if (QuType.SHORT_ANSWER.equals(qu.getQuType())) {
+            respDTO.setAnswerList(new ArrayList<>());
+        } else {
+            List<PaperQuAnswerExtDTO> list = paperQuAnswerService.listForExam(paperId, quId);
+            respDTO.setAnswerList(list);
+        }
 
         return respDTO;
     }
@@ -321,6 +358,17 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
                     List<Qu> uncertainList = quService.listByRandom(item.getRepoId(), QuType.UNCERTAIN, excludes,
                             item.getUncertainCount());
                     for (Qu qu : uncertainList) {
+                        PaperQu paperQu = this.processPaperQu(item, qu);
+                        quList.add(paperQu);
+                        excludes.add(qu.getId());
+                    }
+                }
+
+                // 简答题：主观题，按组卷数量随机抽取，满分取 saq_score
+                if(item.getSaqCount() != null && item.getSaqCount() > 0) {
+                    List<Qu> saqList = quService.listByRandom(item.getRepoId(), QuType.SHORT_ANSWER, excludes,
+                            item.getSaqCount());
+                    for (Qu qu : saqList) {
                         PaperQu paperQu = this.processPaperQu(item, qu);
                         quList.add(paperQu);
                         excludes.add(qu.getId());
@@ -410,6 +458,11 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
             paperQu.setScore(repo.getUncertainScore());
         }
 
+        // 简答题：主观题，满分由组卷统一配置（saq_score），交卷后人工阅卷写回实得分
+        if (QuType.SHORT_ANSWER.equals(qu.getQuType())) {
+            paperQu.setScore(repo.getSaqScore());
+        }
+
         return paperQu;
     }
 
@@ -450,7 +503,17 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
         paper.setUpdateTime(new Date());
         paper.setQualifyScore(exam.getQualifyScore());
         paper.setState(PaperState.ING);
-        paper.setHasSaq(false);
+        // 据实判定是否含简答题：含则交卷后进入「待阅卷」，纯客观则交卷即「已完成」
+        boolean hasSaq = false;
+        if (!CollectionUtils.isEmpty(quList)) {
+            for (PaperQu pq : quList) {
+                if (QuType.SHORT_ANSWER.equals(pq.getQuType())) {
+                    hasSaq = true;
+                    break;
+                }
+            }
+        }
+        paper.setHasSaq(hasSaq);
 
         // 截止时间
         Calendar cl = Calendar.getInstance();
@@ -530,6 +593,11 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
         // 不能直接 return，否则会残留上一次的 actual_score/isRight。
         boolean answered = !(CollectionUtils.isEmpty(reqDTO.getAnswers())
                 && StringUtils.isBlank(reqDTO.getAnswer()));
+
+        // 简答作答按字符前置校验，与前端 maxlength、el_paper_qu.answer varchar(5000) 三处对齐（不靠 DB 截断）
+        if (reqDTO.getAnswer() != null && reqDTO.getAnswer().length() > 5000) {
+            throw new ServiceException(1, "作答内容不能超过5000字！");
+        }
 
         //查找答案列表
         List<PaperQuAnswer> list = paperQuAnswerService.listForFill(reqDTO.getPaperId(), reqDTO.getQuId());
@@ -663,6 +731,100 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
             //加入错题本
             new Thread(() -> userBookService.addBook(paper.getExamId(), qu.getQuId())).run();
         }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public ExamResultRespDTO reviewDetail(String paperId) {
+
+        Paper paper = paperService.getById(paperId);
+        if (paper == null) {
+            throw new ServiceException(1, "试卷不存在！");
+        }
+        // 仅待阅卷可加载阅卷
+        if (!PaperState.WAIT_OPT.equals(paper.getState())) {
+            throw new ServiceException(1, "试卷不是待阅卷状态！");
+        }
+
+        // 复用结果装配（含题干/考生作答/参考答案/解析）；阅卷人需对照参考答案打分，故放行简答题参考答案
+        return this.buildPaperResult(paperId, paper, true);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void review(PaperReviewReqDTO reqDTO) {
+
+        Paper paper = paperService.getById(reqDTO.getPaperId());
+        if (paper == null) {
+            throw new ServiceException(1, "试卷不存在！");
+        }
+        // 仅待阅卷可阅；非待阅卷（已完成/进行中）拒绝，天然实现「成绩公开后不改分」
+        if (!PaperState.WAIT_OPT.equals(paper.getState())) {
+            throw new ServiceException(1, "试卷不是待阅卷状态，无法阅卷！");
+        }
+
+        // 本卷全部简答题
+        QueryWrapper<PaperQu> saqWrapper = new QueryWrapper<>();
+        saqWrapper.lambda().eq(PaperQu::getPaperId, paper.getId())
+                .eq(PaperQu::getQuType, QuType.SHORT_ANSWER);
+        List<PaperQu> saqList = paperQuService.list(saqWrapper);
+
+        // 提交项按 quId 索引
+        Map<String, PaperReviewItemDTO> itemMap = new HashMap<>(16);
+        if (reqDTO.getItems() != null) {
+            for (PaperReviewItemDTO item : reqDTO.getItems()) {
+                itemMap.put(item.getQuId(), item);
+            }
+        }
+
+        // 校验：每道简答题均已评分，且得分为 0~该题满分 的整数（无漏评、无越界）
+        for (PaperQu pq : saqList) {
+            PaperReviewItemDTO item = itemMap.get(pq.getQuId());
+            if (item == null || item.getScore() == null) {
+                throw new ServiceException(1, "存在未评分的简答题！");
+            }
+            int full = pq.getScore() == null ? 0 : pq.getScore();
+            if (item.getScore() < 0 || item.getScore() > full) {
+                throw new ServiceException(1, "简答题得分须为 0~该题满分的整数！");
+            }
+            // 阅卷点评按字符前置校验，与前端 maxlength、el_paper_qu.comment varchar(200) 三处对齐（不靠 DB 截断）
+            if (item.getComment() != null && item.getComment().length() > 200) {
+                throw new ServiceException(1, "阅卷点评不能超过200字！");
+            }
+        }
+
+        // 逐题写回实得分与点评
+        for (PaperQu pq : saqList) {
+            PaperReviewItemDTO item = itemMap.get(pq.getQuId());
+            PaperQu upd = new PaperQu();
+            upd.setPaperId(paper.getId());
+            upd.setQuId(pq.getQuId());
+            upd.setActualScore(item.getScore());
+            upd.setComment(item.getComment());
+            paperQuService.updateByKey(upd);
+        }
+
+        // 合分：总分 = 客观分 + 主观分之和
+        int objScore = paper.getObjScore() == null ? 0 : paper.getObjScore();
+        int subjScore = paperQuService.sumSubjective(paper.getId());
+        int total = objScore + subjScore;
+
+        // 条件更新：仅 WAIT_OPT→FINISHED 单向流转，避免两名阅卷人并发重复结算
+        Paper update = new Paper();
+        update.setSubjScore(subjScore);
+        update.setUserScore(total);
+        update.setState(PaperState.FINISHED);
+        update.setUpdateTime(new Date());
+        QueryWrapper<Paper> stateWrapper = new QueryWrapper<>();
+        stateWrapper.lambda().eq(Paper::getId, paper.getId())
+                .eq(Paper::getState, PaperState.WAIT_OPT);
+        boolean ok = paperService.update(update, stateWrapper);
+        if (!ok) {
+            throw new ServiceException(1, "试卷已被阅卷或状态已变更，请刷新后重试！");
+        }
+
+        // 同步考试成绩（与交卷完成分支一致）
+        userExamService.joinResult(paper.getUserId(), paper.getExamId(), total, total >= paper.getQualifyScore());
     }
 
     @Override
